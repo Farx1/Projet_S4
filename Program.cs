@@ -8,7 +8,7 @@ using System.Media;
 using System.ComponentModel;
 using System.Diagnostics;
 
-namespace testBitmap0
+namespace Projet
 {
     class Program
     {
@@ -17,9 +17,11 @@ namespace testBitmap0
             Bitmap b = new Bitmap(100, 200);
             
         }
+
+        private byte[] monfichier = File.ReadAllBytes("Images/coco.bmp");
         
-        
-        
-            
+
+
+
     }
 }
