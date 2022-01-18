@@ -75,26 +75,6 @@ namespace Projet
             get => _imageData;
             set => _imageData = value ?? throw new ArgumentNullException(nameof(value));
         }
-
-        public MyImage(string myfile)
-        {
-            
-        }
-
-        public void From_Image_To_File(string file)
-        {
-            
-        }
-
-        public int Convertir_Endian_To_Int(byte[] tab )
-        {
-            
-        }
-
-        public byte[] Convertir_Int_To_Endian(int val )
-        {
-            
-        }
     }   
 }
 

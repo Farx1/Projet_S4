@@ -1,6 +1,9 @@
 namespace Projet;
 
-public class Structure
+public static class Structure
 {
-    public static MyImage()
+    public static int Convertir_Endian_To_Int(byte[] tab …)
+    {
+        
+    }
 }
