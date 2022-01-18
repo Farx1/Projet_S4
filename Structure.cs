@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 system
 
 namespace Projet;
@@ -20,8 +22,9 @@ public static class Structure
         for (int i = 3; i >=0; i--)
         {
             newone[i]= Convert.ToByte(val % Math.Pow(256, i));
-            
+            val-= (int) (val % Math.Pow(256, i));
         }
+        return newone;
     }
 
     public static MyImage ReadBMP(string pov)
@@ -30,5 +33,6 @@ public static class Structure
         var image = new MyImage();
 
         byte[] bMP = {myfile(0), myfile(1)};
+        byte[] 
         
     }
