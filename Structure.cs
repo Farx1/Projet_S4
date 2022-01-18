@@ -1,3 +1,5 @@
+system
+
 namespace Projet;
 
 public static class Structure
@@ -17,7 +19,8 @@ public static class Structure
         byte[] newone = new byte[4];
         for (int i = 3; i >=0; i--)
         {
-            newone[i]= ConvertToByte(val);
+            newone[i]= Convert.ToByte(val % Math.Pow(256, i));
+            
         }
     }
 
