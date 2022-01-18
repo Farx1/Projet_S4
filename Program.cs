@@ -13,15 +13,8 @@ namespace Projet
     class Program
     {
         static void Main(string[] args)
-        {
-            Bitmap b = new Bitmap(100, 200);
-            
+        { 
+        private byte[] myfile = File.ReadAllBytes("Images/coco.bmp");
+
         }
-
-        private byte[] monfichier = File.ReadAllBytes("Images/coco.bmp");
-        
-
-
-
-    }
 }
