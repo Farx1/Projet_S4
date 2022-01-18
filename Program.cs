@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Media;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace testBitmap0
 {
@@ -14,6 +15,11 @@ namespace testBitmap0
         static void Main(string[] args)
         {
             Bitmap b = new Bitmap(100, 200);
+            
         }
+        
+        
+        
+            
     }
 }
