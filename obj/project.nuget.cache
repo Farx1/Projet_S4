@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "6MSAqHKsctTkHRUZMyz5rTIVkWPHMd9nmLz7wWQXcV5Mo8Z7nyWcqdpYKr6O1yMKq5KjV8+iwxwIdm1p24cG1A==",
+  "dgSpecHash": "knhJ2XpgKvx0wk7TNzeiznfqnHhyiI6AP3wpNPANQwx0VjoDIhP807MK+sV0qyAW8UXYnLHLmCfiSk53aHsSXQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\jules\\RiderProjects\\Projet S4\\Projet S4.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\jules\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\jules\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512"
+  ],
   "logs": []
 }
