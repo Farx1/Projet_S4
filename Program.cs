@@ -29,7 +29,7 @@
 
                 Console.WriteLine();
             }
-            File.WriteAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp",myfile);
+            File.WriteAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test2.bmp",myfile);
             Console.Write(test.toString());
         }
     }
