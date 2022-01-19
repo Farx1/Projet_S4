@@ -3,7 +3,7 @@ namespace Projet_S4
     public class MyImage
     {
 
-        private string _typeImage;
+        private string _typeImage = null!;
         private int _height;
         private int _weight;
         private int _sizeFile;
@@ -69,8 +69,7 @@ namespace Projet_S4
         public MyImage(string filename)
         {
             byte[] myfile = File.ReadAllBytes(filename);
-
-            string type = "";
+            
             if (myfile[0] == 66 && myfile[1] == 77)
             {
                 this._typeImage = "BMP";
@@ -91,16 +90,32 @@ namespace Projet_S4
             byte[] tabOffset = new byte[] {myfile[10], myfile[11], myfile[12], myfile[13]};
             this._offset = Convertir_Endian_To_Int(tabOffset);
 
-            _imageData = new Pixel [_weight, _height];
-            for (int i = Offset; i < myfile.Length; i+=3)
+            this._imageData = new Pixel[_height, _weight];
+            int k = _offset;
+            for (int i = 0; i < _height; i++)
             {
-                
-                if (pov != null) data[i - Offset] = fromByteToPixel(myfile[i], myfile[i + 1], myfile[i + 2]);
-                j++;
+                for (int j = 0; j < _weight; j++)
+                {
+                    this._imageData[i, j] = new Pixel(myfile[k],myfile[k + 1],myfile[k + 2]);
+                    k += 3;
+                }
 
+                int reste = _weight % 4;
+                if (reste == 1)
+                {
+                    k = k + 3;
+                } 
+                if (reste == 2)
+                {
+                    k = k + 2;
+                }
+
+                if (reste == 3)
+                {
+                    k = k + 1;
+                }
+               
             }
-
-            //var image = new MyImagefichier(type, hauteur, largeur, taille, bitsParCouleur, offset,data);
             
         }
         
@@ -126,6 +141,23 @@ namespace Projet_S4
 
             return newone;
         }
+
+        public  string toString()
+        {
+            string s = TypeImage+" "+Height+" "+Weight+" "+SizeFile+" "+NumberRgb+" "+Offset+"\n";
+            for (int i = 0; i < Height; i++)
+            {
+                for (int j = 0; j < Weight; j++)
+                {
+                    s += ImageData[i, j];
+                    
+                }
+
+                s += "\n";
+            }
+            return s;
+        }
+        
     }   
 }
 

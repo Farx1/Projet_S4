@@ -31,4 +31,5 @@ public class Pixel
         get => _blue;
         set => _blue = value;
     }
+    
 }

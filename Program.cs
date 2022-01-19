@@ -4,7 +4,8 @@
     {
         static void Main(string[] args)
         {
-            byte[] myfile = File.ReadAllBytes("Images/coco.bmp");
+            MyImage test = new MyImage("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
+            byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
             Console.WriteLine("\n Header \n");
 
             for (int i = 0; i < 14; i++)
@@ -15,21 +16,21 @@
             Console.WriteLine("\n HEADER INFOS \n");
             for (int i = 14; i < 54; i++)
             {
-                Console.WriteLine(myfile[i] + " ");
+                Console.Write(myfile[i] + " ");
             }
 
             Console.WriteLine("\n IMAGE \n");
-            for (int i = 0; i < myfile.Length; i++)
+            for (int i = 54; i < myfile.Length; i=i+60)
             {
-                for (int j = 0; j < i + 60; j++)
+                for (int j = i; j < i + 60; j++)
                 {
-                    Console.WriteLine(myfile[j] + " ");
+                    Console.Write(myfile[j] + " ");
                 }
 
                 Console.WriteLine();
             }
-            File.WriteAllBytes("Images/coco.bmp",myfile);
-
+            File.WriteAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp",myfile);
+            Console.Write(test.toString());
         }
     }
 }
