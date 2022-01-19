@@ -24,7 +24,9 @@ public static class Structure
 
         return newone;
     }
-
+    
+    //public MyImage (MyImage Image) pour cloner
+    
     public static MyImage ReadBmp(string pov)
     {
         byte[] myfile = File.ReadAllBytes(pov);

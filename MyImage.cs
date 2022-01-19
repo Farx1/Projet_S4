@@ -1,33 +1,33 @@
 namespace Projet_S4
 {
-    public class MyImagefichier
+    public class MyImage
     {
 
-        private string _type;
+        private string _typeImage;
         private int _height;
         private int _weight;
-        private int _size;
+        private int _sizeFile;
         private int _numberRgb;
         private int _offset;
         private Pixel[,] _imageData;
 
         
-        public MyImagefichier(string type, int height, int weight, int size, int numberRgb, int offset, Pixel[,] imageData)
+        public MyImage(string typeImage, int height, int weight, int size, int numberRgb, int offset, Pixel[,] imageData)
         {
-            this._type = type;
+            this._typeImage = typeImage;
             this._height = height;
             this._weight = weight;
-            this._size = size;
+            this._sizeFile = size;
             _numberRgb = numberRgb;
             this._offset = offset;
             _imageData = imageData;
         }
         
         
-        public string Type
+        public string TypeImage
         {
-            get => _type;
-            set => _type = value;
+            get => _typeImage;
+            set => _typeImage = value;
         }
 
         public int Height
@@ -42,10 +42,10 @@ namespace Projet_S4
             set => _weight = value;
         }
 
-        public int Size
+        public int SizeFile
         {
-            get => _size;
-            set => _size = value;
+            get => _sizeFile;
+            set => _sizeFile = value;
         }
 
         public int NumberRgb
@@ -66,40 +66,41 @@ namespace Projet_S4
             set => _imageData = value ?? throw new ArgumentNullException(nameof(value));
         }
         
-        public MyImagefichier(string pov)
+        public MyImage(string filename)
         {
-            byte[] myfile = File.ReadAllBytes(pov);
+            byte[] myfile = File.ReadAllBytes(filename);
 
             string type = "";
             if (myfile[0] == 66 && myfile[1] == 77)
             {
-                type = "BMP";
+                this._typeImage = "BMP";
             }
-            byte[] bMp = new byte[] {myfile[0], myfile[1]};
-        
+            
             byte[] tabLargeur = new byte[] {myfile[18], myfile[19], myfile[20], myfile[21]};
-            int largeur = Convertir_Endian_To_Int(tabLargeur);
+            this._weight = Convertir_Endian_To_Int(tabLargeur);
         
             byte[] tabHauteur = new byte[] {myfile[22], myfile[23], myfile[24], myfile[25]};
-            int hauteur = Convertir_Endian_To_Int(tabHauteur);
+            this._height = Convertir_Endian_To_Int(tabHauteur);
         
             byte[] tabTaille = new byte[] {myfile[2], myfile[3], myfile[4], myfile[5]};
-            int taille = Convertir_Endian_To_Int(tabTaille);
+            this._sizeFile= Convertir_Endian_To_Int(tabTaille);
         
             byte[] tabBits = new byte[] {myfile[28], myfile[29]};
-            int bitsParCouleur = Convertir_Endian_To_Int(tabBits);
+            this._numberRgb = Convertir_Endian_To_Int(tabBits);
         
             byte[] tabOffset = new byte[] {myfile[10], myfile[11], myfile[12], myfile[13]};
-            int offset = Convertir_Endian_To_Int(tabOffset);
-        
-            Pixel[] data = new Pixel[] { };
-            for (int i = offset; i < myfile.Length; i+=3)
+            this._offset = Convertir_Endian_To_Int(tabOffset);
+
+            _imageData = new Pixel [_weight, _height];
+            for (int i = Offset; i < myfile.Length; i+=3)
             {
-                if (pov != null) data[i - offset] = fromByteToPixel(myfile[i], myfile[i + 1], myfile[i + 2]);
+                
+                if (pov != null) data[i - Offset] = fromByteToPixel(myfile[i], myfile[i + 1], myfile[i + 2]);
+                j++;
 
             }
 
-            var image = new MyImagefichier(type, hauteur, largeur, taille, bitsParCouleur, offset,data);
+            //var image = new MyImagefichier(type, hauteur, largeur, taille, bitsParCouleur, offset,data);
             
         }
         
