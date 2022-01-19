@@ -149,7 +149,7 @@ namespace Projet_S4
             {
                 for (int j = 0; j < Weight; j++)
                 {
-                    s += ImageData[i, j];
+                    s = s + ImageData[i, j];
                     
                 }
 
