@@ -48,15 +48,14 @@ public static class Structure
         byte[] tabBits = new byte[] {myfile[28], myfile[29]};
         int bitsParCouleur = Convertir_Endian_To_Int(tabBits);
         
-        int offset = 54;
+        byte[] tabOffset = new byte[] {myfile[10], myfile[11], myfile[12], myfile[13]};
+        int offset = Convertir_Endian_To_Int(tabOffset);
+        
         Pixel[] data = new Pixel[] { };
-        for (int i = offset; i < myfile.Length; i++)
+        for (int i = offset; i < myfile.Length; i+=3)
         {
-            for (var j = 0; j < myfile.Length - offset; j++)
-            {
-                if (pov != null) data[i - offset] = Pixel[i];
+            if (pov != null) data[i - offset] = fromByteToPixel(myfile[i], myfile[i + 1], myfile[i + 2]);
 
-            }
         }
 
         var image = new MyImage(type, hauteur, largeur, taille, bitsParCouleur, offset,data);
