@@ -103,7 +103,7 @@ namespace Projet_S4
                 int reste = _weight % 4;
                 if (reste == 1)
                 {
-                    k = k + 3;
+                    k = k + 3; 
                 } 
                 if (reste == 2)
                 {

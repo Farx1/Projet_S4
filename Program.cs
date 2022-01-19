@@ -27,7 +27,7 @@
                     Console.Write(myfile[j] + " ");
                 }
 
-                Console.WriteLine();
+                Console.WriteLine(); 
             }
             File.WriteAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp",myfile);
             Console.Write(test.toString());
