@@ -32,4 +32,8 @@ public class Pixel
         set => _blue = value;
     }
 
+    public string toString()
+    {
+        return _red + " " + _green + " " + _blue + " ";
+    }
 }
