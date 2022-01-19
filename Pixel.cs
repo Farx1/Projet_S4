@@ -7,7 +7,7 @@ public class Pixel
     private int _blue;
 
 
-    public Pixel(int red, int green, int blue) 
+    public Pixel(int red, int green, int blue)
     {
         _red = red;
         this._green = green;
