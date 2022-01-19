@@ -1,73 +1,63 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
-using System.Media;
-using System.ComponentModel;
-using System.Diagnostics;
-
-namespace Projet
+namespace Projet_S4
 {
     public class MyImage
     {
 
-        private int type;
-        private int height;
-        private int weight;
-        private int size;
-        private int numberRGB;
-        private int offset;
+        private string _type;
+        private int _height;
+        private int _weight;
+        private int _size;
+        private int _numberRgb;
+        private int _offset;
         private Pixel[] _imageData;
 
         
-        public MyImage(int type, int height, int weight, int size, int numberRgb, int offset, Pixel[] imageData)
+        public MyImage(string type, int height, int weight, int size, int numberRgb, int offset, Pixel[] imageData)
         {
-            this.type = type;
-            this.height = height;
-            this.weight = weight;
-            this.size = size;
-            numberRGB = numberRgb;
-            this.offset = offset;
+            this._type = type;
+            this._height = height;
+            this._weight = weight;
+            this._size = size;
+            _numberRgb = numberRgb;
+            this._offset = offset;
             _imageData = imageData;
         }
         
         
-        public int Type
+        public string Type
         {
-            get => type;
-            set => type = value;
+            get => _type;
+            set => _type = value;
         }
 
         public int Height
         {
-            get => height;
-            set => height = value;
+            get => _height;
+            set => _height = value;
         }
 
         public int Weight
         {
-            get => weight;
-            set => weight = value;
+            get => _weight;
+            set => _weight = value;
         }
 
         public int Size
         {
-            get => size;
-            set => size = value;
+            get => _size;
+            set => _size = value;
         }
 
         public int NumberRgb
         {
-            get => numberRGB;
-            set => numberRGB = value;
+            get => _numberRgb;
+            set => _numberRgb = value;
         }
 
         public int Offset
         {
-            get => offset;
-            set => offset = value;
+            get => _offset;
+            set => _offset = value;
         }
 
         public Pixel[] ImageData

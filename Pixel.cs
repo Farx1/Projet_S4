@@ -1,4 +1,4 @@
-namespace Projet;
+namespace Projet_S4;
 
 public class Pixel
 {
