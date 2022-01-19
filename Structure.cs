@@ -1,5 +1,5 @@
 namespace Projet_S4;
-
+/*
 public static class Structure
 {
     public static int Convertir_Endian_To_Int(byte[] tab)
@@ -66,5 +66,5 @@ public static class Structure
     {
         
     }
-*/
 }
+*/
