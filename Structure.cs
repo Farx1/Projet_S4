@@ -43,6 +43,7 @@ public static class Structure
         {
 
         }
+        
         // pour le type je sais pas comment faire pcq t'as mit que c'était un int mais pour moi c'est un string
         /*
          j'aurais fait ca : 
