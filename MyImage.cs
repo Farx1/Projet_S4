@@ -100,19 +100,8 @@ namespace Projet_S4
                     k += 3;
                 }
                 /*
-                int reste = _weight % 4;
-                if (reste == 1)
-                {
-                    k = k + 3;
-                } 
-                if (reste == 2)
-                {
-                    k = k + 2;
-                }
-
-                if (reste == 3)
-                {
-                    k = k + 1;
+                int reste = _weight % 4; A revoir plus tard
+                
                 }*/
                
             }
@@ -216,14 +205,18 @@ namespace Projet_S4
             List <byte> image = new List<byte>();//Image
             for (int i = 0; i < im.Height; i++)
             {
-                for (int j = 0; j < im.Weight; j=j+3)
+                for (int j = 0; j < im.Weight; j++)
                 {
                     image.Add(im.ImageData[i,j].Red);
                     image.Add(im.ImageData[i,j].Green); 
                     image.Add(im.ImageData[i,j].Blue);
                 }
             }
-
+            
+            
+            //-----AFFICHAGE------:
+            
+            
             string s = "Header"+"\n"+"\n";
             for (int i = 0; i < header.Count; i++)
             {
@@ -239,17 +232,19 @@ namespace Projet_S4
 
             s += "\n" + "IMAGE"+"\n"+"\n";
 
-            for (int i = 0; i < image.GetLength(0); i++)
-            {
-                for (int j = 0; j < image.GetLength(1); j++)
+            
+                for (int j = 0; j < image.Count; j++)
                 {
-                    s += image[i, j] + " ";
+                    s += image[j] + " ";
+                    if (j!=0 && (j+1)% (im.Weight*3) == 0)
+                    {
+                        s += "\n";
+                    }
                 }
 
-                s += "\n";
-            }
+                
 
-            Console.Write(s);
+                Console.Write(s);
         }
         
     }   
