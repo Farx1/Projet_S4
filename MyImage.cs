@@ -213,14 +213,14 @@ namespace Projet_S4
                 headerInfo.Add(0);
             }
 
-            byte[,] image = new byte [im.Height, im.Weight*3];//Image
+            List <byte> image = new List<byte>();//Image
             for (int i = 0; i < im.Height; i++)
             {
                 for (int j = 0; j < im.Weight; j=j+3)
-                { 
-                    image[i, j] = im.ImageData[i,j].Red;
-                    image[i, j+1] = im.ImageData[i,j].Green; 
-                    image[i, j+2] = im.ImageData[i,j].Blue;
+                {
+                    image.Add(im.ImageData[i,j].Red);
+                    image.Add(im.ImageData[i,j].Green); 
+                    image.Add(im.ImageData[i,j].Blue);
                 }
             }
 
