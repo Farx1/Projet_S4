@@ -157,7 +157,7 @@ namespace Projet_S4
             }   
             return s;
         }
-
+  
         public void From_Image_To_File(MyImage Image, string path)
         {
             List<byte> header = new List<byte>();
