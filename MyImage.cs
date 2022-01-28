@@ -130,13 +130,13 @@ namespace Projet_S4
             return result;
         }
 
-        public static byte[] Convertir_Int_To_Endian(int val)
+        public static byte[] Convertir_Int_To_Endian(int val,int size)
         {
-            byte[] newone = new byte[4];
-            for (int i = 3; i >= 0; i--)
+            byte[] newone = new byte[size];
+            for (int i = size - 1 ; i >= 0 ; i--)
             {
-                newone[i] = Convert.ToByte(val % Math.Pow(256, i));
-                val -= (int) (val % Math.Pow(256, i));
+                newone[i] = (byte) (val / Math.Pow(256, i));
+                val -= newone[i] * ((int) Math.Pow(256, i));
             }
 
             return newone;
@@ -144,7 +144,7 @@ namespace Projet_S4
 
         public  string toString()
         {
-            string s = TypeImage+" "+Height+" "+Weight+" "+SizeFile+" "+NumberRgb+" "+Offset+"\n";
+            string s = TypeImage+" "+Height+" "+Weight+" "+SizeFile+" "+NumberRgb+" "+Offset+"\n"+"\n";
             for (int i = 0; i < Height; i++)
             {
                 for (int j = 0; j < Weight; j++)
@@ -158,27 +158,30 @@ namespace Projet_S4
             return s;
         }
   
-        public void From_Image_To_File(MyImage Image, string path)
+        public static void From_Image_To_File(MyImage im, string path)
         {
-            List<byte> header = new List<byte>();
-            if (Image._typeImage == "BMP")
+            List<byte> header = new List<byte>();//header
+            if (im.TypeImage == "BMP")
             {
-                header.Add(66);
-                header.Add(77);
+                header.Add(Convert.ToByte(66));
+                header.Add(Convert.ToByte(77));
             }
             
-            header.AddRange(Convertir_Int_To_Endian(Image.SizeFile));
-            
+            header.AddRange(Convertir_Int_To_Endian(im.SizeFile,4));
             
             for (int i = 0; i < 4; i++)
             {
-                header.Add(0);
+                header.Add(Convert.ToByte(0));
+            }
+            header.Add(Convert.ToByte(54));
+            for (int i = 0; i < 3; i++)
+            {
+                header.Add(Convert.ToByte(0));
             }
             
-            header.AddRange(Convertir_Int_To_Endian(Image.Offset));
             
             
-            List<byte> headerInfo = new List<byte>();
+            List<byte> headerInfo = new List<byte>();//HeaderInfos
 
             headerInfo.Add(40);
 
@@ -187,14 +190,14 @@ namespace Projet_S4
                 headerInfo.Add( 0);
             }
             
-            headerInfo.AddRange(Convertir_Int_To_Endian(Image.Weight));
+            headerInfo.AddRange(Convertir_Int_To_Endian(im.Weight,4));
             
-            headerInfo.AddRange(Convertir_Int_To_Endian(Image.Height));
+            headerInfo.AddRange(Convertir_Int_To_Endian(im.Height,4));
 
             headerInfo.Add(1);
             headerInfo.Add(0);
             
-            headerInfo.AddRange(Convertir_Int_To_Endian(Image.NumberRgb));
+            headerInfo.AddRange(Convertir_Int_To_Endian(im.NumberRgb,2));
             
 
             for (int i = 0; i < 4; i++)
@@ -205,14 +208,48 @@ namespace Projet_S4
             headerInfo.Add(176);
             headerInfo.Add(4);
             
-            for (int i = 0; i < 17; i++)
+            for (int i = 0; i < 18; i++)
             {
                 headerInfo.Add(0);
-            } 
+            }
+
+            byte[,] image = new byte [im.Height, im.Weight*3];//Image
+            for (int i = 0; i < im.Height; i++)
+            {
+                for (int j = 0; j < im.Weight; j=j+3)
+                {
+                    image[i, j] = im.ImageData[i,j].Red;
+                    image[i, j+1] = im.ImageData[i,j].Green; 
+                    image[i, j+2] = im.ImageData[i,j].Blue;
+                }
+            }
+
+            string s = "Header"+"\n"+"\n";
+            for (int i = 0; i < header.Count; i++)
+            {
+                s = s + header[i]+" ";
+            }
             
+            s += "\n" + "HEADER INFOS"+"\n"+"\n";
             
-            
-            
+            for (int i = 0; i < headerInfo.Count; i++)
+            {
+                s += headerInfo[i] + " ";
+            }
+
+            s += "\n" + "IMAGE"+"\n"+"\n";
+
+            for (int i = 0; i < image.GetLength(0); i++)
+            {
+                for (int j = 0; j < image.GetLength(1); j++)
+                {
+                    s += image[i, j] + " ";
+                }
+
+                s += "\n";
+            }
+
+            Console.Write(s);
         }
         
     }   
