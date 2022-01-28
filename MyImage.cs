@@ -99,7 +99,7 @@ namespace Projet_S4
                     this._imageData[i, j] = new Pixel(myfile[k],myfile[k + 1],myfile[k + 2]);
                     k += 3;
                 }
-
+                /*
                 int reste = _weight % 4;
                 if (reste == 1)
                 {
@@ -113,7 +113,7 @@ namespace Projet_S4
                 if (reste == 3)
                 {
                     k = k + 1;
-                }
+                }*/
                
             }
             
