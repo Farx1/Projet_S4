@@ -154,11 +154,17 @@ namespace Projet_S4
                 }
 
                 s += "\n";
-            }
+            }   
             return s;
         }
-        
-        
+
+        public void From_Image_To_File(string file)
+        {
+            MyImage copie = new MyImage("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
+            byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
+            
+
+        }
         
     }   
 }

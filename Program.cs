@@ -4,8 +4,8 @@
     {
         static void Main(string[] args)
         {
-            MyImage test = new MyImage("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
-            byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
+            MyImage test = new MyImage("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\coco.bmp");
+            byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\coco.bmp");
             Console.WriteLine("\n Header \n");
 
             for (int i = 0; i < 14; i++)
