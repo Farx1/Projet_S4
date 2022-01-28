@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 namespace Projet_S4
 {
     public class MyImage
@@ -158,10 +159,39 @@ namespace Projet_S4
             return s;
         }
 
-        public void From_Image_To_File(string file)
+        public void From_Image_To_File(MyImage Image)
         {
-            MyImage copie = new MyImage("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
-            byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
+            List<byte> header = new List<byte>();
+            if (Image._typeImage == "BMP")
+            {
+                header[0] = 66;
+                header[1] = 77;
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                header[i+2] = Convertir_Int_To_Endian(Image._sizeFile)[i];
+            }
+            
+            for (int i = 0; i < 4; i++)
+            {
+                header[i+6] = 0;
+            }
+            
+            
+            for (int i = 0; i < 3; i++)
+            {
+                header[i+10] = Convertir_Int_To_Endian(Image._offset)[i];
+            }
+            
+            List<byte> headerInfo = new List<byte>();
+            
+            for (int i = 0; i < 4; i++)
+            {
+                headerInfo[i] = Convertir_Int_To_Endian(Image.)[i];
+            }
+            
+            
             
 
         }
