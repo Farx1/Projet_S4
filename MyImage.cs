@@ -163,63 +163,53 @@ namespace Projet_S4
             List<byte> header = new List<byte>();
             if (Image._typeImage == "BMP")
             {
-                header[0] = 66;
-                header[1] = 77;
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                header[i+2] = Convertir_Int_To_Endian(Image._sizeFile)[i];
+                header.Add(66);
+                header.Add(77);
             }
             
-            for (int i = 0; i < 4; i++)
-            {
-                header[i+6] = 0;
-            }
+            header.AddRange(Convertir_Int_To_Endian(Image.SizeFile));
             
             
             for (int i = 0; i < 4; i++)
             {
-                header[i+10] = Convertir_Int_To_Endian(Image._offset)[i];
+                header.Add(0);
             }
+            
+            header.AddRange(Convertir_Int_To_Endian(Image.Offset));
+            
             
             List<byte> headerInfo = new List<byte>();
 
-            headerInfo[0] = 40;
+            headerInfo.Add(40);
+
             for (int i = 1; i < 4; i++)
             {
-                headerInfo[i] = 0;
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                headerInfo[i+4] = Convertir_Int_To_Endian(Image._weight)[i];
+                headerInfo.Add( 0);
             }
             
-            for (int i = 0; i < 4; i++)
-            {
-                headerInfo[i+8] = Convertir_Int_To_Endian(Image._height)[i];
-            }
+            headerInfo.AddRange(Convertir_Int_To_Endian(Image.Weight));
+            
+            headerInfo.AddRange(Convertir_Int_To_Endian(Image.Height));
 
-            headerInfo[12] = 1;
-            headerInfo[13] = 0;
-
-            for (int i = 0; i < 2; i++)
-            {
-                headerInfo[i + 14] = Convertir_Int_To_Endian(Image._numberRgb)[i];
-            }
+            headerInfo.Add(1);
+            headerInfo.Add(0);
+            
+            headerInfo.AddRange(Convertir_Int_To_Endian(Image.NumberRgb));
+            
 
             for (int i = 0; i < 4; i++)
             {
-                headerInfo[i + 16] = 0;
+                headerInfo.Add(0);
             }
 
-            headerInfo[20] = 176;
-            headerInfo[21] = 4;
+            headerInfo.Add(176);
+            headerInfo.Add(4);
             for (int i = 0; i < 17; i++)
             {
-                headerInfo[i + 22] = 0;
+                headerInfo.Add(0);
             }
+            
+            
             
             
         }
