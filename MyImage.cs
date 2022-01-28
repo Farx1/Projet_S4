@@ -217,7 +217,7 @@ namespace Projet_S4
             for (int i = 0; i < im.Height; i++)
             {
                 for (int j = 0; j < im.Weight; j=j+3)
-                {
+                { 
                     image[i, j] = im.ImageData[i,j].Red;
                     image[i, j+1] = im.ImageData[i,j].Green; 
                     image[i, j+2] = im.ImageData[i,j].Blue;
