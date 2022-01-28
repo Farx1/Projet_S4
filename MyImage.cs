@@ -207,7 +207,7 @@ namespace Projet_S4
             for (int i = 0; i < 17; i++)
             {
                 headerInfo.Add(0);
-            }
+            } 
             
             
             
