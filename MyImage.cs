@@ -188,7 +188,7 @@ namespace Projet_S4
             
             for (int i = 0; i < 4; i++)
             {
-                headerInfo[i] = Convertir_Int_To_Endian(Image.)[i];
+                //headerInfo[i] = Convertir_Int_To_Endian(Image. )[i];
             }
             
             
