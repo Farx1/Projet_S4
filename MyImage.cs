@@ -149,13 +149,21 @@ namespace Projet_S4
             {
                 for (int j = 0; j < Weight; j++)
                 {
-                    s += ImageData[i, j];
+                    s = s + ImageData[i, j].toString();
                     
                 }
 
                 s += "\n";
-            }
+            }   
             return s;
+        }
+
+        public void From_Image_To_File(string file)
+        {
+            MyImage copie = new MyImage("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
+            byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
+            
+
         }
         
     }   
