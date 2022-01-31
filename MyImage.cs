@@ -196,9 +196,9 @@ namespace Projet_S4
 
         public string toString()
         {
-            string s = "Type de l'image : " + TypeImage + "/n" + "Hauteur de l'image : " + Height + "/n" +
-                       "Largeur de l'image " + Weight + "/n" + "Taille du fichier" + SizeFile+ "/n" + 
-                       "Nombre de bits par couleur " +NumberRgb+ "/n" + "Taille du bandeau" + Offset+"\n"+"\n";
+            string s = "Type de l'image : " + TypeImage + "\n" + "Hauteur de l'image : " + Height + "\n" +
+                       "Largeur de l'image : " + Weight + "\n" + "Taille du fichier : " + SizeFile+ "\n" + 
+                       "Nombre de bits par couleur : " +NumberRgb+ "\n" + "Taille du bandeau : " + Offset+"\n"+"\n";
             if (ImageData != null)
             {
                 s += "Données de l'image : " + "\n";
@@ -268,6 +268,7 @@ namespace Projet_S4
             {
                 headerInfo.Add(0);
             }
+            
 
             headerInfo.Add(176);
             headerInfo.Add(4);
@@ -282,7 +283,7 @@ namespace Projet_S4
             List <byte> image = new List<byte>();//Image
             for (int i = 0; i < im.Height; i++)
             {
-                for (int j = 0; j < im.Weight; j=j+3)
+                for (int j = 0; j < im.Weight; j++)
                 {
                     image.Add(im.ImageData[i,j].Red);
                     image.Add(im.ImageData[i,j].Green); 
