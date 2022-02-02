@@ -17,7 +17,7 @@ namespace Projet_S4
         #endregion
 
 
-        #region Les 2 constructeurs
+        #region Les 4 constructeurs
 
         /// <summary>
         /// Constructeur naturel avec paramètres saisis manuellement
@@ -28,7 +28,7 @@ namespace Projet_S4
         /// <param name="size"> taille du fichier </param>
         /// <param name="numberRgb"> nombre de bits par couleur </param>
         /// <param name="offset"> taille du header + headerinfo </param>
-        /// <param name="imageData"> matrice RGB de l'image elle-mêle </param>
+        /// <param name="imageData"> matrice RGB de l'image elle-même </param>
 
         #region Premier constructeur
 
@@ -110,11 +110,33 @@ namespace Projet_S4
 
         }
 
+        
 
         #endregion
 
+        #region Constructeur null
+        public  MyImage()
+        {
+        }
+        #endregion
+
+        #region Constructeur clone
+
+        public MyImage(MyImage image)
+        {
+            this._typeImage = image._typeImage;
+            this._height = image._height;
+            this._weight = image._weight;
+            this._sizeFile = image._sizeFile;
+            _numberRgb = image._numberRgb;
+            this._offset = image._offset;
+            _imageData = image._imageData;
+        }
 
         #endregion
+
+        #endregion
+        
 
 
         #region Propriétés
@@ -234,19 +256,21 @@ namespace Projet_S4
 
         #region Méthode qui tranforme une image en fichier binaire
 
-        public static void From_Image_To_File(MyImage im, string path)
+        public void From_Image_To_File( string path)
         {
             // creation de 3 lists, une pour chaque catégorie, où on y ajoute les données une à une 
 
             #region Header
 
             List<byte> header = new List<byte>(); //header
+            MyImage im = this;
             if (im.TypeImage == "BMP")
             {
                 header.Add(Convert.ToByte(66));
                 header.Add(Convert.ToByte(77));
             }
 
+            
             header.AddRange(Convertir_Int_To_Endian(im.SizeFile, 4));
 
             for (int i = 0; i < 4; i++)
@@ -313,70 +337,20 @@ namespace Projet_S4
             }
 
             #endregion
-
-            #region Affichage du fichier binaire
-
-            string s = "Header" + "\n" + "\n";
-            for (int i = 0; i < header.Count; i++)
-            {
-                s = s + header[i] + " ";
-            }
-
-            s += "\n" + "HEADER INFOS" + "\n" + "\n";
-
-            for (int i = 0; i < headerInfo.Count; i++)
-            {
-                s += headerInfo[i] + " ";
-            }
-
-            s += "\n" + "IMAGE" + "\n" + "\n";
-
-
-            int taille_ligne = im.Weight * 3; // car 1 Pixel = 3 bytes
-            for (int j = 0; j < image.Count; j++)
-            {
-                s += image[j] + " ";
-                if (j != 0 && (j + 1) % (taille_ligne) ==
-                    0) //retour à la ligne lorsque j est un multiple d'une taille de ligne
-                {
-                    s += "\n";
-                }
-            }
-
-            Console.Write(s);
-
-            #endregion
+            
+            var output = header.Concat(headerInfo).Concat(image); //fusionne les 3 listes
+            File.WriteAllBytes(path, output.ToArray());
         }
 
         #endregion
 
 
 
-        public MyImage NuancesGris( string path)
+        public MyImage NuancesGris()
         {
-            MyImage neb = new MyImage($"../../../Images/{testfinal}nuancesgris.bmp");
-            byte[] myfile = File.ReadAllBytes(path);
+            MyImage neb = new MyImage(this);
 
-            if (myfile[0] == 66 && myfile[1] == 77)
-            {
-                neb._typeImage = "BMP";
-            }
-
-            byte[] tabLargeur = new byte[] {myfile[18], myfile[19], myfile[20], myfile[21]};
-            neb._weight = Convertir_Endian_To_Int(tabLargeur);
-
-            byte[] tabHauteur = new byte[] {myfile[22], myfile[23], myfile[24], myfile[25]};
-            neb._height = Convertir_Endian_To_Int(tabHauteur);
-
-            byte[] tabTaille = new byte[] {myfile[2], myfile[3], myfile[4], myfile[5]};
-            neb._sizeFile = Convertir_Endian_To_Int(tabTaille);
-
-            byte[] tabBits = new byte[] {myfile[28], myfile[29]};
-            neb._numberRgb = Convertir_Endian_To_Int(tabBits);
-
-            byte[] tabOffset = new byte[] {myfile[10], myfile[11], myfile[12], myfile[13]};
-            neb._offset = Convertir_Endian_To_Int(tabOffset);
-
+            
             neb._imageData = new Pixel[_height, _weight];
             int k = _offset;
 
@@ -385,7 +359,7 @@ namespace Projet_S4
             {
                 for (int j = 0; j < _weight; j++)
                 {
-                    byte moyenne = Convert.ToByte((myfile[k] + myfile[k + 1] + myfile[k + 2]) / 3);
+                    byte moyenne = Convert.ToByte((this.ImageData[i,j].Red+ this.ImageData[i,j].Blue + this.ImageData[i,j].Green)/3) ;
                     neb._imageData[i, j] =
                         new Pixel(moyenne, moyenne, moyenne);
                     k += 3;
