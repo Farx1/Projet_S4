@@ -352,9 +352,9 @@ namespace Projet_S4
 
 
 
-        public MyImage NuancesGris( string path)
+        public static MyImage NuancesGris(string path)
         {
-            MyImage neb = new MyImage($"../../../Images/{testfinal}nuancesgris.bmp");
+            MyImage neb = new MyImage(path);
             byte[] myfile = File.ReadAllBytes(path);
 
             if (myfile[0] == 66 && myfile[1] == 77)
@@ -377,22 +377,21 @@ namespace Projet_S4
             byte[] tabOffset = new byte[] {myfile[10], myfile[11], myfile[12], myfile[13]};
             neb._offset = Convertir_Endian_To_Int(tabOffset);
 
-            neb._imageData = new Pixel[_height, _weight];
-            int k = _offset;
+            neb._imageData = new Pixel[neb._height, neb._weight];
+            int k = neb._offset;
 
 
-            for (int i = 0; i < _height; i++)
+            for (int i = 0; i < neb._height; i++)
             {
-                for (int j = 0; j < _weight; j++)
+                for (int j = 0; j < neb._weight; j++)
                 {
                     byte moyenne = Convert.ToByte((myfile[k] + myfile[k + 1] + myfile[k + 2]) / 3);
-                    neb._imageData[i, j] =
-                        new Pixel(moyenne, moyenne, moyenne);
+                    neb._imageData[i, j] = new Pixel(moyenne, moyenne, moyenne);
                     k += 3;
                 }
             }
-
             return neb;
+            
         }
     }
 }

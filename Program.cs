@@ -53,7 +53,7 @@
 
             //MyImage.From_Image_To_File(test, $"../../../Images/{testfinal}.bmp");
 
-            MyImage.NuancesGris(test,$"../../../Images/{testfinal}.bmp");
+            MyImage.NuancesGris($"../../../Images/{testfinal}.bmp");
             Console.Write(test.toString());
         }
     }
