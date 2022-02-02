@@ -11,7 +11,7 @@
             
             MyImage test = new MyImage($"../../../Images/{testfinal}.bmp");
             byte[] myfile = File.ReadAllBytes($"../../../Images/{testfinal}.bmp");
-
+            /*
             #region Affichage du fichier d'origine en binaire
             
             Console.WriteLine("\n Header \n");
@@ -42,16 +42,19 @@
             
             
             #endregion
+            */
             
-            
-            File.WriteAllBytes($"../../../Images/{testfinal}2.bmp", myfile);
+            //File.WriteAllBytes($"../../../Images/{testfinal}2.bmp", myfile);
+            //Console.Write(test.toString());
+
+
+
+
+
+            //MyImage.From_Image_To_File(test, $"../../../Images/{testfinal}.bmp");
+
+            MyImage.NuancesGris(test,$"../../../Images/{testfinal}.bmp");
             Console.Write(test.toString());
-
-
-
-
-
-            MyImage.From_Image_To_File(test, $"../../../Images/{testfinal}.bmp");
         }
     }
 }
