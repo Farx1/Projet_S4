@@ -20,9 +20,16 @@ public class Pixel
     /// <param name="blue"></param>
     public Pixel(byte red, byte green, byte blue)
     {
-        _red = red;
+        this._red = red;
         this._green = green;
         this._blue = blue;
+    }
+
+    public Pixel(Pixel pixel)
+    {
+        _red = pixel._red;
+        _green = pixel._green;
+        _blue = pixel._blue;
     }
 
     #endregion

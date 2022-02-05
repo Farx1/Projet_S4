@@ -115,9 +115,7 @@ namespace Projet_S4
         #endregion
 
         #region Constructeur null
-        public  MyImage()
-        {
-        }
+        
         #endregion
 
         #region Constructeur clone
@@ -137,7 +135,6 @@ namespace Projet_S4
 
         #endregion
         
-
 
         #region Propriétés
 
@@ -345,16 +342,15 @@ namespace Projet_S4
         #endregion
 
 
-
+        #region Méthode Couleur --> Noir&Blanc
         public MyImage NuancesGris()
         {
             MyImage neb = new MyImage(this);
 
             
-            neb._imageData = new Pixel[_height, _weight];
+            neb._imageData = new Pixel[this._height, this._weight];
+            
             int k = _offset;
-
-
             for (int i = 0; i < _height; i++)
             {
                 for (int j = 0; j < _weight; j++)
@@ -365,9 +361,76 @@ namespace Projet_S4
                     k += 3;
                 }
             }
-
             return neb;
         }
+        
+
+        #endregion
+
+        
+        #region Méthode pour agrandir et retrecir
+        public MyImage AgrandirRetrecir (int facteur)
+        {
+            Console.WriteLine("Souhaitez vous 'agrandir' ou 'retrecir' l'image?");
+            string reponse = Console.ReadLine();
+            MyImage nvlImage = new MyImage(this);
+            if (reponse != "agrandir" || reponse != "retrecir")
+            {
+                if (reponse == "agrandir")
+                {
+                    nvlImage._height *= facteur;
+                    nvlImage._weight *= facteur;
+                    nvlImage._imageData = new Pixel[this._imageData.GetLength(0) * facteur,
+                        this._imageData.GetLength(1) * facteur];
+                    for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
+                        {
+                            nvlImage._imageData[i, j] = new Pixel (this._imageData[i / facteur, j / facteur]);
+                        }
+                    }
+                }
+
+                if (reponse == "retrecir")
+                {
+                    nvlImage._height /= facteur;
+                    nvlImage._weight /= facteur;
+                    nvlImage._imageData = new Pixel[this._imageData.GetLength(0) / facteur,
+                        this._imageData.GetLength(1) / facteur];
+                    for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
+                        {
+                            nvlImage._imageData[i, j] = new Pixel (this._imageData[i * facteur, j * facteur]);
+                        }
+                    }
+                }
+            }
+            
+            return nvlImage;
+        }
+
+        
+
+        #endregion
+
+        
+        #region Méthode mirroir
+        public MyImage Mirroir()
+        {
+            MyImage mir = new MyImage(this);
+            mir._imageData = new Pixel[this._height, this._weight];
+            for (int i = 0; i < mir._imageData.GetLength(0); i++)
+            {
+                for (int j = 0; j < mir._imageData.GetLength(1); j++)
+                {
+                    mir._imageData[i, j] = this._imageData[i,this._imageData.GetLength(1)-1- j];
+                }
+            }
+            return mir;
+        }
+        #endregion
+       
     }
 }
 
