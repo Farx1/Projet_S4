@@ -136,7 +136,6 @@ namespace Projet_S4
         #endregion
         
 
-
         #region Propriétés
 
         public string TypeImage
@@ -343,7 +342,7 @@ namespace Projet_S4
         #endregion
 
 
-
+        #region Méthode Couleur --> Noir&Blanc
         public MyImage NuancesGris()
         {
             MyImage neb = new MyImage(this);
@@ -364,7 +363,12 @@ namespace Projet_S4
             }
             return neb;
         }
+        
 
+        #endregion
+
+        
+        #region Méthode pour agrandir et retrecir
         public MyImage AgrandirRetrecir (int facteur)
         {
             Console.WriteLine("Souhaitez vous 'agrandir' ou 'retrecir' l'image?");
@@ -406,6 +410,12 @@ namespace Projet_S4
             return nvlImage;
         }
 
+        
+
+        #endregion
+
+        
+        #region Méthode mirroir
         public MyImage Mirroir()
         {
             MyImage mir = new MyImage(this);
@@ -419,10 +429,8 @@ namespace Projet_S4
             }
             return mir;
         }
-        
-        
-        
-        
+        #endregion
+       
     }
 }
 
