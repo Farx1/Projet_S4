@@ -5,7 +5,7 @@
         static void Main(string[] args)
         {
           
-            MyImage test = new MyImage("../../../Images/coco.bmp");
+            MyImage test = new MyImage("../../../Images/Test.bmp");
             /*
           byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
           Console.WriteLine("\n Header \n");
@@ -42,8 +42,9 @@
 
           //MyImage.From_Image_To_File(test,"C:\\Users\\jules\\RiderProjects\\Projet_S4\\Images\\Test.bmp");
           */
-
-            MyImage baw = test.NuancesGris();
+            //Console.WriteLine("Souhaitez vous agrandir ou retrecir l'image?");
+            //string resul = Console.ReadLine();
+            MyImage baw = test.AgrandirRetrecir(2);
             baw.From_Image_To_File( @"../../../Images/Test3.bmp");
         }
     }
