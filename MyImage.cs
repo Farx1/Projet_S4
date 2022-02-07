@@ -6,9 +6,9 @@ namespace Projet_S4
 
         #region Attributs
 
-        private string _typeImage = null!;
+        private string _typeImage;
         private int _height;
-        private int _weight;//a changer en width
+        private int _width;
         private int _sizeFile;
         private int _numberRgb;
         private int _offset;
@@ -24,7 +24,7 @@ namespace Projet_S4
         /// </summary>
         /// <param name="typeImage"> type de l'image </param>
         /// <param name="height"> hauteur de l'image </param>
-        /// <param name="weight"> largeur de l'image </param>
+        /// <param name="width"> largeur de l'image </param>
         /// <param name="size"> taille du fichier </param>
         /// <param name="numberRgb"> nombre de bits par couleur </param>
         /// <param name="offset"> taille du header + headerinfo </param>
@@ -32,12 +32,12 @@ namespace Projet_S4
 
         #region Premier constructeur
 
-        public MyImage(string typeImage, int height, int weight, int size, int numberRgb, int offset,
+        public MyImage(string typeImage, int height, int width, int size, int numberRgb, int offset,
             Pixel[,] imageData)
         {
             this._typeImage = typeImage;
             this._height = height;
-            this._weight = weight;
+            this._width = width;
             this._sizeFile = size;
             _numberRgb = numberRgb;
             this._offset = offset;
@@ -65,7 +65,7 @@ namespace Projet_S4
             }
 
             byte[] tabLargeur = new byte[] {myfile[18], myfile[19], myfile[20], myfile[21]};
-            this._weight = Convertir_Endian_To_Int(tabLargeur);
+            this._width = Convertir_Endian_To_Int(tabLargeur);
 
             byte[] tabHauteur = new byte[] {myfile[22], myfile[23], myfile[24], myfile[25]};
             this._height = Convertir_Endian_To_Int(tabHauteur);
@@ -79,11 +79,11 @@ namespace Projet_S4
             byte[] tabOffset = new byte[] {myfile[10], myfile[11], myfile[12], myfile[13]};
             this._offset = Convertir_Endian_To_Int(tabOffset);
 
-            this._imageData = new Pixel[_height, _weight];
+            this._imageData = new Pixel[_height, _width];
             int k = _offset;
             for (int i = 0; i < _height; i++)
             {
-                for (int j = 0; j < _weight; j++)
+                for (int j = 0; j < _width; j++)
                 {
                     this._imageData[i, j] =
                         new Pixel(myfile[k], myfile[k + 1], myfile[k + 2]); //creation d'un pixel pour chaque set de 3 bytes du fichier
@@ -122,7 +122,7 @@ namespace Projet_S4
         {
             this._typeImage = image._typeImage;
             this._height = image._height;
-            this._weight = image._weight;
+            this._width = image._width;
             this._sizeFile = image._sizeFile;
             _numberRgb = image._numberRgb;
             this._offset = image._offset;
@@ -150,8 +150,8 @@ namespace Projet_S4
 
         public int Weight
         {
-            get => _weight;
-            set => _weight = value;
+            get => _width;
+            set => _width = value;
         }
 
         public int SizeFile
@@ -341,17 +341,17 @@ namespace Projet_S4
 
 
         #region Méthode Couleur --> Noir&Blanc
-        public MyImage NuancesGris()
+        public MyImage NuancesGris()//Revérifier si le Offset a une incidence sur la construction de la nouvelle image (normalement non)
         {
             MyImage neb = new MyImage(this);
 
             
-            neb._imageData = new Pixel[this._height, this._weight];
+            neb._imageData = new Pixel[this._height, this._width];
             
             int k = _offset;
             for (int i = 0; i < _height; i++)
             {
-                for (int j = 0; j < _weight; j++)
+                for (int j = 0; j < _width; j++)
                 {
                     byte moyenne = Convert.ToByte((this.ImageData[i,j].Red+ this.ImageData[i,j].Blue + this.ImageData[i,j].Green)/3) ;
                     neb._imageData[i, j] =
@@ -379,7 +379,7 @@ namespace Projet_S4
                 if (reponse == "a")
                 {
                     nvlImage._height *= facteur;
-                    nvlImage._weight *= facteur;
+                    nvlImage._width *= facteur;
                     nvlImage._imageData = new Pixel[this._imageData.GetLength(0) * facteur,
                         this._imageData.GetLength(1) * facteur];
                     for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
@@ -394,7 +394,7 @@ namespace Projet_S4
                 if (reponse == "r")
                 {
                     nvlImage._height /= facteur;
-                    nvlImage._weight /= facteur;
+                    nvlImage._width /= facteur;
                     nvlImage._imageData = new Pixel[this._imageData.GetLength(0) / facteur,
                         this._imageData.GetLength(1) / facteur];
                     for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
@@ -423,7 +423,7 @@ namespace Projet_S4
         public MyImage Mirroir()
         {
             MyImage mir = new MyImage(this);
-            mir._imageData = new Pixel[this._height, this._weight];
+            mir._imageData = new Pixel[this._height, this._width];
             for (int i = 0; i < mir._imageData.GetLength(0); i++)
             {
                 for (int j = 0; j < mir._imageData.GetLength(1); j++)
