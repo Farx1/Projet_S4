@@ -5,12 +5,13 @@
         static void Main(string[] args)
         {
           
-            MyImage test = new MyImage("../../../Images/Test3.bmp");
+            MyImage test = new MyImage("../../../Images/Test5.bmp");
             /*
           byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
           Console.WriteLine("\n Header \n");
 
           for (int i = 0; i < 14; i++)
+          
           {
               Console.Write(myfile[i] + " ");
           }
@@ -44,8 +45,11 @@
           */
             //Console.WriteLine("Souhaitez vous agrandir ou retrecir l'image?");
             //string resul = Console.ReadLine();
-            MyImage baw = test.AgrandirRetrecir(2);
-            baw.From_Image_To_File( @"../../../Images/Test4.bmp");
+            MyImage baw = test.AgrandirRetrecir(10);
+            baw.From_Image_To_File( @"../../../Images/Test6.bmp");
+
+            //MyImage mirr = test.Mirroir();
+            //mirr.From_Image_To_File(@"../../../Images/Test6.bmp");
         }
     }
 }

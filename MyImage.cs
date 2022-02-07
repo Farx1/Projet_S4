@@ -8,7 +8,7 @@ namespace Projet_S4
 
         private string _typeImage = null!;
         private int _height;
-        private int _weight;
+        private int _weight;//a changer en width
         private int _sizeFile;
         private int _numberRgb;
         private int _offset;
@@ -86,8 +86,7 @@ namespace Projet_S4
                 for (int j = 0; j < _weight; j++)
                 {
                     this._imageData[i, j] =
-                        new Pixel(myfile[k], myfile[k + 1],
-                            myfile[k + 2]); //creation d'un pixel pour chaque set de 3 bytes du fichier
+                        new Pixel(myfile[k], myfile[k + 1], myfile[k + 2]); //creation d'un pixel pour chaque set de 3 bytes du fichier
                     k += 3;
                 }
                 /*
@@ -100,12 +99,11 @@ namespace Projet_S4
                 {
                     k = k + 2;
                 }
-
                 if (reste == 3)
                 {
                     k = k + 1;
-                }*/
-
+                }
+                */
             }
 
         }
@@ -369,14 +367,16 @@ namespace Projet_S4
 
         
         #region Méthode pour agrandir et retrecir
-        public MyImage AgrandirRetrecir (int facteur)
+        //A faire: il faut mettre un facteur limite en fonction de l'image
+        //UPDATE: il faut qu'on complète la fonction, pourvoir agrandir de 1,3 est possible si on fait agrandir:x13 et rétécir:x10 par exemple
+        public MyImage AgrandirRetrecir (int facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
         {
-            Console.WriteLine("Souhaitez vous 'agrandir' ou 'retrecir' l'image?");
+            Console.WriteLine("Souhaitez vous agrandir('a') ou retrecir ('r') l'image?");
             string reponse = Console.ReadLine();
             MyImage nvlImage = new MyImage(this);
-            if (reponse != "agrandir" || reponse != "retrecir")
+            if (reponse == "a" || reponse == "r")
             {
-                if (reponse == "agrandir")
+                if (reponse == "a")
                 {
                     nvlImage._height *= facteur;
                     nvlImage._weight *= facteur;
@@ -391,7 +391,7 @@ namespace Projet_S4
                     }
                 }
 
-                if (reponse == "retrecir")
+                if (reponse == "r")
                 {
                     nvlImage._height /= facteur;
                     nvlImage._weight /= facteur;
@@ -405,6 +405,10 @@ namespace Projet_S4
                         }
                     }
                 }
+            }
+            else
+            {
+                Console.Write("Error: Invalid");
             }
             
             return nvlImage;
@@ -430,6 +434,8 @@ namespace Projet_S4
             return mir;
         }
         #endregion
+
+       
        
     }
 }
