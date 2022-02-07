@@ -45,7 +45,7 @@
           */
             //Console.WriteLine("Souhaitez vous agrandir ou retrecir l'image?");
             //string resul = Console.ReadLine();
-            MyImage baw = test.AgrandirRetrecir(10);
+            MyImage baw = test.AgrandirRetrecir(9);
             baw.From_Image_To_File( @"../../../Images/Test6.bmp");
 
             //MyImage mirr = test.Mirroir();
