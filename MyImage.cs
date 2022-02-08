@@ -368,53 +368,40 @@ namespace Projet_S4
         
         #region Méthode pour agrandir et retrecir
         //UPDATE: il faut qu'on complète la fonction, pourvoir agrandir de 1,3 est possible si on fait agrandir:x13 et rétécir:x10 par exemple
-        public MyImage AgrandirRetrecir (int facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
+        public MyImage Agrandir (int facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
         {
-            Console.WriteLine("Souhaitez vous agrandir('a') ou retrecir ('r') l'image?");
-            string reponse = Console.ReadLine();
             MyImage nvlImage = new MyImage(this);
-            
-            if ((reponse == "a" || reponse == "r")&& facteur!=0)
+            nvlImage._height *= facteur;
+            nvlImage._width *= facteur;
+            nvlImage._imageData = new Pixel[this._imageData.GetLength(0) * facteur, this._imageData.GetLength(1) * facteur];
+            for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
             {
-                if (reponse == "a")
+                for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
                 {
-                    nvlImage._height *= facteur;
-                    nvlImage._width *= facteur;
-                    nvlImage._imageData = new Pixel[this._imageData.GetLength(0) * facteur,
-                        this._imageData.GetLength(1) * facteur];
-                    for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
-                    {
-                        for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
-                        {
-                            nvlImage._imageData[i, j] = new Pixel (this._imageData[i / facteur, j / facteur]);
-                        }
-                    }
+                    nvlImage._imageData[i, j] = new Pixel (this._imageData[i / facteur, j / facteur]);
                 }
-
-                if (reponse == "r")
-                {
-                    nvlImage._height /= facteur;
-                    nvlImage._width /= facteur;
-                    nvlImage._imageData = new Pixel[this._imageData.GetLength(0) / facteur,
-                        this._imageData.GetLength(1) / facteur];
-                    for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
-                    {
-                        for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
-                        {
-                            nvlImage._imageData[i, j] = new Pixel (this._imageData[i * facteur, j * facteur]);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Console.Write("Error: Invalid");
             }
             
             return nvlImage;
         }
-
         
+        public MyImage Retrecir(int facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
+        {
+            MyImage nvlImage = new MyImage(this);
+            nvlImage._height /= facteur;
+            nvlImage._width /= facteur;
+            nvlImage._imageData = new Pixel[this._imageData.GetLength(0) / facteur,
+            this._imageData.GetLength(1) / facteur];
+            for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
+            {
+                for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
+                {
+                    nvlImage._imageData[i, j] = new Pixel (this._imageData[i * facteur, j * facteur]);
+                }
+            }
+
+            return nvlImage;
+        }
 
         #endregion
 
