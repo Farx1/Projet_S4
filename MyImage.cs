@@ -367,14 +367,14 @@ namespace Projet_S4
 
         
         #region Méthode pour agrandir et retrecir
-        //A faire: il faut mettre un facteur limite en fonction de l'image
         //UPDATE: il faut qu'on complète la fonction, pourvoir agrandir de 1,3 est possible si on fait agrandir:x13 et rétécir:x10 par exemple
         public MyImage AgrandirRetrecir (int facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
         {
             Console.WriteLine("Souhaitez vous agrandir('a') ou retrecir ('r') l'image?");
             string reponse = Console.ReadLine();
             MyImage nvlImage = new MyImage(this);
-            if (reponse == "a" || reponse == "r")
+            
+            if ((reponse == "a" || reponse == "r")&& facteur!=0)
             {
                 if (reponse == "a")
                 {
@@ -419,8 +419,8 @@ namespace Projet_S4
         #endregion
 
         
-        #region Méthode mirroir
-        public MyImage Mirroir()
+        #region Méthodes mirroir(Horizontal/Vertical)
+        public MyImage MirroirHorizontal()
         {
             MyImage mir = new MyImage(this);
             mir._imageData = new Pixel[this._height, this._width];
@@ -433,9 +433,22 @@ namespace Projet_S4
             }
             return mir;
         }
-        #endregion
-
-       
+        
+        
+        public MyImage MirroirVertical()
+        {
+            MyImage mir = new MyImage(this);
+            mir._imageData = new Pixel[this._height, this._width];
+            for (int i = 0; i < mir._imageData.GetLength(0); i++)
+            {
+                for (int j = 0; j < mir._imageData.GetLength(1); j++)
+                {
+                    mir._imageData[i, j] = this._imageData[this._imageData.GetLength(0)-1- i,j];
+                }
+            }
+            return mir;
+        }
+       #endregion
        
     }
 }
