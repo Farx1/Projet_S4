@@ -87,11 +87,10 @@ namespace Projet_S4
             {
                 for (int j = 0; j < _width; j++)
                 {
-                    this._imageData[i, j] =
-                        new Pixel(myfile[k], myfile[k + 1],
-                            myfile[k + 2]); //creation d'un pixel pour chaque set de 3 bytes du fichier
+                    this._imageData[i, j] = new Pixel(myfile[k], myfile[k + 1], myfile[k + 2]); //creation d'un pixel pour chaque set de 3 bytes du fichier
                     k += 3;
                 }
+                
                 /*
                 int reste = _weight % 4;
                 if (reste == 1)
@@ -151,17 +150,13 @@ namespace Projet_S4
             set => _height = value;
         }
 
-        public int Weight
+        public int Widht
         {
             get => _width;
             set => _width = value;
         }
 
-        public int SizeFile
-        {
-            get => _sizeFile;
-            set => _sizeFile = value;
-        }
+        public int SizeFile => _height * _width * 3;
 
         public int NumberRgb
         {
@@ -228,7 +223,7 @@ namespace Projet_S4
         public string toString()
         {
             string s = "Type de l'image : " + TypeImage + "\n" + "Hauteur de l'image : " + Height + "\n" +
-                       "Largeur de l'image : " + Weight + "\n" + "Taille du fichier : " + SizeFile + "\n" +
+                       "Largeur de l'image : " + Widht + "\n" + "Taille du fichier : " + SizeFile + "\n" +
                        "Nombre de bits par couleur : " + NumberRgb + "\n" + "Taille du bandeau : " + Offset + "\n" +
                        "\n";
             if (ImageData != null)
@@ -236,7 +231,7 @@ namespace Projet_S4
                 s += "Données de l'image : " + "\n";
                 for (int i = 0; i < Height; i++)
                 {
-                    for (int j = 0; j < Weight; j++)
+                    for (int j = 0; j < Widht; j++)
                     {
                         s += ImageData[i, j].toString();
 
@@ -269,7 +264,7 @@ namespace Projet_S4
             }
 
 
-            header.AddRange(Convertir_Int_To_Endian(im.SizeFile, 4));
+            header.AddRange(Convertir_Int_To_Endian(im.SizeFile + 54, 4));
 
             for (int i = 0; i < 4; i++)
             {
@@ -295,7 +290,7 @@ namespace Projet_S4
                 headerInfo.Add(0);
             }
 
-            headerInfo.AddRange(Convertir_Int_To_Endian(im.Weight, 4));
+            headerInfo.AddRange(Convertir_Int_To_Endian(im.Widht, 4));
 
             headerInfo.AddRange(Convertir_Int_To_Endian(im.Height, 4));
 
@@ -324,20 +319,31 @@ namespace Projet_S4
             #region Image
 
             List<byte> image = new List<byte>(); //Image
-            for (int i = 0; i < im.Height; i++)
+            for (int i = 0; i < im.ImageData.GetLength(0); i++)
             {
-                for (int j = 0; j < im.Weight; j++)
+                for (int j = 0; j < im.ImageData.GetLength(1); j++)
                 {
                     image.Add(im.ImageData[i, j].Red);
                     image.Add(im.ImageData[i, j].Green);
                     image.Add(im.ImageData[i, j].Blue);
+
+                }
+
+                
+                for (int k = 0; k < im.ImageData.GetLength(1) % 4 ; k++)
+                {
+                    image.Add(Byte.MinValue);
                 }
             }
-
+            
             #endregion
 
-            var output = header.Concat(headerInfo).Concat(image); //fusionne les 3 listes
-            File.WriteAllBytes(path, output.ToArray());
+        var output = header.Concat(headerInfo).Concat(image); //fusionne les 3 listes
+
+        Console.WriteLine(im.SizeFile);
+        Console.WriteLine(im.Widht);
+        Console.WriteLine(im.Height);
+        File.WriteAllBytes(path, output.ToArray());
         }
 
         #endregion
@@ -376,54 +382,51 @@ namespace Projet_S4
         #region Méthode pour agrandir et retrecir
 
         //UPDATE: il faut qu'on complète la fonction, pourvoir agrandir de 1,3 est possible si on fait agrandir:x13 et rétécir:x10 par exemple
-        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: Projet_S4.Pixel")]
-        [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH", MessageId = "type: Projet_S4.Pixel[,]")]
-        public MyImage
-            AgrandirRetrecir(double facteur) //Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
+        
+        public MyImage AgrandirRetrecir(double facteur) //Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
         {
-            double count = 0;
-
-            if (facteur % 1 != 0)
+            int fact = 0;
+            int count = 0;
+            //double count = 1;
+            //while (facteur % 1 != 0)
             {
-                count = 0;
-                while (facteur % 1 != 0)
-                {
-                    facteur = facteur * 10;
-                    count++;
-                }
-
-                count = Math.Pow(10,Convert.ToDouble(count));
+                //facteur = facteur * 10;
+                //count++;
             }
-            int fact = Convert.ToInt32(facteur);
+            
+            //double puissance = Math.Pow(10,Convert.ToDouble(count));
+            
+           // int fact = Convert.ToInt32(facteur);
             
             Console.WriteLine("Souhaitez vous agrandir('a') ou retrecir ('r') l'image?");
-            string reponse = Console.ReadLine();
+            string? reponse = Console.ReadLine();
             
             MyImage nvlImage = new MyImage(this);
             if ((reponse == "a" || reponse == "r") && facteur > 0)
             {
                 if (reponse == "a")
                 {
-                    nvlImage._height *= fact;
-                    nvlImage._width *= fact;
-                    nvlImage._imageData = new Pixel[this._imageData.GetLength(0) * fact, this._imageData.GetLength(1) * fact];
+                    
+                    nvlImage._imageData = new Pixel[(int) (this._imageData.GetLength(0) * facteur),
+                        (int) (this._imageData.GetLength(1) * facteur)];
                     for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
                     {
                         for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
                         {
-                            nvlImage._imageData[i, j] = new Pixel(this._imageData[i / fact, j / fact]);
+                            nvlImage._imageData[i, j] = new Pixel(this._imageData[(int) (i / facteur), (int) (j / facteur)]);
                         }
                     }
-
+                    nvlImage._height = (int) (nvlImage._imageData.GetLength(0) * facteur);
+                    nvlImage._width = (int) (nvlImage._imageData.GetLength(1) * facteur);
                     
-                    nvlImage._height /= Convert.ToInt32(count);
-                    nvlImage._width /= Convert.ToInt32(count);;
-                    nvlImage._imageData = new Pixel[(int) (this._imageData.GetLength(0) / count), (int) (this._imageData.GetLength(1) / count)];
-                    for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
+                    //nvlImage._height /= Convert.ToInt32(count);
+                   // nvlImage._width /= Convert.ToInt32(count);;
+                    //nvlImage._imageData = new Pixel[(int) (this._imageData.GetLength(0) / count), (int) (this._imageData.GetLength(1) / count)];
+                    //for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
                     {
-                        for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
+                       // for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
                         {
-                            nvlImage._imageData[i, j] = new Pixel(this._imageData[(int) (i * count), (int) (j * count)]);
+                           // nvlImage._imageData[i, j] = new Pixel(this._imageData[(int) (i / puissance), (int) (j / puissance)]);
                         }
                     }
                 }
@@ -457,6 +460,8 @@ namespace Projet_S4
             {
                 Console.Write("Error: Invalid");
             }
+            
+            
 
             return nvlImage;
         }

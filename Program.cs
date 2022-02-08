@@ -5,7 +5,7 @@
         static void Main(string[] args)
         {
           
-            MyImage test = new MyImage("../../../Images/coco.bmp");
+            MyImage test = new MyImage("../../../Images/Test.bmp");
             /*
           byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
           Console.WriteLine("\n Header \n");
@@ -48,8 +48,9 @@
             //MyImage baw = test.AgrandirRetrecir(5);//mettre l'indice d'agrandissement ou de rétrecissement ici: AgrandirRetrecir(5)   ----(A améliorer)
             //baw.From_Image_To_File( @"../../../Images/Test6.bmp");
 
-            MyImage mirr = test.AgrandirRetrecir(1.4);
-            mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
+            MyImage mirr = test.AgrandirRetrecir(2);
+            mirr.From_Image_To_File(@"../../../Images/Test6.bmp");
+            //mirr.toString();
         }
     }
 }
