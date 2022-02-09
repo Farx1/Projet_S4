@@ -58,7 +58,7 @@ namespace Projet_S4
         public MyImage(string path)
         {
             byte[] myfile = File.ReadAllBytes(path);
-
+            
             if (myfile[0] == 66 && myfile[1] == 77)
             {
                 this._typeImage = "BMP";
@@ -148,7 +148,7 @@ namespace Projet_S4
             set => _height = value;
         }
 
-        public int Weight
+        public int Width
         {
             get => _width;
             set => _width = value;
@@ -225,7 +225,7 @@ namespace Projet_S4
         public string toString()
         {
             string s = "Type de l'image : " + TypeImage + "\n" + "Hauteur de l'image : " + Height + "\n" +
-                       "Largeur de l'image : " + Weight + "\n" + "Taille du fichier : " + SizeFile + "\n" +
+                       "Largeur de l'image : " + Width + "\n" + "Taille du fichier : " + SizeFile + "\n" +
                        "Nombre de bits par couleur : " + NumberRgb + "\n" + "Taille du bandeau : " + Offset + "\n" +
                        "\n";
             if (ImageData != null)
@@ -233,7 +233,7 @@ namespace Projet_S4
                 s += "Données de l'image : " + "\n";
                 for (int i = 0; i < Height; i++)
                 {
-                    for (int j = 0; j < Weight; j++)
+                    for (int j = 0; j < Width; j++)
                     {
                         s += ImageData[i, j].toString();
 
@@ -250,7 +250,7 @@ namespace Projet_S4
 
 
         #region Méthode qui tranforme une image en fichier binaire
-
+        //Méthode ok après check Debug
         public void From_Image_To_File( string path)
         {
             // creation de 3 lists, une pour chaque catégorie, où on y ajoute les données une à une 
@@ -258,15 +258,14 @@ namespace Projet_S4
             #region Header
 
             List<byte> header = new List<byte>(); //header
-            MyImage im = this;
-            if (im.TypeImage == "BMP")
+            if (this.TypeImage == "BMP")
             {
                 header.Add(Convert.ToByte(66));
                 header.Add(Convert.ToByte(77));
             }
 
             
-            header.AddRange(Convertir_Int_To_Endian(im.SizeFile, 4));
+            header.AddRange(Convertir_Int_To_Endian(this.SizeFile, 4));
 
             for (int i = 0; i < 4; i++)
             {
@@ -292,14 +291,14 @@ namespace Projet_S4
                 headerInfo.Add(0);
             }
 
-            headerInfo.AddRange(Convertir_Int_To_Endian(im.Weight, 4));
+            headerInfo.AddRange(Convertir_Int_To_Endian(this.Width, 4));
 
-            headerInfo.AddRange(Convertir_Int_To_Endian(im.Height, 4));
+            headerInfo.AddRange(Convertir_Int_To_Endian(this.Height, 4));
 
             headerInfo.Add(1);
             headerInfo.Add(0);
 
-            headerInfo.AddRange(Convertir_Int_To_Endian(im.NumberRgb, 2));
+            headerInfo.AddRange(Convertir_Int_To_Endian(this.NumberRgb, 2));
 
 
             for (int i = 0; i < 4; i++)
@@ -321,13 +320,13 @@ namespace Projet_S4
             #region Image
 
             List<byte> image = new List<byte>(); //Image
-            for (int i = 0; i < im.Height; i++)
+            for (int i = 0; i < this.Height; i++)
             {
-                for (int j = 0; j < im.Weight; j++)
+                for (int j = 0; j < this.Width; j++)
                 {
-                    image.Add(im.ImageData[i, j].Red);
-                    image.Add(im.ImageData[i, j].Green);
-                    image.Add(im.ImageData[i, j].Blue);
+                    image.Add(this.ImageData[i, j].Red);
+                    image.Add(this.ImageData[i, j].Green);
+                    image.Add(this.ImageData[i, j].Blue);
                 }
             }
 
@@ -368,7 +367,7 @@ namespace Projet_S4
         
         #region Méthode pour agrandir et retrecir
         //UPDATE: il faut qu'on complète la fonction, pourvoir agrandir de 1,3 est possible si on fait agrandir:x13 et rétécir:x10 par exemple
-        public MyImage Agrandir (int facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
+        public MyImage Agrandir(int facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
         {
             MyImage nvlImage = new MyImage(this);
             nvlImage._height *= facteur;
@@ -388,15 +387,23 @@ namespace Projet_S4
         public MyImage Retrecir(int facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
         {
             MyImage nvlImage = new MyImage(this);
-            nvlImage._height /= facteur;
-            nvlImage._width /= facteur;
-            nvlImage._imageData = new Pixel[this._imageData.GetLength(0) / facteur,
-            this._imageData.GetLength(1) / facteur];
+            Convert.ToInt32(nvlImage._height /= facteur);
+            Convert.ToInt32(nvlImage._width /= facteur);
+            nvlImage._imageData = new Pixel[(_imageData.GetLength(0) )/ facteur,(_imageData.GetLength(1) )/ facteur];
             for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
             {
                 for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
                 {
-                    nvlImage._imageData[i, j] = new Pixel (this._imageData[i * facteur, j * facteur]);
+                    try
+                    {
+                        nvlImage._imageData[i, j] = new Pixel(this._imageData[i * facteur, j * facteur]);// problème est là
+
+                    }
+                    catch
+                    {
+                        nvlImage._imageData[i, j] = new Pixel(this._imageData[i * facteur, j * facteur]);
+
+                    }
                 }
             }
 
@@ -436,6 +443,8 @@ namespace Projet_S4
             return mir;
         }
        #endregion
+       
+       
        
     }
 }
