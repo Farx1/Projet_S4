@@ -43,13 +43,9 @@
 
           //MyImage.From_Image_To_File(test,"C:\\Users\\jules\\RiderProjects\\Projet_S4\\Images\\Test.bmp");
           */
-            //Console.WriteLine("Souhaitez vous agrandir ou retrecir l'image?");
-            //string resul = Console.ReadLine();
-            //MyImage baw = test.AgrandirRetrecir(5);//mettre l'indice d'agrandissement ou de rétrecissement ici: AgrandirRetrecir(5)   ----(A améliorer)
-            //baw.From_Image_To_File( @"../../../Images/Test6.bmp");
 
-            MyImage mirr = test.AgrandirRetrecir(1.4);
-            mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
+            MyImage mirr = test.Retrecir(2);
+            mirr.From_Image_To_File(@"../../../Images/Test6.bmp");
         }
     }
 }

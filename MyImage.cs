@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Projet_S4
 {
     public class MyImage
@@ -88,8 +86,7 @@ namespace Projet_S4
                 for (int j = 0; j < _width; j++)
                 {
                     this._imageData[i, j] =
-                        new Pixel(myfile[k], myfile[k + 1],
-                            myfile[k + 2]); //creation d'un pixel pour chaque set de 3 bytes du fichier
+                        new Pixel(myfile[k], myfile[k + 1], myfile[k + 2]); //creation d'un pixel pour chaque set de 3 bytes du fichier
                     k += 3;
                 }
                 /*
@@ -111,12 +108,12 @@ namespace Projet_S4
 
         }
 
-
+        
 
         #endregion
 
         #region Constructeur null
-
+        
         #endregion
 
         #region Constructeur clone
@@ -135,7 +132,7 @@ namespace Projet_S4
         #endregion
 
         #endregion
-
+        
 
         #region Propriétés
 
@@ -254,7 +251,7 @@ namespace Projet_S4
 
         #region Méthode qui tranforme une image en fichier binaire
 
-        public void From_Image_To_File(string path)
+        public void From_Image_To_File( string path)
         {
             // creation de 3 lists, une pour chaque catégorie, où on y ajoute les données une à une 
 
@@ -268,7 +265,7 @@ namespace Projet_S4
                 header.Add(Convert.ToByte(77));
             }
 
-
+            
             header.AddRange(Convertir_Int_To_Endian(im.SizeFile, 4));
 
             for (int i = 0; i < 4; i++)
@@ -335,7 +332,7 @@ namespace Projet_S4
             }
 
             #endregion
-
+            
             var output = header.Concat(headerInfo).Concat(image); //fusionne les 3 listes
             File.WriteAllBytes(path, output.ToArray());
         }
@@ -344,126 +341,67 @@ namespace Projet_S4
 
 
         #region Méthode Couleur --> Noir&Blanc
-
-        public MyImage
-            NuancesGris() //Revérifier si le Offset a une incidence sur la construction de la nouvelle image (normalement non)
+        public MyImage NuancesGris()//Revérifier si le Offset a une incidence sur la construction de la nouvelle image (normalement non)
         {
             MyImage neb = new MyImage(this);
 
-
+            
             neb._imageData = new Pixel[this._height, this._width];
-
+            
             int k = _offset;
             for (int i = 0; i < _height; i++)
             {
                 for (int j = 0; j < _width; j++)
                 {
-                    byte moyenne = Convert.ToByte((this.ImageData[i, j].Red + this.ImageData[i, j].Blue +
-                                                   this.ImageData[i, j].Green) / 3);
+                    byte moyenne = Convert.ToByte((this.ImageData[i,j].Red+ this.ImageData[i,j].Blue + this.ImageData[i,j].Green)/3) ;
                     neb._imageData[i, j] =
                         new Pixel(moyenne, moyenne, moyenne);
                     k += 3;
                 }
             }
-
             return neb;
         }
-
+        
 
         #endregion
 
-
+        
         #region Méthode pour agrandir et retrecir
-
         //UPDATE: il faut qu'on complète la fonction, pourvoir agrandir de 1,3 est possible si on fait agrandir:x13 et rétécir:x10 par exemple
-        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: Projet_S4.Pixel")]
-        [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH", MessageId = "type: Projet_S4.Pixel[,]")]
-        public MyImage
-            AgrandirRetrecir(double facteur) //Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
+        public MyImage Agrandir (int facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
         {
-            double count = 0;
-
-            if (facteur % 1 != 0)
-            {
-                count = 0;
-                while (facteur % 1 != 0)
-                {
-                    facteur = facteur * 10;
-                    count++;
-                }
-
-                count = Math.Pow(10,Convert.ToDouble(count));
-            }
-            int fact = Convert.ToInt32(facteur);
-            
-            Console.WriteLine("Souhaitez vous agrandir('a') ou retrecir ('r') l'image?");
-            string reponse = Console.ReadLine();
-            
             MyImage nvlImage = new MyImage(this);
-            if ((reponse == "a" || reponse == "r") && facteur > 0)
+            nvlImage._height *= facteur;
+            nvlImage._width *= facteur;
+            nvlImage._imageData = new Pixel[this._imageData.GetLength(0) * facteur, this._imageData.GetLength(1) * facteur];
+            for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
             {
-                if (reponse == "a")
+                for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
                 {
-                    nvlImage._height *= fact;
-                    nvlImage._width *= fact;
-                    nvlImage._imageData = new Pixel[this._imageData.GetLength(0) * fact, this._imageData.GetLength(1) * fact];
-                    for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
-                    {
-                        for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
-                        {
-                            nvlImage._imageData[i, j] = new Pixel(this._imageData[i / fact, j / fact]);
-                        }
-                    }
-
-                    
-                    nvlImage._height /= Convert.ToInt32(count);
-                    nvlImage._width /= Convert.ToInt32(count);;
-                    nvlImage._imageData = new Pixel[(int) (this._imageData.GetLength(0) / count), (int) (this._imageData.GetLength(1) / count)];
-                    for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
-                    {
-                        for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
-                        {
-                            nvlImage._imageData[i, j] = new Pixel(this._imageData[(int) (i * count), (int) (j * count)]);
-                        }
-                    }
-                }
-
-                if (reponse == "r")
-                {
-                    nvlImage._height /= fact;
-                    nvlImage._width /= fact;
-                    nvlImage._imageData = new Pixel[this._imageData.GetLength(0) / fact, this._imageData.GetLength(1) / fact];
-                    for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
-                    {
-                        for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
-                        {
-                            nvlImage._imageData[i, j] = new Pixel(this._imageData[i * fact, j * fact]);
-                        }
-                    }
-                    
-                    nvlImage._height *= Convert.ToInt32(count);
-                    nvlImage._width *= Convert.ToInt32(count);
-                    nvlImage._imageData = new Pixel[(int) (this._imageData.GetLength(0) * count), (int) (this._imageData.GetLength(1) * count)];
-                    for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
-                    {
-                        for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
-                        {
-                            nvlImage._imageData[i, j] = new Pixel(this._imageData[(int) (i / count), (int) (j / count)]);
-                        }
-                    }
+                    nvlImage._imageData[i, j] = new Pixel (this._imageData[i / facteur, j / facteur]);
                 }
             }
-            else
+            
+            return nvlImage;
+        }
+        
+        public MyImage Retrecir(int facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
+        {
+            MyImage nvlImage = new MyImage(this);
+            nvlImage._height /= facteur;
+            nvlImage._width /= facteur;
+            nvlImage._imageData = new Pixel[this._imageData.GetLength(0) / facteur,
+            this._imageData.GetLength(1) / facteur];
+            for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
             {
-                Console.Write("Error: Invalid");
+                for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
+                {
+                    nvlImage._imageData[i, j] = new Pixel (this._imageData[i * facteur, j * facteur]);
+                }
             }
 
             return nvlImage;
         }
-
-
-
-
 
         #endregion
 
