@@ -510,8 +510,8 @@ namespace Projet_S4
 
                 // Calcul des donnés de la nouvelle taille de l'image
                 
-                rot._height = (int)(Math.Sin(rad) * (double)this._imageData.GetLength(1) + Math.Cos(rad) * (double)this._imageData.GetLength(0));
-                rot._width = (int)(Math.Cos(rad) * (double)this._imageData.GetLength(1) + Math.Sin(rad) * (double)this._imageData.GetLength(0));
+                rot._height = (int)Math.Abs((Math.Sin(rad) * (double)this._imageData.GetLength(1)) + Math.Abs(Math.Cos(rad) * (double)this._imageData.GetLength(0)));
+                rot._width = (int)Math.Abs((Math.Cos(rad) * (double)this._imageData.GetLength(1)) + Math.Abs(Math.Sin(rad) * (double)this._imageData.GetLength(0)));
                 rot._imageData = new Pixel[rot._height, rot._width];
 
                 // Pour chaque pixel de la NOUVELLE image
@@ -522,7 +522,7 @@ namespace Projet_S4
 
                         // Calcul des coordonnées cartésiennes du point en question
                         double X = j;
-                        double Y = rot._height - i - Math.Sin(rad) * _imageData.GetLength(1);
+                        double Y = (double) rot._height - i - Math.Sin(rad) * _imageData.GetLength(1);
 
                         // Mise en coordonnées polaires + Ajout de l'angle de rotation "rad"
                         double r = Math.Sqrt(X * X + Y * Y);
