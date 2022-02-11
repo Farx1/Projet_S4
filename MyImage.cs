@@ -444,35 +444,26 @@ namespace Projet_S4
         }
        #endregion
        
-       public MyImage Rotate90(int degre)
+       public void Rotate90(int degre)
        {
-           while (degre < 0)
-           {
-               degre += 360;
-           }
+           while (degre < 0) degre += 360;
+           while (degre >= 360) degre -= 360;
 
-           while (degre >= 360)
-           {
-               degre -= 360;
-           }
-           
-           MyImage rot = new MyImage(this);
-           rot._height = this._width;
-           rot._width = this._height;
 
            for (int k = 0; k < degre / 90 && degre % 90 == 0; k++)
-           { 
-               rot._imageData = new Pixel[this._width, this._height];
+           {
+               Pixel [,] rot = new Pixel[this._imageData.GetLength(1), this._imageData.GetLength(0)];
+
                for (int i = 0; i < this._imageData.GetLength(0); i++)
                 {
                     for (int j = 0; j < this._imageData.GetLength(1); j++)
                     {
-                          rot._imageData[j,(rot._imageData.GetLength(1)-1)-i] = this._imageData[i,j];
+                          rot[j,this._imageData.GetLength(0)-1-i] = this._imageData[i,j];
                     }
                 }
+                this._imageData = rot;
+
            }
-           
-           return rot;
        }
        
        

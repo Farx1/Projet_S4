@@ -44,12 +44,15 @@
           //MyImage.From_Image_To_File(test,"C:\\Users\\jules\\RiderProjects\\Projet_S4\\Images\\Test.bmp");
           */
 
-            MyImage mirr = test.Rotate90(180);
-            mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
+            //MyImage mirr = test.Rotate90(180);
+            test.Rotate90(270);
+                
+            test.From_Image_To_File(@"../../../Images/Test5.bmp");
         }
     }
 }
  
+
 
 
 
