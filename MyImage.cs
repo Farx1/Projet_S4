@@ -154,11 +154,7 @@ namespace Projet_S4
             set => _width = value;
         }
 
-        public int SizeFile
-        {
-            get => _sizeFile;
-            set => _sizeFile = value;
-        }
+        public int SizeFile => _height * _width * 3;
 
         public int NumberRgb
         {
@@ -328,6 +324,29 @@ namespace Projet_S4
                     image.Add(this.ImageData[i, j].Green);
                     image.Add(this.ImageData[i, j].Blue);
                 }
+
+                int reste = _width% 4;
+                int k = 0;
+                if (reste == 1)
+                {
+                     k =  3;
+                } 
+                if (reste == 2)
+                {
+                     k = 2;
+                }
+                if (reste == 3)
+                {
+                     k =  1;
+                }
+
+                if (_width % 4 != 0)
+                {
+                    for (int l = 0; l <= k; l++)
+                    {
+                        image.Add(Convert.ToByte(0));
+                    }
+                }
             }
 
             #endregion
@@ -448,8 +467,12 @@ namespace Projet_S4
        {
            while (degre < 0) degre += 360;
            while (degre >= 360) degre -= 360;
-
-
+           if (degre % 180 != 0)
+           {
+               _height = _imageData.GetLength(1);
+               _width = _imageData.GetLength(0);
+           }
+           
            for (int k = 0; k < degre / 90 && degre % 90 == 0; k++)
            {
                Pixel [,] rot = new Pixel[this._imageData.GetLength(1), this._imageData.GetLength(0)];
@@ -489,17 +512,17 @@ namespace Projet_S4
                 
                 rot._height = (int)(Math.Sin(rad) * (double)this._imageData.GetLength(1) + Math.Cos(rad) * (double)this._imageData.GetLength(0));
                 rot._width = (int)(Math.Cos(rad) * (double)this._imageData.GetLength(1) + Math.Sin(rad) * (double)this._imageData.GetLength(0));
-                rot._imageData = new Pixel[this._height, this._width];
+                rot._imageData = new Pixel[rot._height, rot._width];
 
                 // Pour chaque pixel de la NOUVELLE image
-                for (int i = 0; i < this._height; i++)
+                for (int i = 0; i < rot._height; i++)
                 {
-                    for (int j = 0; j < this._width; j++)
+                    for (int j = 0; j < rot._width; j++)
                     {
 
                         // Calcul des coordonnées cartésiennes du point en question
-                        double X = (double)j;
-                        double Y = (double)(rot._height - i) - (double)(Math.Sin(rad) * this._imageData.GetLength(1));
+                        double X = j;
+                        double Y = rot._height - i - Math.Sin(rad) * _imageData.GetLength(1);
 
                         // Mise en coordonnées polaires + Ajout de l'angle de rotation "rad"
                         double r = Math.Sqrt(X * X + Y * Y);
@@ -514,6 +537,7 @@ namespace Projet_S4
 
                         if (I >= 0 && J >= 0 && I < this._imageData.GetLength(0) && J < this._imageData.GetLength(1))
                         {
+                            Console.WriteLine($"({I}, {J}) ==> ({i}, {j})");
                             rot._imageData[i, j] = this._imageData[I, J];
                         }
                         else
@@ -523,8 +547,21 @@ namespace Projet_S4
                     }
                 }
             }
+
+            rot.FillImageWithWhite();
             return rot;
         }
+
+       public void FillImageWithWhite()
+       {
+           for (int i = 0; i < this._imageData.GetLength(0); i++)
+           {
+               for (int j = 0; j < this._imageData.GetLength(1); j++)
+               {
+                   _imageData[i, j] ??= new Pixel(255, 255, 255);
+               }
+           }
+       }
     }
 }
 
