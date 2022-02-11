@@ -5,7 +5,7 @@
         static void Main(string[] args)
         {
           
-            MyImage test = new MyImage("../../../Images/Test.bmp");
+            MyImage test = new MyImage("../../../Images/coco.bmp");
             /*
           byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
           Console.WriteLine("\n Header \n");
@@ -44,7 +44,7 @@
           //MyImage.From_Image_To_File(test,"C:\\Users\\jules\\RiderProjects\\Projet_S4\\Images\\Test.bmp");
           */
 
-            MyImage mirr = test.Retrecir(7);
+            MyImage mirr = test.Rotate90(180);
             mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
         }
     }

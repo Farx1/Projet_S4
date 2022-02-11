@@ -217,7 +217,7 @@ namespace Projet_S4
 
         #endregion
 
-        #endregion
+        #endregion 
 
 
         #region Méthode pour afficher les caractéristiques d'une image
@@ -444,8 +444,96 @@ namespace Projet_S4
         }
        #endregion
        
+       public MyImage Rotate90(int degre)
+       {
+           while (degre < 0)
+           {
+               degre += 360;
+           }
+
+           while (degre >= 360)
+           {
+               degre -= 360;
+           }
+           
+           MyImage rot = new MyImage(this);
+           rot._height = this._width;
+           rot._width = this._height;
+
+           for (int k = 0; k < degre / 90 && degre % 90 == 0; k++)
+           { 
+               rot._imageData = new Pixel[this._width, this._height];
+               for (int i = 0; i < this._imageData.GetLength(0); i++)
+                {
+                    for (int j = 0; j < this._imageData.GetLength(1); j++)
+                    {
+                          rot._imageData[j,(rot._imageData.GetLength(1)-1)-i] = this._imageData[i,j];
+                    }
+                }
+           }
+           
+           return rot;
+       }
        
        
+       public MyImage Rotate(int deg)
+        {
+            MyImage rot = new MyImage(this);
+
+            while (deg < 0) deg += 360;
+            while (deg >= 360) deg -= 360;
+
+            int rotation = deg % 90;
+
+            // On effectue d'abord des rotations de 90° avec une autre méthode plus simple
+            this.Rotate90(deg-rotation);
+
+            // On termine la rotation dans le cas où l'angle n'est pas un multiple de 90°
+            if (rotation > 0)
+            {
+                // Angle de rotation en radians
+                double rad = (double)rotation * Math.PI / 180.0;
+
+                // Calcul des donnés de la nouvelle taille de l'image
+                
+                rot._height = (int)(Math.Sin(rad) * (double)this._imageData.GetLength(1) + Math.Cos(rad) * (double)this._imageData.GetLength(0));
+                rot._width = (int)(Math.Cos(rad) * (double)this._imageData.GetLength(1) + Math.Sin(rad) * (double)this._imageData.GetLength(0));
+                rot._imageData = new Pixel[this._height, this._width];
+
+                // Pour chaque pixel de la NOUVELLE image
+                for (int i = 0; i < this._height; i++)
+                {
+                    for (int j = 0; j < this._width; j++)
+                    {
+
+                        // Calcul des coordonnées cartésiennes du point en question
+                        double X = (double)j;
+                        double Y = (double)(rot._height - i) - (double)(Math.Sin(rad) * this._imageData.GetLength(1));
+
+                        // Mise en coordonnées polaires + Ajout de l'angle de rotation "rad"
+                        double r = Math.Sqrt(X * X + Y * Y);
+                        double ang = Math.Atan2(Y, X) + rad;
+
+                        // Calcul des nouvelles coordonnées avec l'angle modifié
+                        double x = r * Math.Cos(ang);
+                        double y = r * Math.Sin(ang);
+
+                        int I = (int)(this._imageData.GetLength(0) - y);
+                        int J = (int)x;
+
+                        if (I >= 0 && J >= 0 && I < this._imageData.GetLength(0) && J < this._imageData.GetLength(1))
+                        {
+                            rot._imageData[i, j] = this._imageData[I, J];
+                        }
+                        else
+                        {
+                            rot._imageData[i, j] = new Pixel(255, 255, 255);
+                        }
+                    }
+                }
+            }
+            return rot;
+        }
     }
 }
 
