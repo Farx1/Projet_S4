@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Projet_S4
 {
     public class MyImage
@@ -154,7 +156,11 @@ namespace Projet_S4
             set => _width = value;
         }
 
-        public int SizeFile => _height * _width * 3;
+        public int SizeFile
+        {
+            get => _sizeFile;
+            set => _sizeFile=value;
+        }
 
         public int NumberRgb
         {
@@ -169,9 +175,9 @@ namespace Projet_S4
         }
 
         public Pixel[,] ImageData
-        {
+        { 
             get => _imageData;
-            set => _imageData = value ?? throw new ArgumentNullException(nameof(value));
+            set => _imageData = value;
         }
 
 
@@ -244,7 +250,7 @@ namespace Projet_S4
 
         #endregion
 
-
+ 
         #region Méthode qui tranforme une image en fichier binaire
         //Méthode ok après check Debug
         public void From_Image_To_File( string path)
@@ -325,27 +331,9 @@ namespace Projet_S4
                     image.Add(this.ImageData[i, j].Blue);
                 }
 
-                int reste = _width% 4;
-                int k = 0;
-                if (reste == 1)
+                for (int l = 0; l < this._imageData.GetLength(1)%4; l++)
                 {
-                     k =  3;
-                } 
-                if (reste == 2)
-                {
-                     k = 2;
-                }
-                if (reste == 3)
-                {
-                     k =  1;
-                }
-
-                if (_width % 4 != 0)
-                {
-                    for (int l = 0; l <= k; l++)
-                    {
-                        image.Add(Convert.ToByte(0));
-                    }
+                    image.Add(Convert.ToByte(0));
                 }
             }
 
@@ -372,8 +360,7 @@ namespace Projet_S4
                 for (int j = 0; j < _width; j++)
                 {
                     byte moyenne = Convert.ToByte((this.ImageData[i,j].Red+ this.ImageData[i,j].Blue + this.ImageData[i,j].Green)/3) ;
-                    neb._imageData[i, j] =
-                        new Pixel(moyenne, moyenne, moyenne);
+                    neb._imageData[i, j] = new Pixel(moyenne, moyenne, moyenne);
                     k += 3;
                 }
             }
@@ -463,7 +450,7 @@ namespace Projet_S4
         }
        #endregion
        
-       public void Rotate90(int degre)
+       public void Rotate90(int degre)//méthode en Void pour l'utiliser plus facilement
        {
            while (degre < 0) degre += 360;
            while (degre >= 360) degre -= 360;
@@ -506,12 +493,12 @@ namespace Projet_S4
             if (rotation > 0)
             {
                 // Angle de rotation en radians
-                double rad = (double)rotation * Math.PI / 180.0;
+                double rad = (double)rotation * (Math.PI / 180.0);
 
                 // Calcul des donnés de la nouvelle taille de l'image
                 
-                rot._height = (int)Math.Abs((Math.Sin(rad) * (double)this._imageData.GetLength(1)) + Math.Abs(Math.Cos(rad) * (double)this._imageData.GetLength(0)));
-                rot._width = (int)Math.Abs((Math.Cos(rad) * (double)this._imageData.GetLength(1)) + Math.Abs(Math.Sin(rad) * (double)this._imageData.GetLength(0)));
+                rot._height = (int) (Math.Abs(Math.Sin(rad) * (double)this._imageData.GetLength(1)) + Math.Abs(Math.Cos(rad) * (double)this._imageData.GetLength(0)));
+                rot._width = (int) (Math.Abs(Math.Cos(rad) * (double)this._imageData.GetLength(1)) + Math.Abs(Math.Sin(rad) * (double)this._imageData.GetLength(0)));
                 rot._imageData = new Pixel[rot._height, rot._width];
 
                 // Pour chaque pixel de la NOUVELLE image
@@ -522,7 +509,7 @@ namespace Projet_S4
 
                         // Calcul des coordonnées cartésiennes du point en question
                         double X = j;
-                        double Y = (double) rot._height - i - Math.Sin(rad) * _imageData.GetLength(1);
+                        double Y = (double) (rot._height - i) - (double)(Math.Sin(rad) * _imageData.GetLength(1));
 
                         // Mise en coordonnées polaires + Ajout de l'angle de rotation "rad"
                         double r = Math.Sqrt(X * X + Y * Y);
@@ -537,12 +524,8 @@ namespace Projet_S4
 
                         if (I >= 0 && J >= 0 && I < this._imageData.GetLength(0) && J < this._imageData.GetLength(1))
                         {
-                            Console.WriteLine($"({I}, {J}) ==> ({i}, {j})");
+                            //Console.WriteLine($"({I}, {J}) ==> ({i}, {j})");
                             rot._imageData[i, j] = this._imageData[I, J];
-                        }
-                        else
-                        {
-                            rot._imageData[i, j] = new Pixel(255, 255, 255);
                         }
                     }
                 }
@@ -561,6 +544,37 @@ namespace Projet_S4
                    _imageData[i, j] ??= new Pixel(255, 255, 255);
                }
            }
+       }
+
+       public MyImage Négatif()
+       {
+           MyImage neg = new MyImage(this);
+           neg._imageData = new Pixel[this._height, this._width];
+
+           for (int i = 0; i < _imageData.GetLength(0); i++)
+           {
+               for (int j = 0; j < _imageData.GetLength(1); j++)
+               {
+                   neg._imageData[i, j] = new Pixel(Convert.ToByte(255-this._imageData[i,j].Red) , Convert.ToByte(255-this._imageData[i,j].Green), Convert.ToByte(255-this._imageData[i,j].Blue));
+
+               }
+           }
+           return neg;
+       }
+
+       public MyImage Convolution(int[,] matrice)
+       {
+           MyImage passage = new MyImage(this);
+
+           for (int i = 0; i < _imageData.GetLength(0); i++)
+           {
+               for (int j = 0; j < _imageData.GetLength(1); j++)
+               {
+                   int n = 0;
+                   
+               }
+           }
+           
        }
     }
 }

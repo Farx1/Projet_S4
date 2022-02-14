@@ -45,8 +45,19 @@
           */
 
             //MyImage mirr = test.Rotate90(180);
-            var lol = test.Rotate(45);
-                
+            
+            //HEHE
+            /*
+            for (int i = 1; i <= 360; i++)
+            {
+                var lol = test.Rotate(i);//marche pour 47 -75 mais pas pour d'autres valeurs
+                lol.From_Image_To_File(@"../../../Images/Test5.bmp");
+
+            }
+            */
+            
+            var lol = test.Négatif();//marche pour 47 -75 mais pas pour d'autres valeurs
+
             lol.From_Image_To_File(@"../../../Images/Test5.bmp");
         }
     }
