@@ -463,7 +463,7 @@ namespace Projet_S4
            for (int k = 0; k < degre / 90 && degre % 90 == 0; k++)
            {
                Pixel [,] rot = new Pixel[this._imageData.GetLength(1), this._imageData.GetLength(0)];
-
+ 
                for (int i = 0; i < this._imageData.GetLength(0); i++)
                 {
                     for (int j = 0; j < this._imageData.GetLength(1); j++)
@@ -546,7 +546,7 @@ namespace Projet_S4
            }
        }
 
-       public MyImage Négatif()
+       public MyImage Negatif()
        {
            MyImage neg = new MyImage(this);
            neg._imageData = new Pixel[this._height, this._width];
@@ -561,21 +561,58 @@ namespace Projet_S4
            }
            return neg;
        }
-
-       public MyImage Convolution(int[,] matrice)
+        
+       public void Convolution(int[,] kernel, double factor=1)
        {
-           MyImage passage = new MyImage(this);
+           Pixel[,] pix = new Pixel[_height, _width];
+           
+           var midPoint = kernel.GetLength(0) / 2;
 
-           for (int i = 0; i < _imageData.GetLength(0); i++)
+           for (int i = 0; i < _height; i++)
            {
-               for (int j = 0; j < _imageData.GetLength(1); j++)
+               for (int j = 0; j < _width; j++)
                {
-                   int n = 0;
+                   pix[i, j] = new Pixel(0, 0, 0);//creer trois somme de int pour chaque pixel
+                   for (int k = 0; k < kernel.GetLength(0); k++)
+                   {
+                       for (int l = 0 ; l < kernel.GetLength(0); l++)
+                       {
+                           var line = (k-midPoint % pix.GetLength(0) + pix.GetLength(0)) % pix.GetLength(0);
+                           var column = (k-midPoint % pix.GetLength(1) + pix.GetLength(1)) % pix.GetLength(1);
+                           pix[i, j].Red +=(byte) ((int) _imageData[i, j].Red * kernel[k, l]);//changer le premier en somme
+                           pix[i,j].Green +=(byte) ((int)_imageData[i, j].Green * kernel[k, l]);
+                           pix[i,j].Blue +=(byte) ((int)_imageData[i, j].Blue * kernel[k, l]);
+
+
+                       }
+                   }
+
+                   pix[i, j].Red = (byte) ((double) factor * pix[i, j].Red);//passer en int
+                   pix[i, j].Green = (byte) ((double) factor * pix[i, j].Green);
+                   pix[i, j].Blue = (byte) ((double) factor * pix[i, j].Blue);
                    
+                   pix[i, j].Red = (int) (pix[i, j].Red) > 255 ? (byte) 255 : pix[i, j].Red;//passer en byte
+                   pix[i, j].Green = (int) (pix[i, j].Green) > 255 ? (byte) 255: pix[i,j].Green;
+                   pix[i, j].Blue = (int) (pix[i, j].Blue) > 255 ? (byte) 255: pix[i,j].Blue;
+                   
+                   pix[i, j].Red = (int) (pix[i, j].Red) < 0 ? (byte) 0 : pix[i, j].Red;
+                   pix[i, j].Green = (int) (pix[i, j].Green) < 0 ? (byte) 0: pix[i,j].Green;
+                   pix[i, j].Blue = (int) (pix[i, j].Blue) < 0? (byte) 0: pix[i,j].Blue;
+
                }
            }
-           
+
+           _imageData = pix;
+
        }
+
+       
+       
+       
+
+       
+       
+       
     }
 }
 
