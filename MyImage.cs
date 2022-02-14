@@ -336,17 +336,18 @@ namespace Projet_S4
                     image.Add(Convert.ToByte(0));
                 }
             }
-
+             var output = header.Concat(headerInfo).Concat(image); //fusionne les 3 listes
+             File.WriteAllBytes(path, output.ToArray());
+             
             #endregion
             
-            var output = header.Concat(headerInfo).Concat(image); //fusionne les 3 listes
-            File.WriteAllBytes(path, output.ToArray());
+           
         }
 
         #endregion
 
 
-        #region Méthode Couleur --> Noir&Blanc
+        #region Méthode Couleur --> Noir&Blanc/Inversion
         public MyImage NuancesGris()//Revérifier si le Offset a une incidence sur la construction de la nouvelle image (normalement non)
         {
             MyImage neb = new MyImage(this);
@@ -367,7 +368,22 @@ namespace Projet_S4
             return neb;
         }
         
+        public MyImage Negatif()
+               {
+                   MyImage neg = new MyImage(this);
+                   neg._imageData = new Pixel[this._height, this._width];
 
+                   for (int i = 0; i < _imageData.GetLength(0); i++)
+                   {
+                       for (int j = 0; j < _imageData.GetLength(1); j++)
+                       {
+                           neg._imageData[i, j] = new Pixel(Convert.ToByte(255-this._imageData[i,j].Red) , Convert.ToByte(255-this._imageData[i,j].Green), Convert.ToByte(255-this._imageData[i,j].Blue));
+
+                       }
+                   }
+                   return neg;
+               }
+        
         #endregion
 
         
@@ -420,60 +436,95 @@ namespace Projet_S4
 
         
         #region Méthodes mirroir(Horizontal/Vertical)
-        public MyImage MirroirHorizontal()
+        public void MirroirHorizontal()
         {
-            MyImage mir = new MyImage(this);
-            mir._imageData = new Pixel[this._height, this._width];
-            for (int i = 0; i < mir._imageData.GetLength(0); i++)
+            Pixel[,] mirh = new Pixel [_height, _width];
+            for (int i = 0; i < this._imageData.GetLength(0); i++)
             {
-                for (int j = 0; j < mir._imageData.GetLength(1); j++)
+                for (int j = 0; j < this._imageData.GetLength(1); j++)
                 {
-                    mir._imageData[i, j] = this._imageData[i,this._imageData.GetLength(1)-1- j];
+                    mirh[i, j] = this._imageData[i,this._imageData.GetLength(1)-1- j];
                 }
             }
-            return mir;
+
+            _imageData = mirh;
         }
-        
-        
-        public MyImage MirroirVertical()
+        public void MirroirVertical()
         {
-            MyImage mir = new MyImage(this);
-            mir._imageData = new Pixel[this._height, this._width];
-            for (int i = 0; i < mir._imageData.GetLength(0); i++)
+            Pixel[,] mirv = new Pixel [_height, _width];
+            for (int i = 0; i < this._imageData.GetLength(0); i++)
             {
-                for (int j = 0; j < mir._imageData.GetLength(1); j++)
+                for (int j = 0; j < this._imageData.GetLength(1); j++)
                 {
-                    mir._imageData[i, j] = this._imageData[this._imageData.GetLength(0)-1- i,j];
+                    mirv[i, j] = this._imageData[this._imageData.GetLength(0)-1- i,j];
                 }
             }
-            return mir;
+
+            _imageData = mirv;
         }
-       #endregion
+        #endregion
+        
        
-       public void Rotate90(int degre)//méthode en Void pour l'utiliser plus facilement
+        #region Méthodes pour la rotation d'une Image
+       public void Rotate90(int degre)
        {
+           //MyImage rot90 = new MyImage(this);
+           //MyImage resul = new MyImage(this);
+           
            while (degre < 0) degre += 360;
            while (degre >= 360) degre -= 360;
+
            if (degre % 180 != 0)
            {
-               _height = _imageData.GetLength(1);
-               _width = _imageData.GetLength(0);
-           }
-           
-           for (int k = 0; k < degre / 90 && degre % 90 == 0; k++)
-           {
                Pixel [,] rot = new Pixel[this._imageData.GetLength(1), this._imageData.GetLength(0)];
- 
-               for (int i = 0; i < this._imageData.GetLength(0); i++)
-                {
-                    for (int j = 0; j < this._imageData.GetLength(1); j++)
-                    {
-                          rot[j,this._imageData.GetLength(0)-1-i] = this._imageData[i,j];
-                    }
-                }
-                this._imageData = rot;
+               _height = this._imageData.GetLength(1); 
+               _width = this._imageData.GetLength(0);
+               int k = degre / 90;
+               if (k < 2)
+               {
+                   for (int i = 0; i < this._imageData.GetLength(0); i++)
+                   {
+                       for (int j = 0; j < this._imageData.GetLength(1); j++)
+                       {
+                           rot[j, this._imageData.GetLength(0) - 1 - i] = this._imageData[i, j];
+                       }
+                   }
 
+                   _imageData = rot;
+               }
+               else
+               {
+                   this.Rotate90(90);
+                   this.MirroirVertical();
+                   this.MirroirHorizontal();
+                   _imageData = this._imageData;
+               }
            }
+           else
+           {
+               Pixel[,] rot = new Pixel[this._imageData.GetLength(0), this._imageData.GetLength(1)];
+
+               _height = this._imageData.GetLength(0);
+               _width = this._imageData.GetLength(1);
+               int k = degre / 180;
+               if (k != 1)
+               {
+                   _imageData = this._imageData;
+               }
+               else
+               {
+                   for (int i = 0; i < this._imageData.GetLength(0); i++)
+                   {
+                       for (int j = 0; j < this._imageData.GetLength(1); j++)
+                       {
+                           rot[i, j] = this._imageData[this._imageData.GetLength(0) - 1 - i, this._imageData.GetLength(1) - 1 - j];
+                       }
+                   }
+
+                   _imageData = rot;
+               }
+           }
+
        }
        
        
@@ -545,22 +596,11 @@ namespace Projet_S4
                }
            }
        }
-
-       public MyImage Negatif()
-       {
-           MyImage neg = new MyImage(this);
-           neg._imageData = new Pixel[this._height, this._width];
-
-           for (int i = 0; i < _imageData.GetLength(0); i++)
-           {
-               for (int j = 0; j < _imageData.GetLength(1); j++)
-               {
-                   neg._imageData[i, j] = new Pixel(Convert.ToByte(255-this._imageData[i,j].Red) , Convert.ToByte(255-this._imageData[i,j].Green), Convert.ToByte(255-this._imageData[i,j].Blue));
-
-               }
-           }
-           return neg;
-       }
+       
+       
+        #endregion
+        
+       
         
        public void Convolution(int[,] kernel, double factor=1)
        {

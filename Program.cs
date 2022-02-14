@@ -55,12 +55,15 @@
 
             }
             */
-            var lol = test;
+
+            MyImage mirr = test;
+            
+            //var lol = test;
 
             //var lol = test.Negatif();//marche pour 47 -75 mais pas pour d'autres valeurs
-            lol.Convolution(Kernel.Flou);
+            //lol.Convolution(Kernel.Flou);
 
-            lol.From_Image_To_File(@"../../../Images/Test5.bmp");
+            mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
         }
     }
 }
