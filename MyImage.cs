@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+// ReSharper disable All
 
 namespace Projet_S4
 {
@@ -8,7 +8,7 @@ namespace Projet_S4
 
         #region Attributs
 
-        private string _typeImage;
+        private string _typeImage="BMP";
         private int _height;
         private int _width;
         private int _sizeFile;
@@ -53,7 +53,6 @@ namespace Projet_S4
         /// <summary>
         /// Constructeur prenant en entrée un fichier
         /// </summary>
-        /// <param name="filename"> Un fichier.bmp quelconque que l'on ajoutera pour être lu </param>
 
         #region Deuxième constructeur
 
@@ -61,10 +60,10 @@ namespace Projet_S4
         {
             byte[] myfile = File.ReadAllBytes(path);
             
-            if (myfile[0] == 66 && myfile[1] == 77)
-            {
-                this._typeImage = "BMP";
-            }
+            //if (myfile[0] == 66 && myfile[1] == 77)
+            //{
+                //this._typeImage ---> Initialisé directement dans le constructeur puique BMP ne change pasa
+            //}
 
             byte[] tabLargeur = new byte[] {myfile[18], myfile[19], myfile[20], myfile[21]};
             this._width = Convertir_Endian_To_Int(tabLargeur);
@@ -495,7 +494,6 @@ namespace Projet_S4
                    this.Rotate90(90);
                    this.MirroirVertical();
                    this.MirroirHorizontal();
-                   _imageData = this._imageData;
                }
            }
            else
@@ -505,11 +503,8 @@ namespace Projet_S4
                _height = this._imageData.GetLength(0);
                _width = this._imageData.GetLength(1);
                int k = degre / 180;
-               if (k != 1)
-               {
-                   _imageData = this._imageData;
-               }
-               else
+              
+               if(k==1)
                {
                    for (int i = 0; i < this._imageData.GetLength(0); i++)
                    {
@@ -599,7 +594,7 @@ namespace Projet_S4
         #endregion
         
        
-        
+      #region Matrice de Convolution  
        public void Convolution(int[,] kernel, double factor=1.000)
        {
            Pixel[,] pix = new Pixel[_height, _width];
@@ -611,9 +606,9 @@ namespace Projet_S4
                for (int j = 0; j < _width; j++)
                {
                    pix[i, j] = new Pixel(0, 0, 0);//creer trois somme de int pour chaque pixel
-                   int Cr = 0;
-                   int Cg = 0;
-                   int Cb = 0;
+                   int cr = 0;
+                   int cg = 0;
+                   int cb = 0;
                    
                    for (int k = 0; k < kernel.GetLength(0); k++)
                    {
@@ -622,23 +617,23 @@ namespace Projet_S4
                            var line = (i + (k - midPoint) + _imageData.GetLength(0)) % _imageData.GetLength(0);
                            var col = (j + (l - midPoint) + _imageData.GetLength(1)) % _imageData.GetLength(1);
                            
-                           Cr +=(byte) ((int)_imageData[line, col].Red * kernel[k, l]);//changer le premier en somme
-                           Cg +=(byte) ((int)_imageData[line, col].Green * kernel[k, l]);
-                           Cb +=(byte) ((int)_imageData[line, col].Blue * kernel[k, l]);
+                           cr +=(byte) ((int)_imageData[line, col].Red * kernel[k, l]);//changer le premier en somme
+                           cg +=(byte) ((int)_imageData[line, col].Green * kernel[k, l]);
+                           cb +=(byte) ((int)_imageData[line, col].Blue * kernel[k, l]);
 
 
                        }
                    }
 
-                   Cr = (int) Math.Abs((double) factor * Cr);//passer en int
-                   Cg = (int) Math.Abs((double) factor * Cg);
-                   Cb = (int) Math.Abs((double) factor * Cb);
+                   cr = (int) Math.Abs((double) factor * cr);//passer en int
+                   cg = (int) Math.Abs((double) factor * cg);
+                   cb = (int) Math.Abs((double) factor * cb);
                    
-                   Cr = (byte) (Cr > 255 ? (byte) 255: Cr);//passer en byte
-                   Cg = (byte) (Cg > 255 ? (byte) 255: Cg);
-                   Cb = (byte) (Cb > 255 ? (byte) 255: Cb);
+                   cr = (byte) (cr > 255 ? (byte) 255: cr);//passer en byte
+                   cg = (byte) (cg > 255 ? (byte) 255: cg);
+                   cb = (byte) (cb > 255 ? (byte) 255: cb);
 
-                   pix[i, j] = new Pixel(Convert.ToByte(Cr), Convert.ToByte(Cg), Convert.ToByte(Cb));
+                   pix[i, j] = new Pixel(Convert.ToByte(cr), Convert.ToByte(cg), Convert.ToByte(cb));
                }
            }
 
@@ -646,7 +641,7 @@ namespace Projet_S4
 
        }
 
-       public void ConvolutionSobel(int[,] sobel1, int[,] sobel2 ,double factor=1.000)
+       public void DetectionSobel(int[,] sobel1, int[,] sobel2 ,double factor=1.000)
        {
            Pixel[,] pix = new Pixel[_height, _width];
            
@@ -661,13 +656,13 @@ namespace Projet_S4
                for (int j = 0; j < _width; j++)
                {
                    pix[i, j] = new Pixel(0, 0, 0);//creer trois somme de int pour chaque pixel
-                   int Cr1 = 0;
-                   int Cg1 = 0;
-                   int Cb1 = 0;
-                   
-                   int Cr2 = 0;
-                   int Cg2 = 0;
-                   int Cb2 = 0;
+                   int cr1 = 0;
+                   int cg1 = 0;
+                   int cb1 = 0;
+
+                   int cr2 = 0;
+                   int cg2 = 0;
+                   int cb2 = 0;
                    
                    for (int k = 0; k < sobel1.GetLength(0); k++)
                    {
@@ -676,29 +671,29 @@ namespace Projet_S4
                            var line = (i + (k - midPoint) + _imageData.GetLength(0)) % _imageData.GetLength(0);
                            var col = (j + (l - midPoint) + _imageData.GetLength(1)) % _imageData.GetLength(1);
                            
-                           Cr1 += ((int)_imageData[line, col].Red * sobel1[k, l]);//changer le premier en somme
-                           Cg1 +=((int)_imageData[line, col].Green * sobel1[k, l]);
-                           Cb1 +=((int)_imageData[line, col].Blue * sobel1[k, l]);
+                           cr1 += ((int)_imageData[line, col].Red * sobel1[k, l]);//changer le premier en somme
+                           cg1 +=((int)_imageData[line, col].Green * sobel1[k, l]);
+                           cb1 +=((int)_imageData[line, col].Blue * sobel1[k, l]);
                            
-                           Cr2 +=((int)_imageData[line, col].Red * sobel2[k, l]);//changer le premier en somme
-                           Cg2 += ((int)_imageData[line, col].Green * sobel2[k, l]);
-                           Cb2 += ((int)_imageData[line, col].Blue * sobel2[k, l]);
+                           cr2 +=((int)_imageData[line, col].Red * sobel2[k, l]);//changer le premier en somme
+                           cg2 += ((int)_imageData[line, col].Green * sobel2[k, l]);
+                           cb2 += ((int)_imageData[line, col].Blue * sobel2[k, l]);
 
 
                        }
                    }
 
-                   Cr1 = (int) Math.Abs((double) factor * Cr1);
-                   Cg1 = (int) Math.Abs((double) factor * Cg1);
-                   Cb1 = (int) Math.Abs((double) factor * Cb1);
+                   cr1 = (int) Math.Abs((double) factor * cr1);
+                   cg1 = (int) Math.Abs((double) factor * cg1);
+                   cb1 = (int) Math.Abs((double) factor * cb1);
                    
-                   Cr2 = (int) Math.Abs((double) factor * Cr2);
-                   Cg2 = (int) Math.Abs((double) factor * Cg2);
-                   Cb2 = (int) Math.Abs((double) factor * Cb2);
+                   cr2 = (int) Math.Abs((double) factor * cr2);
+                   cg2 = (int) Math.Abs((double) factor * cg2);
+                   cb2 = (int) Math.Abs((double) factor * cb2);
 
-                   var redValue = Math.Sqrt(Cr1 * Cr1 + Cr2 * Cr2);
-                   var greenValue = Math.Sqrt(Cg1 * Cg1 + Cg2 * Cg2);
-                   var blueValue = Math.Sqrt(Cb1 * Cb1 + Cb2 * Cb2);
+                   var redValue = Math.Sqrt(cr1 * cr1 + cr2 * cr2);
+                   var greenValue = Math.Sqrt(cg1 * cg1 + cg2 * cg2);
+                   var blueValue = Math.Sqrt(cb1 * cb1 + cb2 * cb2);
 
 
                    pix[i, j] = new Pixel(Convert.ToByte(redValue > 255 ? 255 : redValue), Convert.ToByte(greenValue > 255 ? 255 : greenValue), Convert.ToByte(blueValue > 255 ? 255 : blueValue));
@@ -707,9 +702,9 @@ namespace Projet_S4
 
            this._imageData = pix;
 
-       }
+       }//Effectue la détection de contour plus efficacement
        
-       
+       #endregion
 
        
        

@@ -1,6 +1,6 @@
 namespace Projet_S4;
 
-public static class Kernel
+public static class Matrice
 {
     public static int[,] Flou
     {
