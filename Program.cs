@@ -48,17 +48,22 @@
             
             //HEHE
             /*
-            for (int i = 1; i <= 360; i++)
+            for (int i = 1; i <= 90; i++)
             {
                 var lol = test.Rotate(i);//marche pour 47 -75 mais pas pour d'autres valeurs
                 lol.From_Image_To_File(@"../../../Images/Test5.bmp");
 
             }
             */
-            
-            var lol = test.Négatif();//marche pour 47 -75 mais pas pour d'autres valeurs
 
-            lol.From_Image_To_File(@"../../../Images/Test5.bmp");
+            MyImage mirr = test;
+            
+            //var lol = test;
+
+            //var lol = test.Negatif();//marche pour 47 -75 mais pas pour d'autres valeurs
+            //lol.Convolution(Kernel.Flou);
+
+            mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
         }
     }
 }
