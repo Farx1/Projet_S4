@@ -386,47 +386,52 @@ namespace Projet_S4
         
         #region Méthode pour agrandir et retrecir
         //UPDATE: il faut qu'on complète la fonction, pourvoir agrandir de 1,3 est possible si on fait agrandir:x13 et rétécir:x10 par exemple
-        public MyImage Agrandir(int facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
+        public void Agrandir(double facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
         {
-            MyImage nvlImage = new MyImage(this);
-            nvlImage._height *= facteur;
-            nvlImage._width *= facteur;
-            nvlImage._imageData = new Pixel[this._imageData.GetLength(0) * facteur, this._imageData.GetLength(1) * facteur];
-            for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
+
+            
+
+            _height = (int) (_height * facteur);
+            _width = (int) (_width * facteur);
+            
+            Pixel[,] grand = new Pixel[_height,_width];
+            
+            for (int i = 0; i < _height; i++)
             {
-                for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
+                for (int j = 0; j < _width; j++)
                 {
-                    nvlImage._imageData[i, j] = new Pixel (this._imageData[i / facteur, j / facteur]);
+                    grand[i, j] = new Pixel (_imageData[(int)(i / facteur),(int) (j / facteur)]);
                 }
             }
-            
-            return nvlImage;
+            _imageData = grand;
+
         }
-        
-        public MyImage Retrecir(int facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
+
+        public void Retrecir(double facteur) //Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
         {
-            MyImage nvlImage = new MyImage(this);
-            Convert.ToInt32(nvlImage._height /= facteur);
-            Convert.ToInt32(nvlImage._width /= facteur);
-            nvlImage._imageData = new Pixel[(_imageData.GetLength(0) )/ facteur,(_imageData.GetLength(1) )/ facteur];
-            for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
+
+            _height = (int) (_height / facteur);
+            _width = (int) (_width / facteur);
+            Pixel[,] petit = new Pixel[_height, _width];
+            for (int i = 0; i < _height; i++)
             {
-                for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
+                for (int j = 0; j < _width; j++)
                 {
                     try
                     {
-                        nvlImage._imageData[i, j] = new Pixel(this._imageData[i * facteur, j * facteur]);// problème est là
+                        petit[i, j] =
+                            new Pixel(this._imageData[(int) (i * facteur), (int) (j * facteur)]); // problème est là
 
                     }
                     catch
                     {
-                        nvlImage._imageData[i, j] = new Pixel(this._imageData[i * facteur, j * facteur]);
+                        petit[i, j] = new Pixel(this._imageData[(int) (i * facteur), (int) (j * facteur)]);
 
                     }
                 }
             }
 
-            return nvlImage;
+            _imageData = petit;
         }
 
         #endregion
@@ -594,7 +599,7 @@ namespace Projet_S4
         #endregion
         
        
-      #region Matrice de Convolution  
+        #region Matrice de Convolution  
        public void Convolution(int[,] kernel, double factor=1.000)
        {
            Pixel[,] pix = new Pixel[_height, _width];
