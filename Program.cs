@@ -5,7 +5,7 @@
         static void Main(string[] args)
         {
           
-            MyImage test = new MyImage("../../../Images/lac.bmp");
+            MyImage test = new MyImage("../../../Images/coco.bmp");
             /*
           byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
           Console.WriteLine("\n Header \n");
@@ -57,11 +57,11 @@
             */
 
             MyImage mirr = test;
-            
+            mirr.NuancesGris();
             //var lol = test;
 
             //var lol = test.Negatif();//marche pour 47 -75 mais pas pour d'autres valeurs
-            //lol.Convolution(Kernel.Flou);
+            mirr.ConvolutionSobel(Kernel.Sobel1,Kernel.Sobel2);//Flou(facteur= 0.11111)--Contour--Renforcement--Repoussage
 
             mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
         }
