@@ -525,26 +525,25 @@ namespace Projet_S4
 
        }
        
-       
        public MyImage Rotate(int deg)
         {
             MyImage rot = new MyImage(this);
-
+            
+            //On remet l'angle entre 0 et 360°
             while (deg < 0) deg += 360;
             while (deg >= 360) deg -= 360;
 
             int rotation = deg % 90;
+            
+            //On fait plusieurs roatation majeures
+            Rotate90(deg-rotation);
 
-            // On effectue d'abord des rotations de 90° avec une autre méthode plus simple
-            this.Rotate90(deg-rotation);
-
-            // On termine la rotation dans le cas où l'angle n'est pas un multiple de 90°
             if (rotation > 0)
             {
-                // Angle de rotation en radians
+                // On met l'angle de rotation en radians
                 double rad = (double)rotation * (Math.PI / 180.0);
 
-                // Calcul des donnés de la nouvelle taille de l'image
+                // On calcul les donnés de la nouvelle taille de l'image
                 
                 rot._height = (int) (Math.Abs(Math.Sin(rad) * (double)this._imageData.GetLength(1)) + Math.Abs(Math.Cos(rad) * (double)this._imageData.GetLength(0)));
                 rot._width = (int) (Math.Abs(Math.Cos(rad) * (double)this._imageData.GetLength(1)) + Math.Abs(Math.Sin(rad) * (double)this._imageData.GetLength(0)));
@@ -556,15 +555,15 @@ namespace Projet_S4
                     for (int j = 0; j < rot._width; j++)
                     {
 
-                        // Calcul des coordonnées cartésiennes du point en question
+                        // On calcul les coordonnées cartésiennes du point en question
                         double X = j;
                         double Y = (double) (rot._height - i) - (double)(Math.Sin(rad) * _imageData.GetLength(1));
 
-                        // Mise en coordonnées polaires + Ajout de l'angle de rotation "rad"
+                        // On les transforme en coordonnées polaires et on ajoute l'angle de rotation "rad"
                         double r = Math.Sqrt(X * X + Y * Y);
                         double ang = Math.Atan2(Y, X) + rad;
 
-                        // Calcul des nouvelles coordonnées avec l'angle modifié
+                        // On calcul les nouvelles coordonnées avec l'angle modifié
                         double x = r * Math.Cos(ang);
                         double y = r * Math.Sin(ang);
 
@@ -573,13 +572,13 @@ namespace Projet_S4
 
                         if (I >= 0 && J >= 0 && I < this._imageData.GetLength(0) && J < this._imageData.GetLength(1))
                         {
-                            //Console.WriteLine($"({I}, {J}) ==> ({i}, {j})");
+                            //Console.WriteLine($"({I}, {J}) ==> ({i}, {j})");//Pour voir ancienne/nouvelle coordonées
                             rot._imageData[i, j] = this._imageData[I, J];
                         }
                     }
                 }
             }
-
+            //On complète l'image avec des Pixels blancs
             rot.FillImageWithWhite();
             return rot;
         }
@@ -710,10 +709,253 @@ namespace Projet_S4
        }//Effectue la détection de contour plus efficacement
        
        #endregion
+       
 
+        #region Dessiner une fractale du(2 versions de la fractale de Mandelbrot)
+       public void DrawMandelbrotA() //fractal de mandelbrot dessiné de manière automatique
+       {
+
+           int lines = _imageData.GetLength(0);
+           int column = _imageData.GetLength(1);
+           
+           double xmin = -2;//bornes du repère
+           double xmax = 0.5;
+           double ymin = -1.25;
+           double ymax = 1.25;
+           
+           int count = 200;//à faire avec chemin et 20000 pour count en avance++ c'est le
+           
+           for (int i = 0; i < lines; i++)
+           {
+               for (int j = 0; j < column; j++)
+               {
+
+                   double zr = 0;
+                   double zi = 0;
+                   double zs = 0;
+                   double zrstocked = 0;
+                   
+                   double cx = j * ((Math.Abs(ymax) + Math.Abs(ymin)) / column);//association des coordonnées du plan (i,j) à des coordonnées (cx,cy) dans le repère (xmin,xmax) et (ymin,ymax)
+                   double cy = i * ((Math.Abs(xmax) + Math.Abs(xmin)) / lines);
+
+                   for (int k = 0; k < count; k++)
+                   {
+                       zrstocked = zr;
+                       zr = zr * zr - zi * zi + cx + 1.5 * ymin;
+                       zi = 2 * zi * zrstocked +  cy + 0.6 * xmin;
+                       zs = zr * zr + zi * zi;//on peut mettre ça sous racine pour plus de cercles et de lignes
+                       
+                       if (zs > 25)
+                       {
+                           {
+                               goto recuperer;// on va au sortir de la boucle pour itérer en gardant l'ancienne valeur de zs ( équivalent d'une fenêtre graphique tournant à l'infinie mais certe fixe)
+                           }
+                       }
+                   }
+
+                   recuperer:
+                       { 
+                           if ((zs) < 4.0)//on teste si le carré de la distance est inférieure à 4 on gagne en performance
+                           {
+                               _imageData[i, j].Red = (byte) (Convert.ToByte((byte)(9000*(zs)%255))); 
+                               _imageData[i, j].Green = 0;
+                               _imageData[i, j].Blue = 0;
+                           }
+                           else
+                           {
+                               zs = ((zs) % 255);
+                               _imageData[i, j].Red = 0;
+                               _imageData[i, j].Green = 0;
+                               _imageData[i, j].Blue = Convert.ToByte(zs);
+
+                           }
+                               
+                       }
+                   
+                   
+               }
+           }
+
+       }
+
+       public void DrawMandelbrotB() //on peut s'amuser un peu avec les valeurs des Pixels rouge et bleus pour dessiner d'autre sorte de forme
+       {
+
+           int lines = _imageData.GetLength(0);
+           int column = _imageData.GetLength(1);
+
+           double xmin = -2.1;
+           double xmax = 0.6;
+           double ymin = -1.2;
+           double ymax = 1.2;
+           
+           int count = 200000;
+           
+           for (int i = 0; i < lines; i++)
+           {
+               for (int j = 0; j < column; j++)
+               {
+
+                   double zr = 0;
+                   double zi = 0;
+                   double zs = 0;
+                   double zrstocked = 0;
+                   
+                   double cx = j * ((Math.Abs(ymax) + Math.Abs(ymin)) / column);
+                   double cy = i * ((Math.Abs(xmax) + Math.Abs(xmin)) / lines);
+
+                   for (int k = 0; k < count; k++)
+                   {
+                       zrstocked = zr;
+                       zr = zr * zr - zi * zi + cx + 1.5 * ymin;
+                       zi = 2 * zi * zrstocked +  cy + 0.6 * xmin;
+                       zs = zr * zr + zi * zi;
+                       
+                       if (zs > 25)
+                       {
+                           {
+                               goto recuperer;
+                           }
+                       }
+                   }
+
+                   recuperer:
+                       { 
+                           if ((zs) < 4.0)
+                           {
+                               _imageData[i, j].Red = (byte) (Convert.ToByte((byte)(10000*(zs-zr)%255))); 
+                               _imageData[i, j].Green = 0;
+                               _imageData[i, j].Blue = 0;
+                           }
+                           else
+                           {
+                               zs = ((zr) % 255);
+                               _imageData[i, j].Red = 0;
+                               _imageData[i, j].Green = 0;
+                               _imageData[i, j].Blue = Convert.ToByte((byte)zs);
+                               //_imageData[i, j].Blue = Convert.ToByte((byte)(100*zs-zr)%255);-- à tester aussi
+                           }
+                               
+                       }
+                   
+                   
+               }
+           }
+
+       }
+
+       #endregion
        
        
-       
+       /*#region Affichage de l'Histogramme d'une Image
+
+       public void DrawHistogram()
+       {
+           Pixel[,] pix = new Pixel[_height, _width];
+           
+           
+           
+           
+           
+           
+
+           
+       }
+       #endregion
+       */
+        public void DrawHistogram() //histogramme des couleurs d'une photo
+        {
+            Pixel[,] pixel1 = new Pixel[_width,_height];
+            
+            int graduationabs = 1;
+            double graduationord = 0.01;
+            for (int i = 0; i < _width; i++)
+            {
+                for (int j = 0; j < _height; j++)
+                {
+                    pixel1[i,j]=new Pixel(255, 255, 255);
+                }
+            }
+            for (int r = 0; r < 256; r++)
+            {
+                int compteurR = 0;
+                for (int k = 0; k < _width; k++)
+                {
+                    for (int l = 0; l < _height; l++)
+                    {
+
+                        if (_imageData[k, l].Red == (byte)r)
+                        {
+                            compteurR++;
+                        }
+
+
+
+                    }
+
+                }
+                
+                for (int i = 0; i < Convert.ToInt32(compteurR * graduationord); i++)
+                {
+                    pixel1[i, Convert.ToInt32(r * graduationabs)].Green =(byte) 0;
+                    pixel1[i, Convert.ToInt32(r * graduationabs)].Blue =(byte) 0;
+
+                }
+            }
+            for (int g = 0; g < 256; g++)
+            {
+                int compteurG = 0;
+                for (int k = 0; k < _width; k++)
+                {
+                    for (int l = 0; l < _height; l++)
+                    {
+
+                        if (_imageData[k, l].Green ==(byte) g)
+                        {
+                            compteurG++;
+                        }
+
+
+
+                    }
+
+                }
+
+                for (int i = 0; i < Convert.ToInt32(compteurG * graduationord); i++)
+                {
+                    pixel1[i, Convert.ToInt32(g * graduationabs)].Red =(byte) 0;
+                    pixel1[i, Convert.ToInt32(g * graduationabs)].Blue =(byte) 0;
+
+                }
+            }
+            for (int b = 0; b < 256; b++)
+            {
+                int compteurB = 0;
+                for (int k = 0; k < _width; k++)
+                {
+                    for (int l = 0; l < _height; l++)
+                    {
+
+                        if (_imageData[k, l].Blue ==(byte) b)
+                        {
+                            compteurB++;
+                        }
+                    }
+
+                }
+
+
+                for (int i = 0; i < Convert.ToInt32(compteurB * graduationord); i++)
+                {
+                    pixel1[i, Convert.ToInt32(b * graduationabs)].Green = (byte) 0;
+                    pixel1[i, Convert.ToInt32(b * graduationabs)].Red = (byte) 0;
+
+                }
+            }
+            _imageData = pixel1;
+
+        }
+
     }
 }
 
