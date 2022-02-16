@@ -388,9 +388,6 @@ namespace Projet_S4
         //UPDATE: il faut qu'on complète la fonction, pourvoir agrandir de 1,3 est possible si on fait agrandir:x13 et rétécir:x10 par exemple
         public void Agrandir(double facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
         {
-
-            
-
             _height = (int) (_height * facteur);
             _width = (int) (_width * facteur);
             
@@ -417,17 +414,8 @@ namespace Projet_S4
             {
                 for (int j = 0; j < _width; j++)
                 {
-                    try
-                    {
-                        petit[i, j] =
-                            new Pixel(this._imageData[(int) (i * facteur), (int) (j * facteur)]); // problème est là
-
-                    }
-                    catch
-                    {
-                        petit[i, j] = new Pixel(this._imageData[(int) (i * facteur), (int) (j * facteur)]);
-
-                    }
+                    
+                    petit[i, j] = new Pixel(this._imageData[(int) (i * facteur), (int) (j * facteur)]); 
                 }
             }
 
@@ -645,7 +633,7 @@ namespace Projet_S4
 
        }
 
-       public void DetectionSobel(int[,] sobel1, int[,] sobel2 ,double factor=1.000)
+       public void DetectionSobel(int[,] sobel1, int[,] sobel2 ,double factor=1.0)
        {
            Pixel[,] pix = new Pixel[_height, _width];
            
@@ -789,7 +777,7 @@ namespace Projet_S4
            double ymin = -1.2;
            double ymax = 1.2;
            
-           int count = 200000;
+           int count = 2000;
            
            for (int i = 0; i < lines; i++)
            {
@@ -832,7 +820,7 @@ namespace Projet_S4
                                zs = ((zr) % 255);
                                _imageData[i, j].Red = 0;
                                _imageData[i, j].Green = 0;
-                               _imageData[i, j].Blue = Convert.ToByte((byte)zs);
+                               _imageData[i, j].Blue = Convert.ToByte((byte)(zs));
                                //_imageData[i, j].Blue = Convert.ToByte((byte)(100*zs-zr)%255);-- à tester aussi
                            }
                                
@@ -863,54 +851,55 @@ namespace Projet_S4
        }
        #endregion
        */
+       
+       
         public void DrawHistogram() //histogramme des couleurs d'une photo
         {
-            Pixel[,] pixel1 = new Pixel[_width,_height];
+            Pixel[,] pix = new Pixel[_height,_width];
             
-            int graduationabs = 1;
-            double graduationord = 0.01;
-            for (int i = 0; i < _width; i++)
+            int coeflargeur = 3;
+            double coefhauteur = 0.1;
+            for (int i = 0; i < _height; i++)
             {
-                for (int j = 0; j < _height; j++)
+                for (int j = 0; j < _width; j++)
                 {
-                    pixel1[i,j]=new Pixel(255, 255, 255);
+                    pix[i,j]=new Pixel(0, 0, 0);
                 }
             }
             for (int r = 0; r < 256; r++)
             {
                 int compteurR = 0;
-                for (int k = 0; k < _width; k++)
+                for (int k = 0; k < _height; k++)
                 {
-                    for (int l = 0; l < _height; l++)
+                    for (int l = 0; l < _width; l++)
                     {
 
-                        if (_imageData[k, l].Red == (byte)r)
+                        if (_imageData[k, l].Red == r)
                         {
                             compteurR++;
                         }
-
-
-
                     }
 
                 }
                 
-                for (int i = 0; i < Convert.ToInt32(compteurR * graduationord); i++)
+                for (int i = 0; i < Convert.ToInt32(compteurR * coefhauteur); i++)
                 {
-                    pixel1[i, Convert.ToInt32(r * graduationabs)].Green =(byte) 0;
-                    pixel1[i, Convert.ToInt32(r * graduationabs)].Blue =(byte) 0;
+                    for (int k = 0; k < 3; k++)
+                    { 
+                        pix[i,Convert.ToInt32(r * coeflargeur)+k].Red = 255;
+                    }
 
                 }
             }
             for (int g = 0; g < 256; g++)
             {
                 int compteurG = 0;
-                for (int k = 0; k < _width; k++)
+                for (int k = 0; k < _height; k++)
                 {
-                    for (int l = 0; l < _height; l++)
+                    for (int l = 0; l < _width; l++)
                     {
 
-                        if (_imageData[k, l].Green ==(byte) g)
+                        if (_imageData[k, l].Green == g)
                         {
                             compteurG++;
                         }
@@ -921,38 +910,47 @@ namespace Projet_S4
 
                 }
 
-                for (int i = 0; i < Convert.ToInt32(compteurG * graduationord); i++)
+                for (int i = 0; i < Convert.ToInt32(compteurG * coefhauteur); i++)
                 {
-                    pixel1[i, Convert.ToInt32(g * graduationabs)].Red =(byte) 0;
-                    pixel1[i, Convert.ToInt32(g * graduationabs)].Blue =(byte) 0;
+                    for (int k = 0; k < 3; k++)
+                    {
+                        pix[i,Convert.ToInt32(g * coeflargeur)+k].Blue = 255;
+                    }
+                    
 
                 }
             }
             for (int b = 0; b < 256; b++)
             {
                 int compteurB = 0;
-                for (int k = 0; k < _width; k++)
+                for (int k = 0; k < _height; k++)
                 {
-                    for (int l = 0; l < _height; l++)
+                    for (int l = 0; l < _width; l++)
                     {
 
-                        if (_imageData[k, l].Blue ==(byte) b)
+                        if (_imageData[k, l].Blue == b)
                         {
                             compteurB++;
                         }
+
+
+
                     }
 
                 }
 
 
-                for (int i = 0; i < Convert.ToInt32(compteurB * graduationord); i++)
+                for (int i = 0; i < Convert.ToInt32(compteurB * coefhauteur); i++)
                 {
-                    pixel1[i, Convert.ToInt32(b * graduationabs)].Green = (byte) 0;
-                    pixel1[i, Convert.ToInt32(b * graduationabs)].Red = (byte) 0;
+                    for (int k = 0; k < 3; k++)
+                    {
+                        pix[i,Convert.ToInt32(b * coeflargeur)+k].Green = 255;
+                    }
+                    
 
                 }
             }
-            _imageData = pixel1;
+            _imageData = pix;
 
         }
 
