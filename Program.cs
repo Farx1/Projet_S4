@@ -5,7 +5,7 @@
         static void Main(string[] args)
         {
           
-            MyImage test = new MyImage("../../../Images/lac.bmp");
+            MyImage test = new MyImage("../../../Images/coco.bmp");
             /*
           byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
           Console.WriteLine("\n Header \n");
@@ -48,22 +48,31 @@
             
             //HEHE
             /*
-            for (int i = 1; i <= 90; i++)
+            for (int i = 0; i <=360; i++)
             {
+                MyImage test = new MyImage("../../../Images/coco.bmp");
                 var lol = test.Rotate(i);//marche pour 47 -75 mais pas pour d'autres valeurs
-                lol.From_Image_To_File(@"../../../Images/Test5.bmp");
-
+                lol.From_Image_To_File($@"../../../Images/Test{i}.bmp");
+                
             }
             */
 
-            MyImage mirr = test;
-            
+            //MyImage mirr = test;
+            //mirr.NuancesGris();
             //var lol = test;
-
+            //MyImage mirr= test.Rotate(5);
             //var lol = test.Negatif();//marche pour 47 -75 mais pas pour d'autres valeurs
-            //lol.Convolution(Kernel.Flou);
+            //mirr.DetectionSobel(Matrice.Sobel1,Matrice.Sobel2);//Flou(facteur= 0.11111)--Contour--Renforcement--Repoussage
+            //mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
+            MyImage mand = test;
+            //mand.DrawMandelbrotA();
+            mand.DrawHistogram();
+            mand.From_Image_To_File(@"../../../Images/Test5.bmp");
 
-            mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
+
+
+
+
         }
     }
 }

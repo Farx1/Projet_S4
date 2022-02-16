@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+// ReSharper disable All
 
 namespace Projet_S4
 {
@@ -8,7 +8,7 @@ namespace Projet_S4
 
         #region Attributs
 
-        private string _typeImage;
+        private string _typeImage="BMP";
         private int _height;
         private int _width;
         private int _sizeFile;
@@ -53,7 +53,6 @@ namespace Projet_S4
         /// <summary>
         /// Constructeur prenant en entrée un fichier
         /// </summary>
-        /// <param name="filename"> Un fichier.bmp quelconque que l'on ajoutera pour être lu </param>
 
         #region Deuxième constructeur
 
@@ -61,10 +60,10 @@ namespace Projet_S4
         {
             byte[] myfile = File.ReadAllBytes(path);
             
-            if (myfile[0] == 66 && myfile[1] == 77)
-            {
-                this._typeImage = "BMP";
-            }
+            //if (myfile[0] == 66 && myfile[1] == 77)
+            //{
+                //this._typeImage ---> Initialisé directement dans le constructeur puique BMP ne change pasa
+            //}
 
             byte[] tabLargeur = new byte[] {myfile[18], myfile[19], myfile[20], myfile[21]};
             this._width = Convertir_Endian_To_Int(tabLargeur);
@@ -348,12 +347,9 @@ namespace Projet_S4
 
 
         #region Méthode Couleur --> Noir&Blanc/Inversion
-        public MyImage NuancesGris()//Revérifier si le Offset a une incidence sur la construction de la nouvelle image (normalement non)
+        public void NuancesGris()//Revérifier si le Offset a une incidence sur la construction de la nouvelle image (normalement non)
         {
-            MyImage neb = new MyImage(this);
-
-            
-            neb._imageData = new Pixel[this._height, this._width];
+            Pixel [,] neb = new Pixel[this._height, this._width];
             
             int k = _offset;
             for (int i = 0; i < _height; i++)
@@ -361,75 +357,81 @@ namespace Projet_S4
                 for (int j = 0; j < _width; j++)
                 {
                     byte moyenne = Convert.ToByte((this.ImageData[i,j].Red+ this.ImageData[i,j].Blue + this.ImageData[i,j].Green)/3) ;
-                    neb._imageData[i, j] = new Pixel(moyenne, moyenne, moyenne);
+                    neb[i, j] = new Pixel(moyenne, moyenne, moyenne);
                     k += 3;
                 }
             }
-            return neb;
+
+            _imageData = neb;
         }
         
-        public MyImage Negatif()
-               {
-                   MyImage neg = new MyImage(this);
-                   neg._imageData = new Pixel[this._height, this._width];
+        public void Negatif()
+        {
+            Pixel [,] neg = new Pixel[this._height, this._width];
 
-                   for (int i = 0; i < _imageData.GetLength(0); i++)
-                   {
-                       for (int j = 0; j < _imageData.GetLength(1); j++)
-                       {
-                           neg._imageData[i, j] = new Pixel(Convert.ToByte(255-this._imageData[i,j].Red) , Convert.ToByte(255-this._imageData[i,j].Green), Convert.ToByte(255-this._imageData[i,j].Blue));
+            for (int i = 0; i < this._imageData.GetLength(0); i++)
+            {
+                for (int j = 0; j < this._imageData.GetLength(1); j++)
+                {
+                    neg[i, j] = new Pixel(Convert.ToByte(255-this._imageData[i,j].Red) , Convert.ToByte(255-this._imageData[i,j].Green), Convert.ToByte(255-this._imageData[i,j].Blue));
 
-                       }
-                   }
-                   return neg;
-               }
+                }
+            }
+
+            _imageData = neg;
+        }
         
         #endregion
 
         
         #region Méthode pour agrandir et retrecir
         //UPDATE: il faut qu'on complète la fonction, pourvoir agrandir de 1,3 est possible si on fait agrandir:x13 et rétécir:x10 par exemple
-        public MyImage Agrandir(int facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
+        public void Agrandir(double facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
         {
-            MyImage nvlImage = new MyImage(this);
-            nvlImage._height *= facteur;
-            nvlImage._width *= facteur;
-            nvlImage._imageData = new Pixel[this._imageData.GetLength(0) * facteur, this._imageData.GetLength(1) * facteur];
-            for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
+
+            
+
+            _height = (int) (_height * facteur);
+            _width = (int) (_width * facteur);
+            
+            Pixel[,] grand = new Pixel[_height,_width];
+            
+            for (int i = 0; i < _height; i++)
             {
-                for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
+                for (int j = 0; j < _width; j++)
                 {
-                    nvlImage._imageData[i, j] = new Pixel (this._imageData[i / facteur, j / facteur]);
+                    grand[i, j] = new Pixel (_imageData[(int)(i / facteur),(int) (j / facteur)]);
                 }
             }
-            
-            return nvlImage;
+            _imageData = grand;
+
         }
-        
-        public MyImage Retrecir(int facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
+
+        public void Retrecir(double facteur) //Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
         {
-            MyImage nvlImage = new MyImage(this);
-            Convert.ToInt32(nvlImage._height /= facteur);
-            Convert.ToInt32(nvlImage._width /= facteur);
-            nvlImage._imageData = new Pixel[(_imageData.GetLength(0) )/ facteur,(_imageData.GetLength(1) )/ facteur];
-            for (int i = 0; i < nvlImage._imageData.GetLength(0); i++)
+
+            _height = (int) (_height / facteur);
+            _width = (int) (_width / facteur);
+            Pixel[,] petit = new Pixel[_height, _width];
+            for (int i = 0; i < _height; i++)
             {
-                for (int j = 0; j < nvlImage._imageData.GetLength(1); j++)
+                for (int j = 0; j < _width; j++)
                 {
                     try
                     {
-                        nvlImage._imageData[i, j] = new Pixel(this._imageData[i * facteur, j * facteur]);// problème est là
+                        petit[i, j] =
+                            new Pixel(this._imageData[(int) (i * facteur), (int) (j * facteur)]); // problème est là
 
                     }
                     catch
                     {
-                        nvlImage._imageData[i, j] = new Pixel(this._imageData[i * facteur, j * facteur]);
+                        petit[i, j] = new Pixel(this._imageData[(int) (i * facteur), (int) (j * facteur)]);
 
                     }
                 }
             }
 
-            return nvlImage;
+            _imageData = petit;
         }
 
         #endregion
@@ -497,7 +499,6 @@ namespace Projet_S4
                    this.Rotate90(90);
                    this.MirroirVertical();
                    this.MirroirHorizontal();
-                   _imageData = this._imageData;
                }
            }
            else
@@ -507,11 +508,8 @@ namespace Projet_S4
                _height = this._imageData.GetLength(0);
                _width = this._imageData.GetLength(1);
                int k = degre / 180;
-               if (k != 1)
-               {
-                   _imageData = this._imageData;
-               }
-               else
+              
+               if(k==1)
                {
                    for (int i = 0; i < this._imageData.GetLength(0); i++)
                    {
@@ -527,26 +525,25 @@ namespace Projet_S4
 
        }
        
-       
        public MyImage Rotate(int deg)
         {
             MyImage rot = new MyImage(this);
-
+            
+            //On remet l'angle entre 0 et 360°
             while (deg < 0) deg += 360;
             while (deg >= 360) deg -= 360;
 
             int rotation = deg % 90;
+            
+            //On fait plusieurs roatation majeures
+            Rotate90(deg-rotation);
 
-            // On effectue d'abord des rotations de 90° avec une autre méthode plus simple
-            this.Rotate90(deg-rotation);
-
-            // On termine la rotation dans le cas où l'angle n'est pas un multiple de 90°
             if (rotation > 0)
             {
-                // Angle de rotation en radians
+                // On met l'angle de rotation en radians
                 double rad = (double)rotation * (Math.PI / 180.0);
 
-                // Calcul des donnés de la nouvelle taille de l'image
+                // On calcul les donnés de la nouvelle taille de l'image
                 
                 rot._height = (int) (Math.Abs(Math.Sin(rad) * (double)this._imageData.GetLength(1)) + Math.Abs(Math.Cos(rad) * (double)this._imageData.GetLength(0)));
                 rot._width = (int) (Math.Abs(Math.Cos(rad) * (double)this._imageData.GetLength(1)) + Math.Abs(Math.Sin(rad) * (double)this._imageData.GetLength(0)));
@@ -558,15 +555,15 @@ namespace Projet_S4
                     for (int j = 0; j < rot._width; j++)
                     {
 
-                        // Calcul des coordonnées cartésiennes du point en question
+                        // On calcul les coordonnées cartésiennes du point en question
                         double X = j;
                         double Y = (double) (rot._height - i) - (double)(Math.Sin(rad) * _imageData.GetLength(1));
 
-                        // Mise en coordonnées polaires + Ajout de l'angle de rotation "rad"
+                        // On les transforme en coordonnées polaires et on ajoute l'angle de rotation "rad"
                         double r = Math.Sqrt(X * X + Y * Y);
                         double ang = Math.Atan2(Y, X) + rad;
 
-                        // Calcul des nouvelles coordonnées avec l'angle modifié
+                        // On calcul les nouvelles coordonnées avec l'angle modifié
                         double x = r * Math.Cos(ang);
                         double y = r * Math.Sin(ang);
 
@@ -575,13 +572,13 @@ namespace Projet_S4
 
                         if (I >= 0 && J >= 0 && I < this._imageData.GetLength(0) && J < this._imageData.GetLength(1))
                         {
-                            //Console.WriteLine($"({I}, {J}) ==> ({i}, {j})");
+                            //Console.WriteLine($"({I}, {J}) ==> ({i}, {j})");//Pour voir ancienne/nouvelle coordonées
                             rot._imageData[i, j] = this._imageData[I, J];
                         }
                     }
                 }
             }
-
+            //On complète l'image avec des Pixels blancs
             rot.FillImageWithWhite();
             return rot;
         }
@@ -601,8 +598,8 @@ namespace Projet_S4
         #endregion
         
        
-        
-       public void Convolution(int[,] kernel, double factor=1)
+        #region Matrice de Convolution  
+       public void Convolution(int[,] kernel, double factor=1.000)
        {
            Pixel[,] pix = new Pixel[_height, _width];
            
@@ -613,46 +610,352 @@ namespace Projet_S4
                for (int j = 0; j < _width; j++)
                {
                    pix[i, j] = new Pixel(0, 0, 0);//creer trois somme de int pour chaque pixel
+                   int cr = 0;
+                   int cg = 0;
+                   int cb = 0;
+                   
                    for (int k = 0; k < kernel.GetLength(0); k++)
                    {
                        for (int l = 0 ; l < kernel.GetLength(0); l++)
                        {
-                           var line = (k-midPoint % pix.GetLength(0) + pix.GetLength(0)) % pix.GetLength(0);
-                           var column = (k-midPoint % pix.GetLength(1) + pix.GetLength(1)) % pix.GetLength(1);
-                           pix[i, j].Red +=(byte) ((int) _imageData[i, j].Red * kernel[k, l]);//changer le premier en somme
-                           pix[i,j].Green +=(byte) ((int)_imageData[i, j].Green * kernel[k, l]);
-                           pix[i,j].Blue +=(byte) ((int)_imageData[i, j].Blue * kernel[k, l]);
+                           var line = (i + (k - midPoint) + _imageData.GetLength(0)) % _imageData.GetLength(0);
+                           var col = (j + (l - midPoint) + _imageData.GetLength(1)) % _imageData.GetLength(1);
+                           
+                           cr +=(byte) ((int)_imageData[line, col].Red * kernel[k, l]);//changer le premier en somme
+                           cg +=(byte) ((int)_imageData[line, col].Green * kernel[k, l]);
+                           cb +=(byte) ((int)_imageData[line, col].Blue * kernel[k, l]);
 
 
                        }
                    }
 
-                   pix[i, j].Red = (byte) ((double) factor * pix[i, j].Red);//passer en int
-                   pix[i, j].Green = (byte) ((double) factor * pix[i, j].Green);
-                   pix[i, j].Blue = (byte) ((double) factor * pix[i, j].Blue);
+                   cr = (int) Math.Abs((double) factor * cr);//passer en int
+                   cg = (int) Math.Abs((double) factor * cg);
+                   cb = (int) Math.Abs((double) factor * cb);
                    
-                   pix[i, j].Red = (int) (pix[i, j].Red) > 255 ? (byte) 255 : pix[i, j].Red;//passer en byte
-                   pix[i, j].Green = (int) (pix[i, j].Green) > 255 ? (byte) 255: pix[i,j].Green;
-                   pix[i, j].Blue = (int) (pix[i, j].Blue) > 255 ? (byte) 255: pix[i,j].Blue;
-                   
-                   pix[i, j].Red = (int) (pix[i, j].Red) < 0 ? (byte) 0 : pix[i, j].Red;
-                   pix[i, j].Green = (int) (pix[i, j].Green) < 0 ? (byte) 0: pix[i,j].Green;
-                   pix[i, j].Blue = (int) (pix[i, j].Blue) < 0? (byte) 0: pix[i,j].Blue;
+                   cr = (byte) (cr > 255 ? (byte) 255: cr);//passer en byte
+                   cg = (byte) (cg > 255 ? (byte) 255: cg);
+                   cb = (byte) (cb > 255 ? (byte) 255: cb);
 
+                   pix[i, j] = new Pixel(Convert.ToByte(cr), Convert.ToByte(cg), Convert.ToByte(cb));
                }
            }
 
-           _imageData = pix;
+           this._imageData = pix;
 
        }
 
+       public void DetectionSobel(int[,] sobel1, int[,] sobel2 ,double factor=1.000)
+       {
+           Pixel[,] pix = new Pixel[_height, _width];
+           
+           var midPoint = sobel1.GetLength(0) / 2;
+           if (sobel1.GetLength(0) != sobel2.GetLength(0))
+           {
+               throw new ArgumentException("Vérifier la taille des matrices");
+           }
+
+           for (int i = 0; i < _height; i++)
+           {
+               for (int j = 0; j < _width; j++)
+               {
+                   pix[i, j] = new Pixel(0, 0, 0);//creer trois somme de int pour chaque pixel
+                   int cr1 = 0;
+                   int cg1 = 0;
+                   int cb1 = 0;
+
+                   int cr2 = 0;
+                   int cg2 = 0;
+                   int cb2 = 0;
+                   
+                   for (int k = 0; k < sobel1.GetLength(0); k++)
+                   {
+                       for (int l = 0 ; l < sobel1.GetLength(0); l++)
+                       {
+                           var line = (i + (k - midPoint) + _imageData.GetLength(0)) % _imageData.GetLength(0);
+                           var col = (j + (l - midPoint) + _imageData.GetLength(1)) % _imageData.GetLength(1);
+                           
+                           cr1 += ((int)_imageData[line, col].Red * sobel1[k, l]);//changer le premier en somme
+                           cg1 +=((int)_imageData[line, col].Green * sobel1[k, l]);
+                           cb1 +=((int)_imageData[line, col].Blue * sobel1[k, l]);
+                           
+                           cr2 +=((int)_imageData[line, col].Red * sobel2[k, l]);//changer le premier en somme
+                           cg2 += ((int)_imageData[line, col].Green * sobel2[k, l]);
+                           cb2 += ((int)_imageData[line, col].Blue * sobel2[k, l]);
+
+
+                       }
+                   }
+
+                   cr1 = (int) Math.Abs((double) factor * cr1);
+                   cg1 = (int) Math.Abs((double) factor * cg1);
+                   cb1 = (int) Math.Abs((double) factor * cb1);
+                   
+                   cr2 = (int) Math.Abs((double) factor * cr2);
+                   cg2 = (int) Math.Abs((double) factor * cg2);
+                   cb2 = (int) Math.Abs((double) factor * cb2);
+
+                   var redValue = Math.Sqrt(cr1 * cr1 + cr2 * cr2);
+                   var greenValue = Math.Sqrt(cg1 * cg1 + cg2 * cg2);
+                   var blueValue = Math.Sqrt(cb1 * cb1 + cb2 * cb2);
+
+
+                   pix[i, j] = new Pixel(Convert.ToByte(redValue > 255 ? 255 : redValue), Convert.ToByte(greenValue > 255 ? 255 : greenValue), Convert.ToByte(blueValue > 255 ? 255 : blueValue));
+               }
+           }
+
+           this._imageData = pix;
+
+       }//Effectue la détection de contour plus efficacement
        
-       
+       #endregion
        
 
+        #region Dessiner une fractale du(2 versions de la fractale de Mandelbrot)
+       public void DrawMandelbrotA() //fractal de mandelbrot dessiné de manière automatique
+       {
+
+           int lines = _imageData.GetLength(0);
+           int column = _imageData.GetLength(1);
+           
+           double xmin = -2;//bornes du repère
+           double xmax = 0.5;
+           double ymin = -1.25;
+           double ymax = 1.25;
+           
+           int count = 200;//à faire avec chemin et 20000 pour count en avance++ c'est le
+           
+           for (int i = 0; i < lines; i++)
+           {
+               for (int j = 0; j < column; j++)
+               {
+
+                   double zr = 0;
+                   double zi = 0;
+                   double zs = 0;
+                   double zrstocked = 0;
+                   
+                   double cx = j * ((Math.Abs(ymax) + Math.Abs(ymin)) / column);//association des coordonnées du plan (i,j) à des coordonnées (cx,cy) dans le repère (xmin,xmax) et (ymin,ymax)
+                   double cy = i * ((Math.Abs(xmax) + Math.Abs(xmin)) / lines);
+
+                   for (int k = 0; k < count; k++)
+                   {
+                       zrstocked = zr;
+                       zr = zr * zr - zi * zi + cx + 1.5 * ymin;
+                       zi = 2 * zi * zrstocked +  cy + 0.6 * xmin;
+                       zs = zr * zr + zi * zi;//on peut mettre ça sous racine pour plus de cercles et de lignes
+                       
+                       if (zs > 25)
+                       {
+                           {
+                               goto recuperer;// on va au sortir de la boucle pour itérer en gardant l'ancienne valeur de zs ( équivalent d'une fenêtre graphique tournant à l'infinie mais certe fixe)
+                           }
+                       }
+                   }
+
+                   recuperer:
+                       { 
+                           if ((zs) < 4.0)//on teste si le carré de la distance est inférieure à 4 on gagne en performance
+                           {
+                               _imageData[i, j].Red = (byte) (Convert.ToByte((byte)(9000*(zs)%255))); 
+                               _imageData[i, j].Green = 0;
+                               _imageData[i, j].Blue = 0;
+                           }
+                           else
+                           {
+                               zs = ((zs) % 255);
+                               _imageData[i, j].Red = 0;
+                               _imageData[i, j].Green = 0;
+                               _imageData[i, j].Blue = Convert.ToByte(zs);
+
+                           }
+                               
+                       }
+                   
+                   
+               }
+           }
+
+       }
+
+       public void DrawMandelbrotB() //on peut s'amuser un peu avec les valeurs des Pixels rouge et bleus pour dessiner d'autre sorte de forme
+       {
+
+           int lines = _imageData.GetLength(0);
+           int column = _imageData.GetLength(1);
+
+           double xmin = -2.1;
+           double xmax = 0.6;
+           double ymin = -1.2;
+           double ymax = 1.2;
+           
+           int count = 200000;
+           
+           for (int i = 0; i < lines; i++)
+           {
+               for (int j = 0; j < column; j++)
+               {
+
+                   double zr = 0;
+                   double zi = 0;
+                   double zs = 0;
+                   double zrstocked = 0;
+                   
+                   double cx = j * ((Math.Abs(ymax) + Math.Abs(ymin)) / column);
+                   double cy = i * ((Math.Abs(xmax) + Math.Abs(xmin)) / lines);
+
+                   for (int k = 0; k < count; k++)
+                   {
+                       zrstocked = zr;
+                       zr = zr * zr - zi * zi + cx + 1.5 * ymin;
+                       zi = 2 * zi * zrstocked +  cy + 0.6 * xmin;
+                       zs = zr * zr + zi * zi;
+                       
+                       if (zs > 25)
+                       {
+                           {
+                               goto recuperer;
+                           }
+                       }
+                   }
+
+                   recuperer:
+                       { 
+                           if ((zs) < 4.0)
+                           {
+                               _imageData[i, j].Red = (byte) (Convert.ToByte((byte)(10000*(zs-zr)%255))); 
+                               _imageData[i, j].Green = 0;
+                               _imageData[i, j].Blue = 0;
+                           }
+                           else
+                           {
+                               zs = ((zr) % 255);
+                               _imageData[i, j].Red = 0;
+                               _imageData[i, j].Green = 0;
+                               _imageData[i, j].Blue = Convert.ToByte((byte)zs);
+                               //_imageData[i, j].Blue = Convert.ToByte((byte)(100*zs-zr)%255);-- à tester aussi
+                           }
+                               
+                       }
+                   
+                   
+               }
+           }
+
+       }
+
+       #endregion
        
        
-       
+       /*#region Affichage de l'Histogramme d'une Image
+
+       public void DrawHistogram()
+       {
+           Pixel[,] pix = new Pixel[_height, _width];
+           
+           
+           
+           
+           
+           
+
+           
+       }
+       #endregion
+       */
+        public void DrawHistogram() //histogramme des couleurs d'une photo
+        {
+            Pixel[,] pixel1 = new Pixel[_width,_height];
+            
+            int graduationabs = 1;
+            double graduationord = 0.01;
+            for (int i = 0; i < _width; i++)
+            {
+                for (int j = 0; j < _height; j++)
+                {
+                    pixel1[i,j]=new Pixel(255, 255, 255);
+                }
+            }
+            for (int r = 0; r < 256; r++)
+            {
+                int compteurR = 0;
+                for (int k = 0; k < _width; k++)
+                {
+                    for (int l = 0; l < _height; l++)
+                    {
+
+                        if (_imageData[k, l].Red == (byte)r)
+                        {
+                            compteurR++;
+                        }
+
+
+
+                    }
+
+                }
+                
+                for (int i = 0; i < Convert.ToInt32(compteurR * graduationord); i++)
+                {
+                    pixel1[i, Convert.ToInt32(r * graduationabs)].Green =(byte) 0;
+                    pixel1[i, Convert.ToInt32(r * graduationabs)].Blue =(byte) 0;
+
+                }
+            }
+            for (int g = 0; g < 256; g++)
+            {
+                int compteurG = 0;
+                for (int k = 0; k < _width; k++)
+                {
+                    for (int l = 0; l < _height; l++)
+                    {
+
+                        if (_imageData[k, l].Green ==(byte) g)
+                        {
+                            compteurG++;
+                        }
+
+
+
+                    }
+
+                }
+
+                for (int i = 0; i < Convert.ToInt32(compteurG * graduationord); i++)
+                {
+                    pixel1[i, Convert.ToInt32(g * graduationabs)].Red =(byte) 0;
+                    pixel1[i, Convert.ToInt32(g * graduationabs)].Blue =(byte) 0;
+
+                }
+            }
+            for (int b = 0; b < 256; b++)
+            {
+                int compteurB = 0;
+                for (int k = 0; k < _width; k++)
+                {
+                    for (int l = 0; l < _height; l++)
+                    {
+
+                        if (_imageData[k, l].Blue ==(byte) b)
+                        {
+                            compteurB++;
+                        }
+                    }
+
+                }
+
+
+                for (int i = 0; i < Convert.ToInt32(compteurB * graduationord); i++)
+                {
+                    pixel1[i, Convert.ToInt32(b * graduationabs)].Green = (byte) 0;
+                    pixel1[i, Convert.ToInt32(b * graduationabs)].Red = (byte) 0;
+
+                }
+            }
+            _imageData = pixel1;
+
+        }
+
     }
 }
 
