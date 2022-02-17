@@ -66,7 +66,7 @@
             //mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
             MyImage mand = test;
             //mand.DrawMandelbrotA();
-            mand.DrawMandelbrotB();
+            mand.Convolution(Matrice.Contraste,Matrice.Null,3);
             mand.From_Image_To_File(@"../../../Images/Test5.bmp");
 
 

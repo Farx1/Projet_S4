@@ -46,7 +46,7 @@ public static class Matrice
         }
     }
 
-    public static int[,] Sobel1
+    public static int[,] Sobel1//les matrices de Sobel permettent de faire la détection de contour plus efficacement
     {
         get
         {
@@ -78,6 +78,16 @@ public static class Matrice
             };
         }
 
+    }
+    public static int[,] Contraste
+    {
+        get
+        {
+            return new int[,]
+            {
+                {0, -1, 0}, {-1, 5, -1}, {0, -1, 0}
+            };
+        }
     }
 
 }
