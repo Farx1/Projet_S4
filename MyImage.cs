@@ -4,8 +4,8 @@ namespace Projet_S4
 {
     public class MyImage
     {
-        
-        //TD 2
+
+
         #region Attributs
 
         private string _typeImage="BMP";
@@ -132,6 +132,18 @@ namespace Projet_S4
 
         #endregion
 
+        public MyImage(int height, int width)
+        {
+            this._height = height;
+            this._width = width;
+            for (int i = 0; i < height; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    this._imageData[i, j] = new Pixel(0, 0, 0);
+                }
+            }
+        }
         #endregion
         
 
@@ -249,7 +261,7 @@ namespace Projet_S4
 
         #endregion
 
-        
+ 
         #region Méthode qui tranforme une image en fichier binaire
         //Méthode ok après check Debug
         public void From_Image_To_File( string path)
@@ -345,7 +357,7 @@ namespace Projet_S4
 
         #endregion
 
-        //TD 3
+
         #region Méthode Couleur --> Noir&Blanc/Inversion
         public void NuancesGris()//Revérifier si le Offset a une incidence sur la construction de la nouvelle image (normalement non)
         {
@@ -585,11 +597,9 @@ namespace Projet_S4
        
         #endregion
         
-        //TD 4
+       
         #region Matrice de Convolution  
-        /*
-        //Première méthode est inutile
-       public void Convolution(int[,] kernel, double factor=1.000)// Flou:0.15--
+       public void Convolution(int[,] kernel, double factor=1.000)
        {
            Pixel[,] pix = new Pixel[_height, _width];
            
@@ -634,13 +644,13 @@ namespace Projet_S4
            this._imageData = pix;
 
        }
-        */
-       public void Convolution(int[,] matrice1, int[,] matrice2 ,double factor=1.0)
+
+       public void DetectionSobel(int[,] sobel1, int[,] sobel2 ,double factor=1.0)
        {
            Pixel[,] pix = new Pixel[_height, _width];
            
-           var midPoint = matrice1.GetLength(0) / 2;
-           if (matrice1.GetLength(0) != matrice2.GetLength(0))
+           var midPoint = sobel1.GetLength(0) / 2;
+           if (sobel1.GetLength(0) != sobel2.GetLength(0))
            {
                throw new ArgumentException("Vérifier la taille des matrices");
            }
@@ -653,26 +663,25 @@ namespace Projet_S4
                    int cr1 = 0;
                    int cg1 = 0;
                    int cb1 = 0;
-                   
+
                    int cr2 = 0;
                    int cg2 = 0;
                    int cb2 = 0;
                    
-                   for (int k = 0; k < matrice1.GetLength(0); k++)
+                   for (int k = 0; k < sobel1.GetLength(0); k++)
                    {
-                       for (int l = 0 ; l < matrice1.GetLength(0); l++)
+                       for (int l = 0 ; l < sobel1.GetLength(0); l++)
                        {
                            var line = (i + (k - midPoint) + _imageData.GetLength(0)) % _imageData.GetLength(0);
                            var col = (j + (l - midPoint) + _imageData.GetLength(1)) % _imageData.GetLength(1);
-                           //récupère les informations des lignes et colonnes des Pixels checké par la matrice puis la passe en posiif
-
-                           cr1 += ((int)_imageData[line, col].Red * matrice1[k, l]);//changer le premier en somme
-                           cg1 +=((int)_imageData[line, col].Green * matrice1[k, l]);
-                           cb1 +=((int)_imageData[line, col].Blue * matrice1[k, l]);
                            
-                           cr2 +=((int)_imageData[line, col].Red * matrice2[k, l]);//changer le premier en somme
-                           cg2 += ((int)_imageData[line, col].Green * matrice2[k, l]);
-                           cb2 += ((int)_imageData[line, col].Blue * matrice2[k, l]);
+                           cr1 += ((int)_imageData[line, col].Red * sobel1[k, l]);//changer le premier en somme
+                           cg1 +=((int)_imageData[line, col].Green * sobel1[k, l]);
+                           cb1 +=((int)_imageData[line, col].Blue * sobel1[k, l]);
+                           
+                           cr2 +=((int)_imageData[line, col].Red * sobel2[k, l]);//changer le premier en somme
+                           cg2 += ((int)_imageData[line, col].Green * sobel2[k, l]);
+                           cb2 += ((int)_imageData[line, col].Blue * sobel2[k, l]);
 
 
                        }
@@ -701,14 +710,11 @@ namespace Projet_S4
        
        #endregion
        
-        //TD5
+
         #region Dessiner une fractale du(2 versions de la fractale de Mandelbrot)
        public void DrawMandelbrotA() //fractal de mandelbrot dessiné de manière automatique
-       {
-           
-           //il faut créer une nouvelle image puis partir de celle ci
-           
-           
+        {
+
            int lines = _imageData.GetLength(0);
            int column = _imageData.GetLength(1);
            
@@ -770,10 +776,10 @@ namespace Projet_S4
                }
            }
 
-       }
+        }
 
        public void DrawMandelbrotB() //on peut s'amuser un peu avec les valeurs des Pixels rouge et bleus pour dessiner d'autre sorte de forme
-       {
+        {
 
            int lines = _imageData.GetLength(0);
            int column = _imageData.GetLength(1);
@@ -836,12 +842,29 @@ namespace Projet_S4
                }
            }
 
-       }
+        }
 
        #endregion
        
        
-        #region Histogramme des couleurs d'une photo
+       /*#region Affichage de l'Histogramme d'une Image
+
+       public void DrawHistogram()
+       {
+           Pixel[,] pix = new Pixel[_height, _width];
+           
+           
+           
+           
+           
+           
+
+           
+       }
+       #endregion
+       */
+       
+       
         public void DrawHistogram() //histogramme des couleurs d'une photo
         {
             Pixel[,] pix = new Pixel[_height,_width];
@@ -857,7 +880,7 @@ namespace Projet_S4
             }
             for (int r = 0; r < 256; r++)
             {
-                int countR = 0;
+                int compteurR = 0;
                 for (int k = 0; k < _height; k++)
                 {
                     for (int l = 0; l < _width; l++)
@@ -865,13 +888,13 @@ namespace Projet_S4
 
                         if (_imageData[k, l].Red == r)
                         {
-                            countR++;
+                            compteurR++;
                         }
                     }
 
                 }
                 
-                for (int i = 0; i < Convert.ToInt32(countR * coefhauteur); i++)
+                for (int i = 0; i < Convert.ToInt32(compteurR * coefhauteur); i++)
                 {
                     for (int k = 0; k < 3; k++)
                     { 
@@ -882,7 +905,7 @@ namespace Projet_S4
             }
             for (int g = 0; g < 256; g++)
             {
-                int countG = 0;
+                int compteurG = 0;
                 for (int k = 0; k < _height; k++)
                 {
                     for (int l = 0; l < _width; l++)
@@ -890,7 +913,7 @@ namespace Projet_S4
 
                         if (_imageData[k, l].Green == g)
                         {
-                            countG++;
+                            compteurG++;
                         }
 
 
@@ -899,7 +922,7 @@ namespace Projet_S4
 
                 }
 
-                for (int i = 0; i < Convert.ToInt32(countG * coefhauteur); i++)
+                for (int i = 0; i < Convert.ToInt32(compteurG * coefhauteur); i++)
                 {
                     for (int k = 0; k < 3; k++)
                     {
@@ -911,7 +934,7 @@ namespace Projet_S4
             }
             for (int b = 0; b < 256; b++)
             {
-                int countB = 0;
+                int compteurB = 0;
                 for (int k = 0; k < _height; k++)
                 {
                     for (int l = 0; l < _width; l++)
@@ -919,7 +942,7 @@ namespace Projet_S4
 
                         if (_imageData[k, l].Blue == b)
                         {
-                            countB++;
+                            compteurB++;
                         }
 
 
@@ -927,8 +950,9 @@ namespace Projet_S4
                     }
 
                 }
-                
-                for (int i = 0; i < Convert.ToInt32(countB * coefhauteur); i++)
+
+
+                for (int i = 0; i < Convert.ToInt32(compteurB * coefhauteur); i++)
                 {
                     for (int k = 0; k < 3; k++)
                     {
@@ -941,17 +965,7 @@ namespace Projet_S4
             _imageData = pix;
 
         }
-        
-        
-        #endregion
-        
-        
-        #region Cacher une image dans une image
-        
-        
-        
-        #endregion(a faire)
-        
+
     }
 }
 
