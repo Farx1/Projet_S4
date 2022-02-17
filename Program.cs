@@ -70,7 +70,7 @@
             mand.From_Image_To_File(@"../../../Images/Test5.bmp");
 
 
-
+ 
 
 
         }

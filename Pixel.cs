@@ -10,7 +10,7 @@ public class Pixel
     private byte _blue;
     #endregion
 
-
+ 
     #region Constructeur
     /// <summary>
     /// Constructeur naturel
