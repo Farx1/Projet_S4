@@ -58,7 +58,7 @@
             */
 
             //MyImage mirr = test;
-            //mirr.NuancesGris();
+            
             //var lol = test;
             //MyImage mirr= test.Rotate(5);
             //var lol = test.Negatif();//marche pour 47 -75 mais pas pour d'autres valeurs
@@ -66,7 +66,9 @@
             //mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
             MyImage mand = test;
             //mand.DrawMandelbrotA();
-            mand.DrawMandelbrotB();
+            //mand.NuancesGris();
+            //mand.Convolution(Matrice.Sobel1,Matrice.Sobel2);
+            
             mand.From_Image_To_File(@"../../../Images/Test5.bmp");
 
 
