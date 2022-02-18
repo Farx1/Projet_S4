@@ -911,10 +911,68 @@ namespace Projet_S4
        
        
         #region Cacher une image dans une image
+
+        public void CacherImage(MyImage imagecach)
+        {
+            for (int i = 0; i < _height; i++)
+            {
+                for (int j = 0; j < _width; j++)
+                {
+                    byte[] octet = new byte[3] {_imageData[i, j].Red, _imageData[i, j].Green, _imageData[i, j].Blue};
+                    byte[] octetcach = new byte[3] {imagecach._imageData[i,j].Red,imagecach._imageData[i,j].Green,imagecach._imageData[i,j].Blue};
+
+                    for (int k = 0; k < 3; i++)
+                    {
+                        for (int l = 0; l < 4; l++)
+                        {
+                            octet[k] = BitSet(octet[k], BitGet(octetcach[k], l+4), l+4);//exception out of the array-- vérifier que la taille de l'image à cacher est bien inférieure sinon rétrécir l'image ?
+                        }
+                    }
+                    _imageData[i, j] = new Pixel(octet[1], octet[2], octet[3]);
+                }
+            }
+        }
+        static int Base2aInt(string name)
+        {
+            int a = 0;
+            for (int i = 0; i < 8; i++)
+            {
+                a = a + Convert.ToInt32((name[i] - 48) * Math.Pow(2, 7 - i));//on va de 2^7 à 2^0
+            }
+            return a;
+        }
+        public static int BitGet(byte name, int position)
+        {
+            return (name & (1 << position) >> name);
+        }
+
+        public static string BitsGet(byte name, int length)
+        {
+            string c = Convert.ToString(name, toBase: 2);
+            while (c.Length != length) { c = c + "0";}
+            return c;
+        }
+
+        public static byte BitSet(byte name, int val, int position)
+        {
+            if (name != null)
+            {
+                string cache = BitsGet(name, 8);
+                string nouvs = "";
+                for (int i = 0; i < 8; i++)
+                {
+                    nouvs += (i != position) ? nouvs[i] - 48 : val;
+                }
+                return Convert.ToByte(Base2aInt(nouvs));
+            }
+            else
+            {
+                throw new ArgumentException("Vérifier l'octet");
+
+            }
+        }
         
-         
-        
-       #endregion(a faire)       
+        #endregion(a faire)       
        
     }
 }
