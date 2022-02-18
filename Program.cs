@@ -5,7 +5,7 @@
         static void Main(string[] args)
         {
           
-            MyImage test = new MyImage("../../../Images/lac.bmp");
+            MyImage test = new MyImage("../../../Images/coco.bmp");
             MyImage test2 = new MyImage("../../../Images/coco.bmp");
 
             /*
@@ -68,7 +68,7 @@
             //mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
             MyImage mand = test;
             MyImage coco = test2;
-            mand.NuancesGris();
+            //mand.NuancesGris();
             mand.CacherImage(coco);
             mand.From_Image_To_File(@"../../../Images/Test5.bmp");
 

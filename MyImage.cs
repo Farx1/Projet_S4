@@ -86,8 +86,7 @@ namespace Projet_S4
             {
                 for (int j = 0; j < _width; j++)
                 {
-                    this._imageData[i, j] =
-                        new Pixel(myfile[k], myfile[k + 1], myfile[k + 2]); //creation d'un pixel pour chaque set de 3 bytes du fichier
+                    this._imageData[i, j] = new Pixel(myfile[k], myfile[k + 1], myfile[k + 2]); //creation d'un pixel pour chaque set de 3 bytes du fichier
                     k += 3;
                 }
                 /*
@@ -667,7 +666,7 @@ namespace Projet_S4
        
        #endregion
        
-        //TD5
+        //TD5 A finir
         #region Dessiner une fractale du(2 versions de la fractale de Mandelbrot)
        public void DrawMandelbrotA(int hauteur,int largeur) //fractal de mandelbrot dessiné de manière automatique
         { 
@@ -809,9 +808,10 @@ namespace Projet_S4
        public void DrawHistogram() //histogramme des couleurs d'une photo
         {
             Pixel[,] pix = new Pixel[_height,_width];
+            //il faudrait trouver comment calculer les facteurs automatiquement
             
-            int coeflargeur = 3;
-            double coefhauteur = 0.1;
+            double coeflargeur = 3;   //coco 1.245      lac 3
+            double coefhauteur = 0.09;//coco 0.086      lac 0.09
             for (int i = 0; i < _height; i++)
             {
                 for (int j = 0; j < _width; j++)
@@ -839,7 +839,7 @@ namespace Projet_S4
                 {
                     for (int k = 0; k < 3; k++)
                     { 
-                        pix[i,Convert.ToInt32(r * coeflargeur)+k].Red = 255;
+                        pix[i,Convert.ToInt32((int)(r * coeflargeur))+k].Red = 255;
                     }
 
                 }
@@ -867,7 +867,7 @@ namespace Projet_S4
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        pix[i,Convert.ToInt32(g * coeflargeur)+k].Blue = 255;
+                        pix[i,Convert.ToInt32((int)(g * coeflargeur))+k].Blue = 255;
                     }
                     
 
@@ -896,7 +896,7 @@ namespace Projet_S4
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        pix[i,Convert.ToInt32(b * coeflargeur)+k].Green = 255;
+                        pix[i,Convert.ToInt32((int)(b * coeflargeur))+k].Green = 255;
                     }
                     
 
@@ -914,21 +914,47 @@ namespace Projet_S4
 
         public void CacherImage(MyImage imagecach)
         {
+            if(imagecach._height>_height)
+            {
+                imagecach.Retrecir((int) Math.Round((double)imagecach._height/(double)_height));
+            }
+            if(imagecach._width>_width)
+            {
+                imagecach.Retrecir((int) Math.Round((double)imagecach._width/(double)_width));
+            }
             for (int i = 0; i < _height; i++)
             {
                 for (int j = 0; j < _width; j++)
                 {
-                    byte[] octet = new byte[3] {_imageData[i, j].Red, _imageData[i, j].Green, _imageData[i, j].Blue};
-                    byte[] octetcach = new byte[3] {imagecach._imageData[i,j].Red,imagecach._imageData[i,j].Green,imagecach._imageData[i,j].Blue};
-
-                    for (int k = 0; k < 3; i++)
+                    if (i < imagecach._height && j < imagecach._width)
                     {
-                        for (int l = 0; l < 4; l++)
+                        byte[] octet = new byte[3] {_imageData[i, j].Red, _imageData[i, j].Green, _imageData[i, j].Blue};
+                        byte[] octetcach = new byte[3] {imagecach._imageData[i,j].Red,imagecach._imageData[i,j].Green,imagecach._imageData[i,j].Blue};
+
+                        for (int k = 0; k < 3; i++)
                         {
-                            octet[k] = BitSet(octet[k], OneBitGet(octetcach[k], l+4), l+4);//exception out of the array-- vérifier que la taille de l'image à cacher est bien inférieure sinon rétrécir l'image ?
+                            for (int l = 0; l < 4; l++)
+                            {
+                                octet[k] = BitSet(octet[k], OneBitGet(octetcach[k], l+4), l+4);//exception out of the array-- vérifier que la taille de l'image à cacher est bien inférieure sinon rétrécir l'image ?
+                            }
                         }
+                        _imageData[i, j] = new Pixel(octet[1], octet[2], octet[3]);
                     }
-                    _imageData[i, j] = new Pixel(octet[1], octet[2], octet[3]);
+                    else
+                    {
+                        byte[] octet = new byte[3] {_imageData[i, j].Red, _imageData[i, j].Green, _imageData[i, j].Blue};
+                        byte[] octetcach = new byte[3] {imagecach._imageData[i,j].Red,imagecach._imageData[i,j].Green,imagecach._imageData[i,j].Blue};
+
+                        for (int k = 0; k < 3; i++)
+                        {
+                            for (int l = 0; l < 4; l++)
+                            {
+                                octet[k] = BitSet(octet[k], OneBitGet(122, l+4), l+4);//exception out of the array-- vérifier que la taille de l'image à cacher est bien inférieure sinon rétrécir l'image ?
+                            }
+                        }
+                        _imageData[i, j] = new Pixel(octet[1], octet[2], octet[3]);
+                    }
+                    
                 }
             }
         }
@@ -954,21 +980,13 @@ namespace Projet_S4
         }
         public static byte BitSet(byte name, int val, int position)
         {
-            if (name != null)
+            string cache = BitsGet(name, 8);
+            string nouvs = "";
+            for (int i = 0; i < 8; i++) 
             {
-                string cache = BitsGet(name, 8);
-                string nouvs = "";
-                for (int i = 0; i < 8; i++)
-                {
-                    nouvs += (i != position) ? nouvs[i] - 48 : val;
-                }
-                return Convert.ToByte(Base2aInt(nouvs));
+                nouvs += (i != position) ? nouvs[i] - 48 : val;
             }
-            else
-            {
-                throw new ArgumentException("Vérifier l'octet");
-
-            }
+            return Convert.ToByte(Base2aInt(nouvs));
         }
         
         #endregion
