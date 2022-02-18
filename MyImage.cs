@@ -975,10 +975,7 @@ namespace Projet_S4
         public static string BitsGet(byte name, int length)
         {
             string c = Convert.ToString(name, toBase: 2);
-            while (c.Length != length)
-            {
-                c = "0"+c;
-            }
+            while (c.Length != length) {c = "0"+c;}
             return c;
         }
         public static byte BitSet(byte name, int val, int position)
@@ -987,7 +984,7 @@ namespace Projet_S4
             string nouvs = "";
             for (int i = 0; i < 8; i++) 
             {
-                nouvs += (i != position) ? nouvs[i] - 48 : val;
+                nouvs += (i != position) ? cache[i] - 48 : val;
             }
             return Convert.ToByte(Base2aInt(nouvs));
         }
