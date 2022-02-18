@@ -925,13 +925,14 @@ namespace Projet_S4
                     {
                         for (int l = 0; l < 4; l++)
                         {
-                            octet[k] = BitSet(octet[k], BitGet(octetcach[k], l+4), l+4);//exception out of the array-- vérifier que la taille de l'image à cacher est bien inférieure sinon rétrécir l'image ?
+                            octet[k] = BitSet(octet[k], OneBitGet(octetcach[k], l+4), l+4);//exception out of the array-- vérifier que la taille de l'image à cacher est bien inférieure sinon rétrécir l'image ?
                         }
                     }
                     _imageData[i, j] = new Pixel(octet[1], octet[2], octet[3]);
                 }
             }
         }
+        #region Méthodes pour convertir et utiliser les octets et valeurs en base de 2
         static int Base2aInt(string name)
         {
             int a = 0;
@@ -941,18 +942,16 @@ namespace Projet_S4
             }
             return a;
         }
-        public static int BitGet(byte name, int position)
+        public static int OneBitGet(byte name, int position)
         {
             return (name & (1 << position) >> name);
         }
-
         public static string BitsGet(byte name, int length)
         {
             string c = Convert.ToString(name, toBase: 2);
             while (c.Length != length) { c = c + "0";}
             return c;
         }
-
         public static byte BitSet(byte name, int val, int position)
         {
             if (name != null)
@@ -972,7 +971,10 @@ namespace Projet_S4
             }
         }
         
-        #endregion(a faire)       
+        #endregion
+        
+        
+        #endregion
        
     }
 }
