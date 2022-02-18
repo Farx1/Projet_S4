@@ -938,7 +938,7 @@ namespace Projet_S4
                                 octet[k] = BitSet(octet[k], OneBitGet(octetcach[k], l+4), l+4);//exception out of the array-- vérifier que la taille de l'image à cacher est bien inférieure sinon rétrécir l'image ?
                             }
                         }
-                        _imageData[i, j] = new Pixel(octet[1], octet[2], octet[3]);
+                        _imageData[i, j] = new Pixel(octet[0], octet[1], octet[2]);
                     }
                     else
                     {
@@ -952,7 +952,7 @@ namespace Projet_S4
                                 octet[k] = BitSet(octet[k], OneBitGet(122, l+4), l+4);//exception out of the array-- vérifier que la taille de l'image à cacher est bien inférieure sinon rétrécir l'image ?
                             }
                         }
-                        _imageData[i, j] = new Pixel(octet[1], octet[2], octet[3]);
+                        _imageData[i, j] = new Pixel(octet[0], octet[1], octet[2]);
                     }
                     
                 }
@@ -964,7 +964,7 @@ namespace Projet_S4
             int a = 0;
             for (int i = 0; i < 8; i++)
             {
-                a = a + Convert.ToInt32((name[i] - 48) * Math.Pow(2, 7 - i));//on va de 2^7 à 2^0
+                a += Convert.ToInt32((name[i] - 48) * Math.Pow(2, 7 - i));//on va de 2^7 à 2^0
             }
             return a;
         }
@@ -975,7 +975,10 @@ namespace Projet_S4
         public static string BitsGet(byte name, int length)
         {
             string c = Convert.ToString(name, toBase: 2);
-            while (c.Length != length) { c = c + "0";}
+            while (c.Length != length)
+            {
+                c = "0"+c;
+            }
             return c;
         }
         public static byte BitSet(byte name, int val, int position)

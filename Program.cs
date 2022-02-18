@@ -5,7 +5,7 @@
         static void Main(string[] args)
         {
           
-            MyImage test = new MyImage("../../../Images/coco.bmp");
+            MyImage test = new MyImage("../../../Images/lac.bmp");
             MyImage test2 = new MyImage("../../../Images/coco.bmp");
 
             /*
