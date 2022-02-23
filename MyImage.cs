@@ -130,19 +130,22 @@ namespace Projet_S4
         }
 
         #endregion
-
+        /*
         public MyImage(int height, int width)
         {
             this._height = height;
             this._width = width;
+            Pixel[,] black = new 
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
-                    this._imageData[i, j] = new Pixel(0, 0, 0);
+                    
+                     _imageData[i, j] = new Pixel(0, 0, 0);
                 }
             }
         }
+        */
         #endregion
         
 
@@ -667,8 +670,8 @@ namespace Projet_S4
        #endregion
        
         //TD5 A finir
-        #region Dessiner une fractale du(2 versions de la fractale de Mandelbrot)
-       public void DrawMandelbrotA(int hauteur,int largeur) //fractal de mandelbrot dessiné de manière automatique
+        #region Dessiner une fractale (2 versions de la fractale de Mandelbrot)
+       public void DrawMandelbrotA() //fractal de mandelbrot dessiné de manière automatique
         { 
             
             //il faut créer une nouvelle image puis partir de celle ci
@@ -911,19 +914,20 @@ namespace Projet_S4
        
        
         #region Cacher une image dans une image
-
+        
         public void CacherImage(MyImage imagecach)
         {
             if(imagecach._height>_height)
             {
-                imagecach.Retrecir((int) Math.Round((double)imagecach._height/(double)_height));
+                imagecach.Retrecir(Math.Ceiling((double)imagecach._height/(double)_height));
             }
             if(imagecach._width>_width)
             {
-                imagecach.Retrecir((int) Math.Round((double)imagecach._width/(double)_width));
+                imagecach.Retrecir(Math.Ceiling((double)imagecach._width/(double)_width));
             }
             for (int i = 0; i < _height; i++)
             {
+                Console.WriteLine($"{i}");
                 for (int j = 0; j < _width; j++)
                 {
                     if (i < imagecach._height && j < imagecach._width)
@@ -931,7 +935,7 @@ namespace Projet_S4
                         byte[] octet = new byte[3] {_imageData[i, j].Red, _imageData[i, j].Green, _imageData[i, j].Blue};
                         byte[] octetcach = new byte[3] {imagecach._imageData[i,j].Red,imagecach._imageData[i,j].Green,imagecach._imageData[i,j].Blue};
 
-                        for (int k = 0; k < 3; i++)
+                        for (int k = 0; k < 3; k++)
                         {
                             for (int l = 0; l < 4; l++)
                             {
@@ -943,9 +947,7 @@ namespace Projet_S4
                     else
                     {
                         byte[] octet = new byte[3] {_imageData[i, j].Red, _imageData[i, j].Green, _imageData[i, j].Blue};
-                        byte[] octetcach = new byte[3] {imagecach._imageData[i,j].Red,imagecach._imageData[i,j].Green,imagecach._imageData[i,j].Blue};
-
-                        for (int k = 0; k < 3; i++)
+                        for (int k = 0; k < 3; k++)
                         {
                             for (int l = 0; l < 4; l++)
                             {
@@ -959,20 +961,20 @@ namespace Projet_S4
             }
         }
         #region Méthodes pour convertir et utiliser les octets et valeurs en base de 2
-        static int Base2aInt(string name)
+        static int Base2aInt(string s)//ok
         {
             int a = 0;
             for (int i = 0; i < 8; i++)
             {
-                a += Convert.ToInt32((name[i] - 48) * Math.Pow(2, 7 - i));//on va de 2^7 à 2^0
+                a +=(int)((s[i] - 48) * Math.Pow(2, 7 - i));//on va de 2^7 à 2^0
             }
             return a;
         }
         public static int OneBitGet(byte name, int position)
         {
-            return (name & (1 << position) >> name);
+            return (name & (1 << position)) >> position;
         }
-        public static string BitsGet(byte name, int length)
+        public static string BitsGet(byte name, int length)//ok
         {
             string c = Convert.ToString(name, toBase: 2);
             while (c.Length != length) {c = "0"+c;}
@@ -986,14 +988,16 @@ namespace Projet_S4
             {
                 nouvs += (i != position) ? cache[i] - 48 : val;
             }
-            return Convert.ToByte(Base2aInt(nouvs));
+            return (byte) Base2aInt(nouvs);
         }
         
         #endregion
         
         
         #endregion
-       
+
+
+        
     }
 }
 
