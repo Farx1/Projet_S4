@@ -472,9 +472,7 @@ namespace Projet_S4
         #region Méthodes pour la rotation d'une Image
        public void Rotate90(int degre)
        {
-           //MyImage rot90 = new MyImage(this);
-           //MyImage resul = new MyImage(this);
-           
+
            while (degre < 0) degre += 360;
            while (degre >= 360) degre -= 360;
 
@@ -529,7 +527,7 @@ namespace Projet_S4
        
        public MyImage Rotate(int deg)
         {
-            MyImage rot = new MyImage(this);
+            MyImage imagerot = new MyImage(this);
             
             //On remet l'angle entre 0 et 360°
             while (deg < 0) deg += 360;
@@ -545,27 +543,27 @@ namespace Projet_S4
                 // On met l'angle de rotation en radians
                 double rad = (double)rotation * (Math.PI / 180.0);
 
-                // On calcul les donnés de la nouvelle taille de l'image
+                // On calcul la hauteur et la largeur de la nouvelle image 
                 
-                rot._height = (int) (Math.Abs(Math.Sin(rad) * (double)this._imageData.GetLength(1)) + Math.Abs(Math.Cos(rad) * (double)this._imageData.GetLength(0)));
-                rot._width = (int) (Math.Abs(Math.Cos(rad) * (double)this._imageData.GetLength(1)) + Math.Abs(Math.Sin(rad) * (double)this._imageData.GetLength(0)));
-                rot._imageData = new Pixel[rot._height, rot._width];
+                imagerot._height = (int) (Math.Abs(Math.Sin(rad) * (double)this._imageData.GetLength(1)) + Math.Abs(Math.Cos(rad) * (double)this._imageData.GetLength(0)));
+                imagerot._width = (int) (Math.Abs(Math.Cos(rad) * (double)this._imageData.GetLength(1)) + Math.Abs(Math.Sin(rad) * (double)this._imageData.GetLength(0)));
+                imagerot._imageData = new Pixel[imagerot._height, imagerot._width];
 
                 // Pour chaque pixel de la NOUVELLE image
-                for (int i = 0; i < rot._height; i++)
+                for (int i = 0; i < imagerot._height; i++)
                 {
-                    for (int j = 0; j < rot._width; j++)
+                    for (int j = 0; j < imagerot._width; j++)
                     {
 
-                        // On calcul les coordonnées cartésiennes du point en question
+                        // On initilaise les coordonnées cartésiennes de chaque point
                         double X = j;
-                        double Y = (double) (rot._height - i) - (double)(Math.Sin(rad) * _imageData.GetLength(1));
+                        double Y = (double) (imagerot._height - i) - (double)(Math.Sin(rad) * _imageData.GetLength(1));
 
-                        // On les transforme en coordonnées polaires et on ajoute l'angle de rotation "rad"
+                        // On passe en coordonees polaires
                         double r = Math.Sqrt(X * X + Y * Y);
                         double ang = Math.Atan2(Y, X) + rad;
 
-                        // On calcul les nouvelles coordonnées avec l'angle modifié
+                        // On calcule les nouvelles coordonnées de l'image
                         double x = r * Math.Cos(ang);
                         double y = r * Math.Sin(ang);
 
@@ -575,14 +573,14 @@ namespace Projet_S4
                         if (I >= 0 && J >= 0 && I < this._imageData.GetLength(0) && J < this._imageData.GetLength(1))
                         {
                             //Console.WriteLine($"({I}, {J}) ==> ({i}, {j})");//Pour voir ancienne/nouvelle coordonées
-                            rot._imageData[i, j] = this._imageData[I, J];
+                            imagerot._imageData[i, j] = this._imageData[I, J];
                         }
                     }
                 }
             }
             //On complète l'image avec des Pixels blancs
-            rot.FillImageWithWhite();
-            return rot;
+            imagerot.FillImageWithWhite();
+            return imagerot;
         }
 
        public void FillImageWithWhite()
@@ -669,9 +667,9 @@ namespace Projet_S4
        
        #endregion
        
-        //TD5 A finir
+        //TD5 A finir urgemment
         #region Dessiner une fractale (2 versions de la fractale de Mandelbrot)
-       public void DrawMandelbrotA() //fractal de mandelbrot dessiné de manière automatique
+       public void DrawMandelbrotA()
         { 
             
             //il faut créer une nouvelle image puis partir de celle ci
@@ -684,50 +682,50 @@ namespace Projet_S4
             double ymin = -1.25;
             double ymax = 1.25;
            
-            int count = 200;//à faire avec chemin et 20000 pour count en avance++ c'est le
+            int count = 200;//à faire avec chemin et 20000 pour count en avance++
            
             for (int i = 0; i < lines; i++)
             {
                 for (int j = 0; j < column; j++)
                 {
  
-                    double zr = 0;
-                    double zi = 0;
-                    double zs = 0;
-                    double zrstocked = 0;
+                    double xn = 0;
+                    double yn = 0;
+                    double prec = 0;
+                    double xnstocke = 0;
                    
                     double cx = j * ((Math.Abs(ymax) + Math.Abs(ymin)) / column);//association des coordonnées du plan (i,j) à des coordonnées (cx,cy) dans le repère (xmin,xmax) et (ymin,ymax)
                     double cy = i * ((Math.Abs(xmax) + Math.Abs(xmin)) / lines);
  
                     for (int k = 0; k < count; k++)
                     {
-                        zrstocked = zr;
-                        zr = zr * zr - zi * zi + cx + 1.5 * ymin;
-                        zi = 2 * zi * zrstocked +  cy + 0.6 * xmin;
-                        zs = zr * zr + zi * zi;//on peut mettre ça sous racine pour plus de cercles et de lignes
+                        xnstocke = xn;
+                        xn = xn * xn - yn * yn + cx + 1.5 * ymin;
+                        yn = 2 * yn * xnstocke +  cy + 0.6 * xmin;
+                        prec = xn * xn + yn * yn;//on peut mettre ça sous racine pour plus de cercles et de lignes
                         
-                        if (zs > 25)
+                        if (prec > 25)
                         {
                             {
-                                goto recuperer;// on va au sortir de la boucle pour itérer en gardant l'ancienne valeur de zs ( équivalent d'une fenêtre graphique tournant à l'infinie mais certe fixe)
+                                goto recuperer;// on va au sortir de la boucle pour itérer en gardant l'ancienne valeur de prec ( équivalent d'une fenêtre graphique tournant à l'infinie mais certe fixe)
                             }
                         }
                     }
 
                     recuperer:
                         { 
-                            if ((zs) < 4.0)//on teste si le carré de la distance est inférieure à 4 on gagne en performance
+                            if ((prec) < 4.0)//on teste si le carré de la distance est inférieure à 4 on gagne en performance
                             {
-                                _imageData[i, j].Red = (byte) (Convert.ToByte((byte)(9000*(zs)%255))); 
+                                _imageData[i, j].Red = (byte) (Convert.ToByte((byte)((prec)%255))); 
                                 _imageData[i, j].Green = 0;
                                 _imageData[i, j].Blue = 0;
                             }
                             else
                             {
-                                zs = ((zs) % 255);
-                                _imageData[i, j].Red = 0;
-                                _imageData[i, j].Green = 0;
-                                _imageData[i, j].Blue = Convert.ToByte(zs);
+                                prec = ((prec) % 255);
+                                _imageData[i, j].Red = Convert.ToByte(prec);
+                                _imageData[i, j].Green = Convert.ToByte(prec);
+                                _imageData[i, j].Blue = Convert.ToByte(prec);
  
                             }
                                 
@@ -756,22 +754,22 @@ namespace Projet_S4
                 for (int j = 0; j < column; j++)
                 {
 
-                    double zr = 0;
-                    double zi = 0;
-                    double zs = 0;
-                    double zrstocked = 0;
+                    double xn = 0;
+                    double yn = 0;
+                    double prec = 0;
+                    double xnstocked = 0;
                    
                     double cx = j * ((Math.Abs(ymax) + Math.Abs(ymin)) / column);
                     double cy = i * ((Math.Abs(xmax) + Math.Abs(xmin)) / lines);
 
                     for (int k = 0; k < count; k++)
                     {
-                        zrstocked = zr;
-                        zr = zr * zr - zi * zi + cx + 1.5 * ymin;
-                        zi = 2 * zi * zrstocked +  cy + 0.6 * xmin;
-                        zs = zr * zr + zi * zi;
+                        xnstocked = xn;
+                        xn = xn * xn - yn * yn + cx + 1.5 * ymin;
+                        yn = 2 * yn * xnstocked +  cy + 0.6 * xmin;
+                        prec = xn * xn + yn * yn;
                        
-                        if (zs > 25)
+                        if (prec > 25)
                         {
                             {
                                 goto recuperer;
@@ -781,19 +779,19 @@ namespace Projet_S4
 
                     recuperer:
                         { 
-                            if ((zs) < 4.0)
+                            if ((prec) < 4.0)
                             {
-                                _imageData[i, j].Red = (byte) (Convert.ToByte((byte)(10000*(zs-zr)%255))); 
+                                _imageData[i, j].Red = 0; 
                                 _imageData[i, j].Green = 0;
-                                _imageData[i, j].Blue = 0;
+                                _imageData[i, j].Blue = (byte) (Convert.ToByte((byte)(10000*(prec-xn)%255)));
                             }
                             else
                             {
-                                zs = ((zr) % 255);
-                                _imageData[i, j].Red = 0;
-                                _imageData[i, j].Green = 0;
-                                _imageData[i, j].Blue = Convert.ToByte((byte)(zs));
-                                //_imageData[i, j].Blue = Convert.ToByte((byte)(100*zs-zr)%255);-- à tester aussi
+                                prec = ((xn) % 255);
+                                _imageData[i, j].Red = Convert.ToByte((byte)(prec));
+                                _imageData[i, j].Green = Convert.ToByte((byte)(prec));
+                                _imageData[i, j].Blue = Convert.ToByte((byte)(prec));
+                                //_imageData[i, j].Blue = Convert.ToByte((byte)(100*prec-xn)%255);-- à tester aussi
                             }
                                
                         }
@@ -913,8 +911,9 @@ namespace Projet_S4
        #endregion
        
        
-        #region Cacher une image dans une image
+        #region Cacher/Décoder une image dans une image
         
+        #region Cacher l'image
         public void CacherImage(MyImage imagecach)
         {
             if(imagecach._height>_height)
@@ -927,7 +926,7 @@ namespace Projet_S4
             }
             for (int i = 0; i < _height; i++)
             {
-                Console.WriteLine($"{i}");
+                //Console.WriteLine($"{i}");
                 for (int j = 0; j < _width; j++)
                 {
                     if (i < imagecach._height && j < imagecach._width)
@@ -939,7 +938,7 @@ namespace Projet_S4
                         {
                             for (int l = 0; l < 4; l++)
                             {
-                                octet[k] = BitSet(octet[k], OneBitGet(octetcach[k], l+4), l+4);//exception out of the array-- vérifier que la taille de l'image à cacher est bien inférieure sinon rétrécir l'image ?
+                                octet[k] = ValCachee(octet[k], Decalage(octetcach[k], l+4), l+4);//remplace la valeur de l'octet par sa nouvelle valeur (avec la valeur de l'image a cacher)
                             }
                         }
                         _imageData[i, j] = new Pixel(octet[0], octet[1], octet[2]);
@@ -951,10 +950,10 @@ namespace Projet_S4
                         {
                             for (int l = 0; l < 4; l++)
                             {
-                                octet[k] = BitSet(octet[k], OneBitGet(122, l+4), l+4);//exception out of the array-- vérifier que la taille de l'image à cacher est bien inférieure sinon rétrécir l'image ?
+                                octet[k] = ValCachee(octet[k], Decalage(255, l+4), l+4);//remplace la valeur de l'octet par 255 (couleur neutre et arbitraire) lorsque l'on a dépassé la hauteur ou la largeur de l'image à cacher
                             }
                         }
-                        _imageData[i, j] = new Pixel(octet[0], octet[1], octet[2]);
+                        _imageData[i, j] = new Pixel(octet[0], octet[1], octet[2]);//on applique les nouvelles valeurs du pixel après incrustation de l'image a cacher
                     }
                     
                 }
@@ -966,35 +965,70 @@ namespace Projet_S4
             int a = 0;
             for (int i = 0; i < 8; i++)
             {
-                a +=(int)((s[i] - 48) * Math.Pow(2, 7 - i));//on va de 2^7 à 2^0
+                a +=(int)((s[i] - 48) * Math.Pow(2, 7 - i));//passage de bianiare à int (<255)
             }
             return a;
         }
-        public static int OneBitGet(byte name, int position)
+        public static int Decalage(byte name, int position)
         {
-            return (name & (1 << position)) >> position;
+            return (name & (1 << position)) >> position;//retourne la valeur rajoutée à chaque pixel en base de 2 (plusieurs valeurs)
         }
-        public static string BitsGet(byte name, int length)//ok
+        public static string CompleterBits(byte name, int length)
         {
-            string c = Convert.ToString(name, toBase: 2);
-            while (c.Length != length) {c = "0"+c;}
+            string c = Convert.ToString(name, toBase: 2);//passage de int en base de 2
+            while (c.Length != length) {c = "0"+c;}//complète la chaine de caractère en rajoutant des bits de poids forts nuls
             return c;
         }
-        public static byte BitSet(byte name, int val, int position)
+        public static byte ValCachee(byte name, int val, int position)
         {
-            string cache = BitsGet(name, 8);
+            string cache = CompleterBits(name, 8);
             string nouvs = "";
             for (int i = 0; i < 8; i++) 
             {
-                nouvs += (i != position) ? cache[i] - 48 : val;
+                nouvs += (i != position) ? cache[i] - 48 : val; //cache la valeur de du pixel dans la collection
             }
-            return (byte) Base2aInt(nouvs);
+            return (byte) Base2aInt(nouvs);//passage de la collection en int (on se rend compyte que la valeur ne diverge pas énormément (15 maximum) sur les 4 bits de poids faibles
         }
         
         #endregion
+        #endregion
         
+        #region Decoder l'image 
+        
+        public MyImage DecoderImage()
+        {
+            MyImage imagecach = new MyImage("../../../Images/Test5.bmp");
+            Pixel[,] pix = new Pixel[_height, _width];
+            imagecach._height = _height;
+            imagecach._width = _width;
+            
+            for (int i = 0; i < _height; i++)
+            {
+                for (int j = 0; j < _width; j++)
+                {
+                    byte[] octet = new byte[3] {0, 0, 0};
+                    byte[] octetcach = new byte[3] {_imageData[i, j].Red, _imageData[i, j].Green, _imageData[i, j].Blue};
+
+                    for (int k = 0; k < 3; k++)
+                    {
+                        for (int l = 0; l < 4; l++)
+                        {
+                            octet[k] = ValCachee(octet[k], Decalage(octetcach[k], l), l);
+                        }
+
+                        _imageData[i, j] = new Pixel(octet[0], octet[1], octet[2]);
+                    }
+                }
+            }
+
+            imagecach._imageData = pix;
+            return imagecach;
+        }
+        #endregion
         
         #endregion
+        
+        
 
 
         
