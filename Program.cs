@@ -6,7 +6,7 @@
         {
           
             MyImage test = new MyImage("../../../Images/lac.bmp");
-            MyImage test2 = new MyImage("../../../Images/tunnel.bmp");
+            MyImage test2 = new MyImage("../../../Images/coco.bmp");
 
             /*
           byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
@@ -45,10 +45,7 @@
 
           //MyImage.From_Image_To_File(test,"C:\\Users\\jules\\RiderProjects\\Projet_S4\\Images\\Test.bmp");
           */
-
-            //MyImage mirr = test.Rotate90(180);
             
-            //HEHE
             /*
             for (int i = 0; i <=360; i++)
             {
@@ -59,13 +56,12 @@
             }
             */
 
-            //MyImage mirr = test;
-            
             //var lol = test;
             //MyImage mirr= test.Rotate(5);
             //var lol = test.Negatif();//marche pour 47 -75 mais pas pour d'autres valeurs
             //mirr.DetectionSobel(Matrice.Sobel1,Matrice.Sobel2);//Flou(facteur= 0.11111)--Contour--Renforcement--Repoussage
             //mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
+            
             MyImage mand = test;
             MyImage coco = test2;
             //mand.DrawMandelbrotA();

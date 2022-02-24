@@ -667,7 +667,7 @@ namespace Projet_S4
        
        #endregion
        
-        //TD5 A finir urgemment
+        //TD5 
         #region Dessiner une fractale (2 versions de la fractale de Mandelbrot)
        public void DrawMandelbrotA()
         { 
@@ -1028,7 +1028,17 @@ namespace Projet_S4
         
         #endregion
         
+        //TD6
+        #region QR Code
+
+        public void QRCode(string adresse)
+        {
+            
+            
+            
+        }
         
+        #endregion
 
 
         
