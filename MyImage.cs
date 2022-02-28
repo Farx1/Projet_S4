@@ -470,18 +470,18 @@ namespace Projet_S4
 
         
         #region Méthodes pour la rotation d'une Image
-       public void Rotate90(int degre)
+       public void Rotate90(int deg)
        {
 
-           while (degre < 0) degre += 360;
-           while (degre >= 360) degre -= 360;
+           while (deg < 0) deg += 360;
+           while (deg >= 360) deg -= 360;
 
-           if (degre % 180 != 0)
+           if (deg % 180 != 0)
            {
                Pixel [,] rot = new Pixel[this._imageData.GetLength(1), this._imageData.GetLength(0)];
                _height = this._imageData.GetLength(1); 
                _width = this._imageData.GetLength(0);
-               int k = degre / 90;
+               int k = deg / 90;
                if (k < 2)
                {
                    for (int i = 0; i < this._imageData.GetLength(0); i++)
@@ -507,7 +507,7 @@ namespace Projet_S4
 
                _height = this._imageData.GetLength(0);
                _width = this._imageData.GetLength(1);
-               int k = degre / 180;
+               int k = deg / 180;
               
                if(k==1)
                {
@@ -561,19 +561,19 @@ namespace Projet_S4
 
                         // On passe en coordonees polaires
                         double r = Math.Sqrt(X * X + Y * Y);
-                        double ang = Math.Atan2(Y, X) + rad;
+                        double angle = Math.Atan2(Y, X) + rad;
 
                         // On calcule les nouvelles coordonnées de l'image
-                        double x = r * Math.Cos(ang);
-                        double y = r * Math.Sin(ang);
+                        double x = r * Math.Cos(angle);
+                        double y = r * Math.Sin(angle);
 
-                        int I = (int)(this._imageData.GetLength(0) - y);
-                        int J = (int)x;
+                        int nvlhauteur = (int)(this._imageData.GetLength(0) - y);
+                        int nvllargeur = (int)x;
 
-                        if (I >= 0 && J >= 0 && I < this._imageData.GetLength(0) && J < this._imageData.GetLength(1))
+                        if (nvlhauteur >= 0 && nvllargeur >= 0 && nvlhauteur < this._imageData.GetLength(0) && nvllargeur < this._imageData.GetLength(1))
                         {
                             //Console.WriteLine($"({I}, {J}) ==> ({i}, {j})");//Pour voir ancienne/nouvelle coordonées
-                            imagerot._imageData[i, j] = this._imageData[I, J];
+                            imagerot._imageData[i, j] = this._imageData[nvlhauteur, nvllargeur];
                         }
                     }
                 }
@@ -965,13 +965,14 @@ namespace Projet_S4
             int a = 0;
             for (int i = 0; i < 8; i++)
             {
-                a +=(int)((s[i] - 48) * Math.Pow(2, 7 - i));//passage de bianiare à int (<255)
+                a +=(int)((s[i] - 48) * Math.Pow(2, 7 - i));//passage de binaire à int (<255)
             }
             return a;
         }
         public static int Decalage(byte name, int position)
         {
-            return (name & (1 << position)) >> position;//retourne la valeur rajoutée à chaque pixel en base de 2 (plusieurs valeurs)
+            int decalage = 1 << position;
+            return (name & decalage) >> position;//retourne la valeur rajoutée à chaque pixel en base de 2 (plusieurs valeurs)
         }
         public static string CompleterBits(byte name, int length)
         {
@@ -998,7 +999,7 @@ namespace Projet_S4
         public MyImage DecoderImage()
         {
             MyImage imagecach = new MyImage("../../../Images/Test5.bmp");
-            Pixel[,] pix = new Pixel[_height, _width];
+            Pixel[,] matrice = new Pixel[_height, _width];
             imagecach._height = _height;
             imagecach._width = _width;
             
@@ -1021,7 +1022,7 @@ namespace Projet_S4
                 }
             }
 
-            imagecach._imageData = pix;
+            imagecach._imageData = matrice;                             
             return imagecach;
         }
         #endregion
@@ -1040,7 +1041,9 @@ namespace Projet_S4
         
         #endregion
 
-
+    
+        
+        //!!! Tests unitaires à faire !!!
         
     }
 }
