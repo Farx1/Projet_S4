@@ -31,7 +31,7 @@
                   Console.Write(myfile[j] + " ");
               }
 
-              Console.WriteLine();
+              Console.WriteLine(); 
           }
           Console.WriteLine("\n");
           

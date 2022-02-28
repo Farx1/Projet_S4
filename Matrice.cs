@@ -68,7 +68,7 @@ public static class Matrice
         }
     }
 
-    public static int[,] Null
+    public static int[,] Null 
     {
         get
         {

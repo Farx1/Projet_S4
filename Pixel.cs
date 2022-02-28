@@ -43,7 +43,7 @@ public class Pixel
         set => _red = value;
     }
 
-    public byte Green
+    public byte Green 
     {
         get => _green;
         set => _green = value;
