@@ -4,7 +4,7 @@ namespace Projet_S4;
 public class Pixel
 {
     
-    #region Attributs
+    #region Attributs 
     private byte _red;
     private byte _green;
     private byte _blue;
@@ -59,7 +59,7 @@ public class Pixel
     
 
     #region Méthode d'affichage des Pixels
-    public string toString()
+    public string toStringP()
     {
         return _red + " " + _green + " " + _blue + " ";
     }

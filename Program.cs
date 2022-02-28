@@ -7,7 +7,6 @@
           
             MyImage test = new MyImage("../../../Images/lac.bmp");
             MyImage test2 = new MyImage("../../../Images/coco.bmp");
-
             /*
           byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
           Console.WriteLine("\n Header \n");
@@ -54,7 +53,7 @@
                 lol.From_Image_To_File($@"../../../Images/Test{i}.bmp");
                 
             }
-            */
+            */ 
 
             //var lol = test;
             //MyImage mirr= test.Rotate(5);
@@ -72,6 +71,7 @@
 
             code.From_Image_To_File("../../../Images/Test6.bmp");
             
+
 
 
 

@@ -2,7 +2,7 @@
 
 namespace Projet_S4
 {
-    public class MyImage
+    public class MyImage 
     {
 
         //TD2
@@ -237,7 +237,7 @@ namespace Projet_S4
 
         #region Méthode pour afficher les caractéristiques d'une image
 
-        public string toString()
+        public void toString()
         {
             string s = "Type de l'image : " + TypeImage + "\n" + "Hauteur de l'image : " + Height + "\n" +
                        "Largeur de l'image : " + Width + "\n" + "Taille du fichier : " + SizeFile + "\n" +
@@ -250,7 +250,7 @@ namespace Projet_S4
                 {
                     for (int j = 0; j < Width; j++)
                     {
-                        s += ImageData[i, j].toString();
+                        s += ImageData[i, j].toStringP();
 
                     }
 
@@ -258,7 +258,7 @@ namespace Projet_S4
                 }
             }
 
-            return s;
+            Console.WriteLine(s);
         }
 
         #endregion
@@ -667,7 +667,7 @@ namespace Projet_S4
        
        #endregion
        
-        //TD5 
+        //TD5 a finir
         #region Dessiner une fractale (2 versions de la fractale de Mandelbrot)
        public void DrawMandelbrotA()
         { 
