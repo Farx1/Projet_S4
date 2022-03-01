@@ -670,12 +670,12 @@ namespace Projet_S4
         //TD5 a finir
         #region Dessiner une fractale (2 versions de la fractale de Mandelbrot)
        public void DrawMandelbrotA()
-        { 
-            
+       {
+            //MyImage fract = new MyImage("../../../Images/Fractale.bmp");
             //il faut créer une nouvelle image puis partir de celle ci
 
-            int lines = _imageData.GetLength(0);
-            int column = _imageData.GetLength(1);
+            int lines = _imageData.GetLength(0);//hauteur
+            int column = _imageData.GetLength(1);//largeur
 
             double xmin = -2;//bornes du repère
             double xmax = 0.5;
