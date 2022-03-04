@@ -71,11 +71,11 @@
 
             //code.From_Image_To_File("../../../Images/Test6.bmp");
             MyImage mand = new MyImage("../../../Images/lac.bmp");
-            mand.DrawMandelbrotA();
-            mand.From_Image_To_File("../../../Images/Test6.bmp");
+            //mand.Rotate(180);
+            //mand.From_Image_To_File("../../../Images/Test6.bmp");
 
 
-
+            QRCode cat = new QRCode("bons");
 
         }
     }

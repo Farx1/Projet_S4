@@ -116,6 +116,12 @@ namespace Projet_S4
         
         #endregion
 
+        public MyImage(int width, int height, Pixel[,] imageData)
+        {
+            this._imageData = imageData;
+            this._height=height;
+            this._width=width;
+        }
         #region Constructeur clone
 
         public MyImage(MyImage image)
@@ -577,7 +583,7 @@ namespace Projet_S4
                         }
                     }
                 }
-            }
+            }  
             //On complète l'image avec des Pixels blancs
             imagerot.FillImageWithWhite();
             return imagerot;
@@ -801,7 +807,77 @@ namespace Projet_S4
             }
 
         }
+        //Il faut encore corriger quelques trucs sur cette méthdode
+       /*
+              public void DrawMandelbrotC() //on peut s'amuser un peu avec les valeurs des Pixels rouge et bleus pour dessiner d'autre sorte de forme
+              {
+                    int column = 1000;
+                    int lines = 2000;
+                    Pixel[,] mand = new Pixel[column, lines];
+                    MyImage fractale = new MyImage(2000, 1000, mand);
 
+
+                    double xmin = -2.1;
+                    double xmax = 0.6;
+                    double ymin = -1.2;
+                    double ymax = 1.2;
+           
+                    int count = 2000;
+           
+                    for (int i = 0; i < lines; i++)
+                    {
+                        for (int j = 0; j < column; j++)
+                        {
+
+                            double xn = 0;
+                            double yn = 0;
+                            double prec = 0;
+                            double xnstocked = 0;
+                           
+                            double cx = j * ((Math.Abs(ymax) + Math.Abs(ymin)) / column);
+                            double cy = i * ((Math.Abs(xmax) + Math.Abs(xmin)) / lines);
+
+                            for (int k = 0; k < count; k++)
+                            {
+                                xnstocked = xn;
+                                xn = xn * xn - yn * yn + cx + 1.5 * ymin;
+                                yn = 2 * yn * xnstocked +  cy + 0.6 * xmin;
+                                prec = xn * xn + yn * yn;
+                               
+                                if (prec > 25)
+                                {
+                                    {
+                                        goto recuperer;
+                                    }
+                                }
+                            }
+
+                            recuperer:
+                            { 
+                                if ((prec) < 4.0)
+                                {
+                                    mand[i, j].Red = 0; 
+                                    mand[i, j].Green = 0;
+                                    mand[i, j].Blue = (byte) (Convert.ToByte((byte)(10000*(prec-xn)%255)));
+                                }
+                                else
+                                {
+                                    prec = ((xn) % 255);
+                                    mand[i, j].Red = Convert.ToByte((byte)(prec));
+                                    mand[i, j].Green = Convert.ToByte((byte)(prec));
+                                    mand[i, j].Blue = Convert.ToByte((byte)(prec));
+                                    //_imageData[i, j].Blue = Convert.ToByte((byte)(100*prec-xn)%255);-- à tester aussi
+                                }
+                               
+                            }
+                   
+                   
+                        }
+                    }
+
+                    fractale.From_Image_To_File("../../../Images/Fractale");
+              } 
+        */
        #endregion
 
        
@@ -857,9 +933,7 @@ namespace Projet_S4
                         {
                             countG++;
                         }
-
-
-
+                        
                     }
 
                 }
@@ -974,7 +1048,7 @@ namespace Projet_S4
             int decalage = 1 << position;
             return (name & decalage) >> position;//retourne la valeur rajoutée à chaque pixel en base de 2 (plusieurs valeurs)
         }
-        public static string CompleterBits(byte name, int length)
+        public static string CompleterBits(byte name , int length)
         {
             string c = Convert.ToString(name, toBase: 2);//passage de int en base de 2
             while (c.Length != length) {c = "0"+c;}//complète la chaine de caractère en rajoutant des bits de poids forts nuls
@@ -1029,21 +1103,6 @@ namespace Projet_S4
         
         #endregion
         
-        //TD6
-        #region QR Code
-
-        public void QRCode(string adresse)
-        {
-            
-            
-            
-        }
-        
-        #endregion
-
-    
-        
-        //!!! Tests unitaires à faire !!! 
         
     }
 }
