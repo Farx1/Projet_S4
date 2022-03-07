@@ -369,6 +369,22 @@ namespace Projet_S4
         #region Méthode Couleur --> Noir&Blanc/Inversion
         public void NuancesGris()
         {
+            Pixel [,] nuancgris = new Pixel[this._height, this._width];
+            
+            for (int i = 0; i < _height; i++)
+            {
+                for (int j = 0; j < _width; j++)
+                {
+                    byte moyenne = Convert.ToByte((this.ImageData[i,j].Red+ this.ImageData[i,j].Green + this.ImageData[i,j].Blue)/3) ;
+                    nuancgris[i, j] = new Pixel(moyenne, moyenne, moyenne);
+                }
+            }
+
+            _imageData = nuancgris;
+        }
+
+        public void NoirEtBlanc()
+        {
             Pixel [,] neb = new Pixel[this._height, this._width];
             
             for (int i = 0; i < _height; i++)
@@ -376,7 +392,15 @@ namespace Projet_S4
                 for (int j = 0; j < _width; j++)
                 {
                     byte moyenne = Convert.ToByte((this.ImageData[i,j].Red+ this.ImageData[i,j].Green + this.ImageData[i,j].Blue)/3) ;
-                    neb[i, j] = new Pixel(moyenne, moyenne, moyenne);
+                    if (moyenne > 127)
+                    {
+                        neb[i, j] = new Pixel(255, 255, 255);
+                    }
+                    else
+                    {
+                        neb[i, j] = new Pixel(0, 0, 0);
+
+                    }
                 }
             }
 
@@ -403,6 +427,10 @@ namespace Projet_S4
 
         
         #region Méthodes pour agrandir et retrecir
+        /// <summary>
+        /// Cette méthode permet d'agrandir l'image voulue
+        /// </summary>
+        /// <param name="facteur"></param>Le facteur d'agrandissement de l'image
         public void Agrandir(double facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
         {
             _height = (int) (_height * facteur);
@@ -420,7 +448,12 @@ namespace Projet_S4
             _imageData = grand;
 
         }
-
+        
+        
+        /// <summary>
+        /// Cette méthode permet de rétrecir l'image voulue
+        /// </summary>
+        /// <param name="facteur"></param>Facteur de rétrecissement de l'image
         public void Retrecir(double facteur) //Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
         {
 

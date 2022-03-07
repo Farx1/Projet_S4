@@ -70,11 +70,11 @@
             //code.DecoderImage();
 
             //code.From_Image_To_File("../../../Images/Test6.bmp");
-            MyImage gris = new MyImage("../../../Images/lac.bmp");
+            MyImage gris = new MyImage("../../../Images/tunnel.bmp");
             //mand.Rotate(180);
             //mand.From_Image_To_File("../../../Images/Test6.bmp");
-            gris.NuancesGris();
-
+            gris.NoirEtBlanc();
+            gris.From_Image_To_File("../../../Test5.bmp");
             //QRCode cat = new QRCode("bonsoir");//ne marche pas pour un input<=4
 
         }
