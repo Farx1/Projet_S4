@@ -135,6 +135,11 @@ namespace Projet_S4
             _imageData = image._imageData;
         }
 
+        protected MyImage()
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
         /*
         public MyImage(int height, int width)
@@ -505,9 +510,10 @@ namespace Projet_S4
 
         
         #region Méthodes pour la rotation d'une Image
-       public void Rotate90(int deg)
+       public void Rotate90()
        {
-
+           //première méthode faite avec les méthodes miroirs pour plus d'efficacité dans la méthode Rotate()
+            /*
            while (deg < 0) deg += 360;
            while (deg >= 360) deg -= 360;
 
@@ -557,7 +563,23 @@ namespace Projet_S4
                    _imageData = rot;
                }
            }
+        */
+            
+            Pixel[,] rot = new Pixel[_width, _height];
 
+            
+                for (int i = 0; i < _width; i++)
+                {
+                    
+                    for (int j = 0; j < _height; j++)
+                    {
+                        rot[i, j] = _imageData[_imageData.GetLength(0)-j-1, i];
+                    }
+                }
+
+                (_height, _width) = (_width, _height);
+                _imageData = rot;
+           
        }
        
        public MyImage Rotate(int deg)
@@ -568,12 +590,27 @@ namespace Projet_S4
             while (deg < 0) deg += 360;
             while (deg >= 360) deg -= 360;
 
+            int prerot = deg / 90;
             int rotation = deg % 90;
+            if (deg == 90 || deg == 180 || deg == 270 || deg == 360)
+            {
+                for (int i = 0; i < prerot; i++)
+                {
+                    //On fait plusieurs rotation majeures
+                    imagerot.Rotate90();
+                } 
+            }
+            else
+            {
+                for (int i = 0; i < prerot; i++)
+                {
+                    //On fait plusieurs rotation majeures
+                    Rotate90();
+                }   
+            }
             
-            //On fait plusieurs roatation majeures
-            Rotate90(deg-rotation);
-
             if (rotation > 0)
+                
             {
                 // On met l'angle de rotation en radians
                 double rad = (double)rotation * (Math.PI / 180.0);
@@ -607,7 +644,7 @@ namespace Projet_S4
 
                         if (nvlhauteur >= 0 && nvllargeur >= 0 && nvlhauteur < this._imageData.GetLength(0) && nvllargeur < this._imageData.GetLength(1))
                         {
-                            //Console.WriteLine($"({I}, {J}) ==> ({i}, {j})");//Pour voir ancienne/nouvelle coordonées
+                            //Console.WriteLine($"({nvllargeur}, {nvlhauteur}) ==> ({i}, {j})");//Pour voir ancienne/nouvelle coordonées
                             imagerot._imageData[i, j] = this._imageData[nvlhauteur, nvllargeur];
                         }
                     }
@@ -700,7 +737,7 @@ namespace Projet_S4
 
        #endregion
        
-        //TD5 a finir
+        //TD5
         #region Dessiner une fractale (2 versions de la fractale de Mandelbrot)
        public void DrawMandelbrotA()
        {
@@ -780,7 +817,7 @@ namespace Projet_S4
             double ymin = -1.2;
             double ymax = 1.2;
            
-            int count = 2000;
+            int count = 200000;
            
             for (int i = 0; i < lines; i++)
             {

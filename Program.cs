@@ -48,12 +48,12 @@
             /*
             for (int i = 0; i <=360; i++)
             {
-                MyImage test = new MyImage("../../../Images/coco.bmp");
-                var lol = test.Rotate(i);//marche pour 47 -75 mais pas pour d'autres valeurs
+                MyImage test3 = new MyImage("../../../Images/lac.bmp");
+                var lol = test3.Rotate(i);//marche pour 47 -75 mais pas pour d'autres valeurs
                 lol.From_Image_To_File($@"../../../Images/Test{i}.bmp");
                 
             }
-            */ 
+            */
 
             //var lol = test;
             //MyImage mirr= test.Rotate(5);
@@ -61,21 +61,25 @@
             //mirr.DetectionSobel(Matrice.Sobel1,Matrice.Sobel2);//Flou(facteur= 0.11111)--Contour--Renforcement--Repoussage
             //mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
             
-            //MyImage mand = test;
+            MyImage mand = test;
             //MyImage coco = test2;
-            //mand.DrawMandelbrotA();
+            mand.DrawMandelbrotB();
             //mand.CacherImage(coco);
-            //mand.From_Image_To_File(@"../../../Images/Test5.bmp");
+            mand.From_Image_To_File(@"../../../Images/Test5.bmp");
             //MyImage code = new MyImage("../../../Images/Test5.bmp");
             //code.DecoderImage();
 
             //code.From_Image_To_File("../../../Images/Test6.bmp");
-            MyImage gris = new MyImage("../../../Images/tunnel.bmp");
+            //MyImage gris = new MyImage("../../../Images/tunnel.bmp");
+            //gris = gris.Rotate(130);
+            //gris.From_Image_To_File("../../../Images/Test5.bmp");
             //mand.Rotate(180);
             //mand.From_Image_To_File("../../../Images/Test6.bmp");
-            gris.NoirEtBlanc();
-            gris.From_Image_To_File("../../../Test5.bmp");
-            //QRCode cat = new QRCode("bonsoir");//ne marche pas pour un input<=4
+            //QRCode test3 = new QRCode("bonsoir");
+            //test3.Affichage(1);
+            //gris.From_Image_To_File("../../../Test5.bmp");
+            QRCode test4 = new QRCode(1,1,1);
+            test4.From_Image_To_File("../../../QRCode.bmp");
 
         }
     }
