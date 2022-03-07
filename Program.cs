@@ -70,12 +70,12 @@
             //code.DecoderImage();
 
             //code.From_Image_To_File("../../../Images/Test6.bmp");
-            MyImage mand = new MyImage("../../../Images/lac.bmp");
+            MyImage gris = new MyImage("../../../Images/lac.bmp");
             //mand.Rotate(180);
             //mand.From_Image_To_File("../../../Images/Test6.bmp");
+            gris.NuancesGris();
 
-
-            QRCode cat = new QRCode("bons");
+            //QRCode cat = new QRCode("bonsoir");//ne marche pas pour un input<=4
 
         }
     }

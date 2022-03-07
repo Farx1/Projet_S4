@@ -364,21 +364,19 @@ namespace Projet_S4
         }
 
         #endregion
-
+        
         //TD3
         #region Méthode Couleur --> Noir&Blanc/Inversion
-        public void NuancesGris()//Revérifier si le Offset a une incidence sur la construction de la nouvelle image (normalement non)
+        public void NuancesGris()
         {
             Pixel [,] neb = new Pixel[this._height, this._width];
             
-            int k = _offset;
             for (int i = 0; i < _height; i++)
             {
                 for (int j = 0; j < _width; j++)
                 {
-                    byte moyenne = Convert.ToByte((this.ImageData[i,j].Red+ this.ImageData[i,j].Blue + this.ImageData[i,j].Green)/3) ;
+                    byte moyenne = Convert.ToByte((this.ImageData[i,j].Red+ this.ImageData[i,j].Green + this.ImageData[i,j].Blue)/3) ;
                     neb[i, j] = new Pixel(moyenne, moyenne, moyenne);
-                    k += 3;
                 }
             }
 
@@ -404,8 +402,7 @@ namespace Projet_S4
         #endregion
 
         
-        #region Méthode pour agrandir et retrecir
-        //UPDATE: il faut qu'on complète la fonction, pourvoir agrandir de 1,3 est possible si on fait agrandir:x13 et rétécir:x10 par exemple
+        #region Méthodes pour agrandir et retrecir
         public void Agrandir(double facteur)//Voir dans le dossier directement, l'affichage ne se fait pas sur Riders
         {
             _height = (int) (_height * facteur);
@@ -434,7 +431,6 @@ namespace Projet_S4
             {
                 for (int j = 0; j < _width; j++)
                 {
-                    
                     petit[i, j] = new Pixel(this._imageData[(int) (i * facteur), (int) (j * facteur)]); 
                 }
             }
@@ -645,8 +641,6 @@ namespace Projet_S4
                            cr2 +=((int)_imageData[line, col].Red * matrice2[k, l]);//changer le premier en somme
                            cg2 += ((int)_imageData[line, col].Green * matrice2[k, l]);
                            cb2 += ((int)_imageData[line, col].Blue * matrice2[k, l]);
-
-
                        }
                    }
 
@@ -670,7 +664,7 @@ namespace Projet_S4
            this._imageData = pix;
 
        }
-       
+
        #endregion
        
         //TD5 a finir

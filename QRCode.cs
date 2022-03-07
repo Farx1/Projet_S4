@@ -18,8 +18,10 @@ public class QRCode
         ':'
     };
     private string _chainbits = "";
-
-    public string Poids(string paires)
+    
+    #region Fonctions d'usages
+    
+    public string Poids(string paires)//Calcule le poids des lettres de chaque paire
     {
         int index1;
         int index2 = 0;
@@ -41,7 +43,7 @@ public class QRCode
         return somme;
     }
 
-    public byte BinaryToByte(string chaine)
+    public byte BinaryToByte(string chaine)//Convertis un octet en byte
     {
         int bytes = 0;
         for (int i = chaine.Length - 1; i >= 0; i--)
@@ -55,6 +57,7 @@ public class QRCode
         return Convert.ToByte(bytes);
     }
    
+    #endregion
 
 
     public QRCode(string input)
@@ -92,6 +95,16 @@ public class QRCode
             _taille = 272;
         }
 
+        while (_chainbits.Length >= _taille)
+        {
+            _chainbits += "11101100";
+            if (_chainbits.Length >= _taille)
+            {
+                break;
+            }
+
+            _chainbits += "00010001";
+        }
         //chaine peut ne pas être assez longue
 
         int reedversionRS = 7;
@@ -109,10 +122,30 @@ public class QRCode
         }
 
         byte[] sortie = ReedSolomonAlgorithm.Encode(tabBytes, reedversionRS,ErrorCorrectionCodeType.QRCode);
-        Console.WriteLine("\n\nMode: Version " + _version + "\nNiveau de correction d'erreur: L\n\nCode généré:\n\n" +
-                          "Indicateur du mode sur 4 bits: " + _mode + "\n" +
-                          "Indicateur du nombre de caractere sur 9 bits: " + _nbrbin + "\n" +
-                          "Données: " + _chainbits.Substring(13, 96 - 13) + "\n" +
-                          "Correction d'erreurs: " + _chainbits.Substring(97, _chainbits.Length - 98));
+        Console.WriteLine("\n\nMode: V " + _version + "\nNiveau Correction erreur: L\n" + "Mode sur 4 bits: " + _mode + "\n" + "Nombre de caracteres sur 9 bits: " + _nbrbin + "\n" + "Données: " + _chainbits.Substring(13, 96 - 13) + "\n" + "Correction d'erreurs: " + _chainbits.Substring(97, _chainbits.Length - 98));
     }
+
+    public void Affichage(int tailleQR)//ecriture graphique de toutes les composantes du QRCode
+    {
+        MyImage QRCode = new MyImage("QRcode.bmp");
+        int module = 21;
+
+        if (_version == 2)
+        {
+            module = 25;
+        }
+    }
+    
+    //Motifs de Recherche:
+    public void MotifsDeRecherche(Pixel[,] motifs,int taille)
+    {
+        
+    }
+    //Séparateurs
+    
+    //Motifs de synchro
+    
+    //Modules centraux
+    
+    //
 }
