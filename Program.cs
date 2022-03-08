@@ -5,7 +5,7 @@
         static void Main(string[] args)
         {
           
-            MyImage test = new MyImage("../../../Images/chemin.bmp");
+            MyImage test = new MyImage("../../../Images/Test5.bmp");
             MyImage test2 = new MyImage("../../../Images/coco.bmp");
             /*
           byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
@@ -65,22 +65,20 @@
             //MyImage coco = test2;
             mand.DrawMandelbrotB();
             //mand.CacherImage(coco); 
-            mand.From_Image_To_File(@"../../../Images/Test5.bmp");
+            mand.From_Image_To_File(@"../../../Images/FractaleBig.bmp");
             //MyImage code = new MyImage("../../../Images/Test5.bmp");
             //code.DecoderImage();
 
             //code.From_Image_To_File("../../../Images/Test6.bmp");
             //MyImage gris = new MyImage("../../../Images/tunnel.bmp");
-            //gris = gris.Rotate(130);
+            //gris.Agrandir(20);
             //gris.From_Image_To_File("../../../Images/Test5.bmp");
             //mand.Rotate(180);
             //mand.From_Image_To_File("../../../Images/Test6.bmp");
             //QRCode test3 = new QRCode("bonsoir");
             //test3.Affichage(1);
             //gris.From_Image_To_File("../../../Test5.bmp");
-            QRCode test4 = new QRCode(1,1,1);
-            test4.From_Image_To_File("../../../QRCode.bmp");
-
+            //QRCode test4 = new QRCode(5,1,0,"0010");
         }
     }
 }

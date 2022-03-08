@@ -129,7 +129,6 @@ namespace Projet_S4
             this._typeImage = image._typeImage;
             this._height = image._height;
             this._width = image._width;
-            this._sizeFile = image._sizeFile;
             _numberRgb = image._numberRgb;
             this._offset = image._offset;
             _imageData = image._imageData;
@@ -137,7 +136,6 @@ namespace Projet_S4
 
         protected MyImage()
         {
-            throw new NotImplementedException();
         }
 
         #endregion
@@ -183,7 +181,7 @@ namespace Projet_S4
         public int SizeFile
         {
             get => _sizeFile;
-            set => _sizeFile=value;
+            set => _sizeFile=Height*Width*3+Offset;
         }
 
         public int NumberRgb
@@ -817,7 +815,7 @@ namespace Projet_S4
             double ymin = -1.2;
             double ymax = 1.2;
            
-            int count = 200000;
+            int count = 200;
            
             for (int i = 0; i < lines; i++)
             {
