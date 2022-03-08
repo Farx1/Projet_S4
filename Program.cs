@@ -64,7 +64,7 @@
             MyImage mand = test;
             //MyImage coco = test2;
             mand.DrawMandelbrotB();
-            //mand.CacherImage(coco);
+            //mand.CacherImage(coco); 
             mand.From_Image_To_File(@"../../../Images/Test5.bmp");
             //MyImage code = new MyImage("../../../Images/Test5.bmp");
             //code.DecoderImage();

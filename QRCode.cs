@@ -4,10 +4,11 @@ using ReedSolomon;
 
 namespace Projet_S4;
 
+
 public class QRCode : MyImage
 {
     private int _version;
-    private string _mode ;
+    private string _mode ; 
     private int _contours;
     private string _paires;
     private char[] _alphanum =
@@ -47,8 +48,6 @@ public class QRCode : MyImage
         _taillemodule = taillemodule;
         Offset = 54;
         NumberRgb = 24;
-        
-        
         
     }
     /*

@@ -2,7 +2,7 @@
 
 namespace Projet_S4
 {
-    public class MyImage 
+    public class MyImage  
     {
 
         //TD2
