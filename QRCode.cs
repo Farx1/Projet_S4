@@ -111,7 +111,7 @@ public class QRCode : MyImage
 
         this.From_Image_To_File("../../../Images/QRCode.bmp");
     }
-    /*
+    
     public void ModulesDeRecherches(int ligne, int colonne)
     {
         var spacing = (_taillemodule - 1);
@@ -127,27 +127,39 @@ public class QRCode : MyImage
                 {
                     ImageData[i, j] = new Pixel(0, 0, 0);
                 }
+                else
+                {
+                    if (i > ligne + 6 * _taillemodule - 1)
+                    {
+                        ImageData[i, j] = new Pixel(0, 0, 0);
+                    }
+                
+                    if (j > colonne + 6 * _taillemodule - 1)
+                    {
+                        ImageData[i, j] = new Pixel(0, 0, 0);
+                    }   
+                }
+            
+                else if(i >= ligne + 2 * _taillemodule && j >= colonne + 2 * _taillemodule &&
+                    j <= colonne + 6 * _taillemodule - 2 * _taillemodule + _taillemodule - 1 &&
+                    i <= ligne + 6 * _taillemodule - 2 * _taillemodule + _taillemodule - 1)
+                {
+                    ImageData[i, j] = new Pixel(0, 0, 0);
+                }
+                
 
-                if (i > ligne + 6 * _taillemodule - 1)
-                {
-                    ImageData[i, j] = new Pixel(0, 0, 0);
-                }
-                
-                if (j > colonne + 6 * _taillemodule - 1)
-                {
-                    ImageData[i, j] = new Pixel(0, 0, 0);
-                }
-                
-                if(i>= +ligne + 2*)
+
+
             }
         }
     }
-    */
+    
 
 
 
     
     //Modules de Recherche:
+    /*
     public void ModulesDeRecherches(int ligne,int colonne)
     {
         for (int i = ligne; i < ligne + (7 * _taillemodule); i++)
@@ -169,6 +181,7 @@ public class QRCode : MyImage
             }
         }
     }
+    */
     
     //Séparateurs
     

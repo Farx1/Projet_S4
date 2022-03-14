@@ -5,8 +5,9 @@
         static void Main(string[] args)
         {
           
-            MyImage test = new MyImage("../../../Images/Test5.bmp");
+            MyImage test = new MyImage("../../../Images/tunnel.bmp");
             MyImage test2 = new MyImage("../../../Images/coco.bmp");
+            MyImage test3 = new MyImage();
             /*
           byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
           Console.WriteLine("\n Header \n");
@@ -61,12 +62,12 @@
             //mirr.DetectionSobel(Matrice.Sobel1,Matrice.Sobel2);//Flou(facteur= 0.11111)--Contour--Renforcement--Repoussage
             //mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
             
-            MyImage mand = test;
+            //MyImage mand = test;
             //MyImage coco = test2;
-            mand.DrawMandelbrotB();
-            //mand.CacherImage(coco); 
-            mand.From_Image_To_File(@"../../../Images/FractaleBig.bmp");
-            //MyImage code = new MyImage("../../../Images/Test5.bmp");
+            //mand.DrawMandelbrotB();
+            //mand.CacherImage(test2); 
+            //mand.From_Image_To_File(@"../../../Images/Test5.bmp");
+            //MyImage code = new MyImage(@"../../../Images/Test5.bmp");
             //code.DecoderImage();
 
             //code.From_Image_To_File("../../../Images/Test6.bmp");
@@ -78,7 +79,12 @@
             //QRCode test3 = new QRCode("bonsoir");
             //test3.Affichage(1);
             //gris.From_Image_To_File("../../../Test5.bmp");
-            //QRCode test4 = new QRCode(5,1,0,"0010");
+            QRCode test4 = new QRCode(3,1,0,"0010");
+            // test3.ImageData = new Pixel[500, 500];
+            // test3.Height = 500;
+            // test3.Width = 500;
+            // test3.FillImageWithWhite();
+            // test3.From_Image_To_File("../../../Images/Test5.bmp");
         }
     }
 }

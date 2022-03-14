@@ -133,9 +133,13 @@ namespace Projet_S4
             this._offset = image._offset;
             _imageData = image._imageData;
         }
-
-        protected MyImage()
+        
+        public MyImage()
         {
+            _numberRgb = 24;
+            _offset = 54;
+            _typeImage = "BMP";
+            
         }
 
         #endregion
@@ -181,7 +185,7 @@ namespace Projet_S4
         public int SizeFile
         {
             get => _sizeFile;
-            set => _sizeFile=Height*Width*3+Offset;
+            set => _sizeFile= Height * Width * 3 + Offset;
         }
 
         public int NumberRgb
@@ -564,9 +568,7 @@ namespace Projet_S4
         */
             
             Pixel[,] rot = new Pixel[_width, _height];
-
-            
-                for (int i = 0; i < _width; i++)
+            for (int i = 0; i < _width; i++)
                 {
                     
                     for (int j = 0; j < _height; j++)
@@ -574,7 +576,6 @@ namespace Projet_S4
                         rot[i, j] = _imageData[_imageData.GetLength(0)-j-1, i];
                     }
                 }
-
                 (_height, _width) = (_width, _height);
                 _imageData = rot;
            
