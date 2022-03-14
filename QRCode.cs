@@ -105,51 +105,32 @@ public class QRCode : MyImage
         NumberRgb = 24;
         Height = bordsQR;
         Width = bordsQR;
-        ModulesDeRecherches(bordsQR - (7 * taillemodule), bordsQR - (7 * taillemodule));
-        ModulesDeRecherches(0, 0);
-        ModulesDeRecherches(bordsQR - (7 * taillemodule),0);
-
+        ModulesDeRecherches(0 + _contours, 0 + _contours);
+        ModulesDeRecherches(0 + Height - (7 * _taillemodule) - _contours,0+_contours);
+        ModulesDeRecherches(0 + Height - (7 * _taillemodule) - _contours, 0 + Width - (7 * _taillemodule) - _contours);
         this.From_Image_To_File("../../../Images/QRCode.bmp");
     }
     
     public void ModulesDeRecherches(int ligne, int colonne)
     {
-        var spacing = (_taillemodule - 1);
-        for (int i = ligne; i < (_taillemodule * 7) + ligne; i++)
+        for (int i = ligne; i < _taillemodule * 7 + ligne; i++)
         {
-            for (int j = colonne; j < (_taillemodule * 7) + colonne; j++)
+            for (int j = colonne; j < _taillemodule * 7 + colonne; j++)
             {
-                if (i < _taillemodule + ligne)
+                if (i < _taillemodule + ligne || j < _taillemodule + colonne)
                 {
                     ImageData[i, j] = new Pixel(0, 0, 0);
                 }
-                if (j < _taillemodule + colonne)
+                else if(i > ligne + 6 * _taillemodule - 1||j > colonne + 6 * _taillemodule - 1)
                 {
                     ImageData[i, j] = new Pixel(0, 0, 0);
                 }
-                else
-                {
-                    if (i > ligne + 6 * _taillemodule - 1)
-                    {
-                        ImageData[i, j] = new Pixel(0, 0, 0);
-                    }
-                
-                    if (j > colonne + 6 * _taillemodule - 1)
-                    {
-                        ImageData[i, j] = new Pixel(0, 0, 0);
-                    }   
-                }
-            
                 else if(i >= ligne + 2 * _taillemodule && j >= colonne + 2 * _taillemodule &&
-                    j <= colonne + 6 * _taillemodule - 2 * _taillemodule + _taillemodule - 1 &&
-                    i <= ligne + 6 * _taillemodule - 2 * _taillemodule + _taillemodule - 1)
+                        i <= ligne + 6 * _taillemodule - 2 * _taillemodule + (_taillemodule - 1) &&
+                        j <= colonne + 6 * _taillemodule - 2 * _taillemodule + (_taillemodule - 1))
                 {
                     ImageData[i, j] = new Pixel(0, 0, 0);
                 }
-                
-
-
-
             }
         }
     }
