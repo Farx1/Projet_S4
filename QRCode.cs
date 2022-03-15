@@ -220,6 +220,16 @@ public class QRCode : MyImage
             }
         }  
     }
+
+    public void MotifsAlignement()
+    {
+        //voir https://askcodez.com/generer-toutes-les-combinaisons-pour-une-liste-de-chaines-de-caracteres.html
+        //Il faut qu'on réussisse à faire une combinaison de toutes les coordonées des Motifs d'Alignements
+        //le problème est de savoir ensuite quels motifs il faut mettre et lequels il faut enlever(superposition)
+        
+    }
+    
+    
     
     
 }
