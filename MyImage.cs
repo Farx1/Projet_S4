@@ -116,12 +116,15 @@ namespace Projet_S4
         
         #endregion
 
-        public MyImage(int width, int height, Pixel[,] imageData)
+        #region Constructeur nouvelle Image
+        public MyImage(int height, int width, Pixel[,] imageData)
         {
             this._imageData = imageData;
             this._height=height;
             this._width=width;
         }
+        #endregion
+        
         #region Constructeur clone
 
         public MyImage(MyImage image)
@@ -143,22 +146,7 @@ namespace Projet_S4
         }
 
         #endregion
-        /*
-        public MyImage(int height, int width)
-        {
-            this._height = height;
-            this._width = width;
-            Pixel[,] black = new 
-            for (int i = 0; i < height; i++)
-            {
-                for (int j = 0; j < height; j++)
-                {
-                    
-                     _imageData[i, j] = new Pixel(0, 0, 0);
-                }
-            }
-        }
-        */
+        
         #endregion
         
 

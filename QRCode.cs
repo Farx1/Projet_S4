@@ -95,8 +95,8 @@ public class QRCode : MyImage
     {
         int bordsQR = (8 * 2 + (4 * version + 1)) * taillemodule + 2 * contours;
         ImageData = new Pixel[bordsQR,bordsQR];
-        MyImage QRCode = new MyImage(bordsQR,bordsQR,ImageData);
-        QRCode.FillImageWithWhite();
+        MyImage QRCode = new MyImage(Height,Width,ImageData);
+        
         _version = version;
         _contours = contours;
         _mode = mode;
@@ -105,9 +105,25 @@ public class QRCode : MyImage
         NumberRgb = 24;
         Height = bordsQR;
         Width = bordsQR;
+        
         ModulesDeRecherches(0 + _contours, 0 + _contours);
         ModulesDeRecherches(0 + Height - (7 * _taillemodule) - _contours,0+_contours);
         ModulesDeRecherches(0 + Height - (7 * _taillemodule) - _contours, 0 + Width - (7 * _taillemodule) - _contours);
+        Separateurs(0 + _contours, 0 + _contours);
+        Separateurs(0 + Height - 8 * _taillemodule - _contours,0+_contours);
+        Separateurs(0 + Height - 8 * _taillemodule - _contours, 0 + Width - 8 * _taillemodule - _contours);
+        MotifsDeSynchro();
+        DarkModule();
+        
+        QRCode.FillImageWithWhite();
+
+        
+        
+        
+        
+        
+        
+        
         this.From_Image_To_File("../../../Images/QRCode.bmp");
     }
     
@@ -131,42 +147,79 @@ public class QRCode : MyImage
                 {
                     ImageData[i, j] = new Pixel(0, 0, 0);
                 }
-            }
-        }
-    }
-    
-
-
-
-    
-    //Modules de Recherche:
-    /*
-    public void ModulesDeRecherches(int ligne,int colonne)
-    {
-        for (int i = ligne; i < ligne + (7 * _taillemodule); i++)
-        {
-            for (int j = colonne; j < colonne + (7 * _taillemodule); j++)
-            {
-                //Partie noire du module
-                this.ImageData[i, j] = new Pixel(0,0,0);
-                    
-                //Partie blanche du module
-                if (((i > ligne + _taillemodule)) && (i < ligne + (2*_taillemodule)) || (i > ligne + (5*_taillemodule)) && (i < ligne + (6*_taillemodule)) || ((j > colonne + _taillemodule) && (j < colonne +(2*_taillemodule)) || (j > colonne + (5*_taillemodule)) && (j < colonne + (6*_taillemodule))))
+                else
                 {
-                    if ((i > ligne + _taillemodule) && (i < ligne + (6*_taillemodule)) && (j > colonne + _taillemodule) && (j < colonne + (6*_taillemodule)))
-                    {
-                        this.ImageData[i, j] = new Pixel(255, 255, 255);
-                    }
-                    
+                    ImageData[i, j] ??= new Pixel(255, 255, 255);
                 }
             }
         }
     }
-    */
-    
+
     //Séparateurs
+    //fonctionnelle
+    public void Separateurs(int ligne, int colonne)
+    {
+        for (int i = ligne; i < 8 * _taillemodule + ligne; i++)
+        {
+            for (int j = colonne; j < 8 * _taillemodule + colonne; j++)
+            {
+                ImageData[i, j] ??= new Pixel(255,255, 255);
+            }
+        }
+    }
     
     //Motifs de synchro
+
+    public void MotifsDeSynchro()
+    {
+        for (int i = 7 * _taillemodule + _contours; i <= Height - 7 * _taillemodule - _contours; i++)
+        {
+            for (int j = 6 * _taillemodule + _contours; j < 7 * _taillemodule + _contours; j++)
+            {
+                if ((i - _contours) / _taillemodule % 2 == 0)
+                {
+                    ImageData[i, j] = new Pixel(0,0 ,0 );
+                }
+                //On utilise le else pour vérifie l'écriture
+                /*
+                else
+                {
+                    ImageData[i, j] = new Pixel(0,0,255);
+                }
+                */
+            }
+        }
+
+        for (int j = 7 * _taillemodule + _contours; j <= Width - 7 * _taillemodule - _contours; j++)
+        {
+            for (int i = Height- 7 * _taillemodule - _contours; i < Height-6* _taillemodule - _contours; i++)
+            {
+                if ((j - _contours) / _taillemodule % 2 == 0)
+                {
+                    ImageData[i, j] = new Pixel(0, 0, 0);
+                }
+                //On utilise le else pour vérifie l'écriture
+                /*
+                else
+                {
+                    ImageData[i, j] = new Pixel(0,0,255);
+                }
+                */
+            }
+        }
+        
+    }
+
+    public void DarkModule()
+    {
+        for (int j = 8*_taillemodule + _contours; j < _taillemodule * 9 + _contours; j++)
+        {
+            for (int i = Height-((4 * _version + 9)*_taillemodule +_contours)-_taillemodule; i < _taillemodule + Height-((4 * _version + 9)*_taillemodule +_contours)-_taillemodule; i++)
+            {
+                ImageData[i, j] = new Pixel(0, 0, 0);
+            }
+        }  
+    }
     
     
 }
