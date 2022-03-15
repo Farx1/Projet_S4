@@ -1037,6 +1037,7 @@ namespace Projet_S4
        
        
         #region Cacher/Décoder une image dans une image
+        //réflexion faite, on pourrait juste travailler en Hexadécimal, faire un F0 (=11110000) & la valeur en octet de l'image pour Red, Green, Blue et c'est tt
         
         #region Cacher l'image
         public void CacherImage(MyImage imagecach)
