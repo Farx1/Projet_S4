@@ -79,13 +79,18 @@
             //QRCode test3 = new QRCode("bonsoir");
             //test3.Affichage(1);
             //gris.From_Image_To_File("../../../Test5.bmp");
-            QRCode test4 = new QRCode(7,1,7,"0010");
+            
             // test3.ImageData = new Pixel[500, 500];
             // test3.Height = 500;
             // test3.Width = 500;
             // test3.FillImageWithWhite();
             // test3.From_Image_To_File("../../../Images/Test5.bmp");
-        }
+            
+            QRCode test4 = new QRCode(5,4,7,"0010");
+            
+
+            
+    }
     }
 }
  

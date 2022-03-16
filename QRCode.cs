@@ -1,5 +1,9 @@
 // ReSharper disable All
-
+using System;
+using System.IO;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using ReedSolomon;
 
 namespace Projet_S4;
@@ -114,6 +118,8 @@ public class QRCode : MyImage
         Separateurs(0 + Height - 8 * _taillemodule - _contours, 0 + Width - 8 * _taillemodule - _contours);
         MotifsDeSynchro();
         DarkModule();
+        MotifsAlignement(6*_taillemodule+ _contours,26*_taillemodule + _contours);
+        EcritureMotifsAlignement();
         
         QRCode.FillImageWithWhite();
 
@@ -221,15 +227,63 @@ public class QRCode : MyImage
         }  
     }
 
-    public void MotifsAlignement()
+    public void EcritureMotifsAlignement()
     {
+        
         //voir https://askcodez.com/generer-toutes-les-combinaisons-pour-une-liste-de-chaines-de-caracteres.html
         //Il faut qu'on réussisse à faire une combinaison de toutes les coordonées des Motifs d'Alignements
         //le problème est de savoir ensuite quels motifs il faut mettre et lequels il faut enlever(superposition)
+        if (_version < 2) return;
+        string fichier = @"../../../Coordonées.txt";
+        //Console.WriteLine(String.Join(Environment.NewLine, ligne)); Test
+        var ligne = File.ReadAllLines(fichier);
+        var donnees = ligne[_version - 2].Split(" ");
+        int[] tabdonnes = new int[donnees.Length - 1];
+
+        for (int i = 0; i < donnees.Length - 1; i++)
+        {
+            tabdonnes[i] = Convert.ToInt32(donnees[i])* _taillemodule + _contours;
+        }
         
+        var coordonees = new List<int>(tabdonnes);
+        Console.Write(coordonees);
+        //probleme de format
+
+
     }
-    
-    
-    
-    
+
+    public void MotifsAlignement(int ligne, int colonne)
+    {
+        if (ImageData[ligne, colonne] != null) return;
+        for (int i = ligne - 2 * _taillemodule; i <= ligne + 2 * _taillemodule + (_taillemodule - 1); i++)
+        {
+            for (int j = colonne - 2 * _taillemodule; j <= colonne + 2 * _taillemodule + (_taillemodule - 1); j++)
+            {
+                int newligne = ((2 * _taillemodule - ligne) + i) / _taillemodule;
+                int newcolonne = ((2 * _taillemodule - colonne) + j) / _taillemodule;
+
+                if (newligne == 0 || newcolonne == 0 || newligne == 4 || newcolonne == 4)
+                {
+                    ImageData[i, j] = new Pixel(0, 0, 0);
+                }
+                else if (newligne != 0 && newcolonne != 0 && newligne != 4 && newcolonne != 4)
+                {
+                    if (newligne == 2 && newcolonne == 2)
+                    {
+                        ImageData[i, j] = new Pixel(0, 0, 0);
+                    }
+                    else 
+                    {
+                        ImageData[i, j] = new Pixel(255, 255, 255);
+                    }
+                }
+                
+                
+                
+            }
+        }
+    }
+
+
+
 }
