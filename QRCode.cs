@@ -114,10 +114,10 @@ public class QRCode : MyImage
         
         ModulesDeRecherches(0 + _contours, 0 + _contours);
         ModulesDeRecherches(0 + Height - (7 * _taillemodule) - _contours,0+_contours);
-        ModulesDeRecherches(0 + Height - (7 * _taillemodule) - _contours, 0 + Width - (7 * _taillemodule) - _contours);
+        ModulesDeRecherches(0 +  _contours, 0 + Width - (7 * _taillemodule) - _contours);
         Separateurs(0 + _contours, 0 + _contours);
         Separateurs(0 + Height - 8 * _taillemodule - _contours,0+_contours);
-        Separateurs(0 + Height - 8 * _taillemodule - _contours, 0 + Width - 8 * _taillemodule - _contours);
+        Separateurs(0 + _contours, 0 + Width - 8 * _taillemodule - _contours);
         EcritureMotifsAlignement();
         MotifsDeSynchro();
         DarkModule();
@@ -198,10 +198,10 @@ public class QRCode : MyImage
                 */
             }
         }
-
-        for (int j = 7 * _taillemodule + _contours; j <= Width - 7 * _taillemodule - _contours; j++)
+        
+        for (int j = 7 * _taillemodule + _contours; j <= Height - 7 * _taillemodule - _contours; j++)
         {
-            for (int i = Height- 7 * _taillemodule - _contours; i < Height-6* _taillemodule - _contours; i++)
+            for (int i = 6 * _taillemodule + _contours; i < 7* _taillemodule + _contours; i++)
             {
                 if ((j - _contours) / _taillemodule % 2 == 0)
                 {
@@ -217,13 +217,15 @@ public class QRCode : MyImage
             }
         }
         
+        
+        
     }
 
-    public void DarkModule()
+public void DarkModule()
     {
         for (int j = 8*_taillemodule + _contours; j < _taillemodule * 9 + _contours; j++)
         {
-            for (int i = Height-((4 * _version + 9)*_taillemodule +_contours)-_taillemodule; i < _taillemodule + Height-((4 * _version + 9)*_taillemodule +_contours)-_taillemodule; i++)
+            for (int i = (4 * _version + 9)*_taillemodule +_contours; i < _taillemodule + (4 * _version + 9)*_taillemodule +_contours; i++)
             {
                 ImageData[i, j] = new Pixel(0, 0, 0);
             }

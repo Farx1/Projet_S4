@@ -344,7 +344,7 @@ namespace Projet_S4
             #region Image
 
             List<byte> image = new List<byte>(); //Image
-            for (int i = 0; i < this.Height; i++)//Lecture inverse donc de i = height-1; i>=0;i--) changer et tester tt les méthdodes depuis le début
+            for (int i = this.Height-1; i >= 0; i--)//Lecture inverse donc de i = height-1; i>=0;i--) changer et tester tt les méthdodes depuis le début
             {
                 for (int j = 0; j < this.Width; j++)
                 {
