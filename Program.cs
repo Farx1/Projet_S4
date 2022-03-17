@@ -88,7 +88,7 @@
             // test3.From_Image_To_File("../../../Images/Test5.bmp");
             //gris.DrawHistogram();
             //gris.From_Image_To_File(@"../../../Images/Test5.bmp");
-            QRCode test4 = new QRCode(1,36,5,"0010");//rajouter le mask
+            QRCode test4 = new QRCode(1,40,10,"0010");//rajouter le mask
             //test4.toString();
             //zut.toString();
             //test4.Coordonees(@"../../../Coordonées.txt", 4);

@@ -11,6 +11,9 @@ namespace Projet_S4;
 
 public class QRCode : MyImage
 {
+    
+    #region Constructeur et Attributs
+    
     private int _version;
     private string _mode ; 
     private int _contours;
@@ -135,7 +138,10 @@ public class QRCode : MyImage
         
         this.From_Image_To_File("../../../Images/QRCode.bmp");
     }
+    #endregion
     
+    
+    #region Modules de Recherches
     public void ModulesDeRecherches(int ligne, int colonne)
     {
         for (int i = ligne; i < _taillemodule * 7 + ligne; i++)
@@ -163,9 +169,10 @@ public class QRCode : MyImage
             }
         }
     }
+    #endregion
 
-    //Séparateurs
-    //fonctionnelle
+    
+    #region Séparateurs
     public void Separateurs(int ligne, int colonne)
     {
         for (int i = ligne; i < 8 * _taillemodule + ligne; i++)
@@ -176,8 +183,10 @@ public class QRCode : MyImage
             }
         }
     }
+    #endregion
     
-    //Motifs de synchro
+    
+    #region Motifs de Synchronisation
 
     public void MotifsDeSynchro()
     {
@@ -220,7 +229,10 @@ public class QRCode : MyImage
         
         
     }
+    #endregion
 
+    
+    #region Dark Module
 public void DarkModule()
     {
         for (int j = 8*_taillemodule + _contours; j < _taillemodule * 9 + _contours; j++)
@@ -231,7 +243,10 @@ public void DarkModule()
             }
         }  
     }
-
+    #endregion
+    
+    
+    #region Motifs d'Alignements
     public void EcritureMotifsAlignement()
     {
         
@@ -291,8 +306,8 @@ public void DarkModule()
     
     public int[][] Coordonees(string nomfichier, int version) // lecture du fichier pour determiner les coordonnées
     {
-        StreamReader flux = null;
-        string lines;
+        StreamReader? flux = null;
+        string? lines;
         int i = 0;
         int[] coordonee = new int[] { };
         try
@@ -331,6 +346,7 @@ public void DarkModule()
             
         return donees.Where(x => x.Length ==2).ToArray();
     }
+    #endregion
 
 
 
