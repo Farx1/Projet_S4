@@ -3,6 +3,7 @@
     class Program
     {
         static void Main(string[] args)
+        
         {
           
             MyImage test = new MyImage("../../../Images/tunnel.bmp");
@@ -71,11 +72,11 @@
             //code.DecoderImage();
 
             //code.From_Image_To_File("../../../Images/Test6.bmp");
-            //MyImage gris = new MyImage("../../../Images/tunnel.bmp");
+            //MyImage gris = new MyImage("../../../Images/coco.bmp");
             //gris.Agrandir(20);
             //gris.From_Image_To_File("../../../Images/Test5.bmp");
-            //mand.Rotate(180);
-            //mand.From_Image_To_File("../../../Images/Test6.bmp");
+            //MyImage zut =mand.Rotate(67);
+            //zut.From_Image_To_File("../../../Images/Test6.bmp");
             //QRCode test3 = new QRCode("bonsoir");
             //test3.Affichage(1);
             //gris.From_Image_To_File("../../../Test5.bmp");
@@ -85,12 +86,19 @@
             // test3.Width = 500;
             // test3.FillImageWithWhite();
             // test3.From_Image_To_File("../../../Images/Test5.bmp");
-            
-            QRCode test4 = new QRCode(5,4,7,"0010");
-            
+            //gris.DrawHistogram();
+            //gris.From_Image_To_File(@"../../../Images/Test5.bmp");
+            QRCode test4 = new QRCode(5,7,1,"0010");//rajouter le mask
+            //test4.toString();
+            //zut.toString();
+            //test4.Coordonees(@"../../../Coordonées.txt", 4);
 
-            
-    }
+
+
+
+
+
+        }
     }
 }
  

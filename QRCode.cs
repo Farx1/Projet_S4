@@ -98,17 +98,19 @@ public class QRCode : MyImage
     public QRCode(int taillemodule, int version, int contours, string mode)
     {
         int bordsQR = (8 * 2 + (4 * version + 1)) * taillemodule + 2 * contours;
-        ImageData = new Pixel[bordsQR,bordsQR];
+        Height = bordsQR;
+        Width = bordsQR;
+        ImageData = new Pixel[Height,Width];
         MyImage QRCode = new MyImage(Height,Width,ImageData);
         
         _version = version;
         _contours = contours;
         _mode = mode;
+        SizeFile = Height * Width * 3 + Offset;
         _taillemodule = taillemodule;
         Offset = 54;
         NumberRgb = 24;
-        Height = bordsQR;
-        Width = bordsQR;
+        
         
         ModulesDeRecherches(0 + _contours, 0 + _contours);
         ModulesDeRecherches(0 + Height - (7 * _taillemodule) - _contours,0+_contours);
@@ -116,10 +118,11 @@ public class QRCode : MyImage
         Separateurs(0 + _contours, 0 + _contours);
         Separateurs(0 + Height - 8 * _taillemodule - _contours,0+_contours);
         Separateurs(0 + Height - 8 * _taillemodule - _contours, 0 + Width - 8 * _taillemodule - _contours);
+        EcritureMotifsAlignement();
         MotifsDeSynchro();
         DarkModule();
-        MotifsAlignement(6*_taillemodule+ _contours,26*_taillemodule + _contours);
-        EcritureMotifsAlignement();
+        
+        
         
         QRCode.FillImageWithWhite();
 
@@ -190,7 +193,7 @@ public class QRCode : MyImage
                 /*
                 else
                 {
-                    ImageData[i, j] = new Pixel(0,0,255);
+                    ImageData[i, j] = new Pixel(0,0,0);
                 }
                 */
             }
@@ -234,20 +237,17 @@ public class QRCode : MyImage
         //Il faut qu'on réussisse à faire une combinaison de toutes les coordonées des Motifs d'Alignements
         //le problème est de savoir ensuite quels motifs il faut mettre et lequels il faut enlever(superposition)
         if (_version < 2) return;
-        string fichier = @"../../../Coordonées.txt";
-        //Console.WriteLine(String.Join(Environment.NewLine, ligne)); Test
-        var ligne = File.ReadAllLines(fichier);
-        var donnees = ligne[_version - 2].Split(" ");
-        int[] tabdonnes = new int[donnees.Length - 1];
 
-        for (int i = 0; i < donnees.Length - 1; i++)
-        {
-            tabdonnes[i] = Convert.ToInt32(donnees[i])* _taillemodule + _contours;
-        }
+        var coordonees = Coordonees(@"../../../Coordonées.txt",_version);
         
-        var coordonees = new List<int>(tabdonnes);
-        Console.Write(coordonees);
-        //probleme de format
+        foreach (var intArray in coordonees)
+        {
+            MotifsAlignement(intArray[0], intArray[0]);
+            MotifsAlignement(intArray[0], intArray[1]);
+            MotifsAlignement(intArray[1], intArray[0]);
+            MotifsAlignement(intArray[1], intArray[1]);
+
+        }
 
 
     }
@@ -259,6 +259,7 @@ public class QRCode : MyImage
         {
             for (int j = colonne - 2 * _taillemodule; j <= colonne + 2 * _taillemodule + (_taillemodule - 1); j++)
             {
+                
                 int newligne = ((2 * _taillemodule - ligne) + i) / _taillemodule;
                 int newcolonne = ((2 * _taillemodule - colonne) + j) / _taillemodule;
 
@@ -282,6 +283,51 @@ public class QRCode : MyImage
                 
             }
         }
+        
+    }
+    
+    
+    public int[][] Coordonees(string nomfichier, int version) // lecture du fichier pour determiner les coordonnées
+    {
+        StreamReader flux = null;
+        string lines;
+        int i = 0;
+        int[] coordonee = new int[] { };
+        try
+        {
+            flux = new StreamReader(nomfichier);
+            while ((lines = flux.ReadLine()) != null)
+            {
+                
+                if (i == _version - 2)
+                {
+                    string [] ligne = lines.Split(" ");
+                    coordonee = new int [ligne.Length - 1];
+                    for (int j = 0; j < ligne.Length-1; j++)
+                    {
+                        coordonee[j] = (Convert.ToInt32(ligne[j + 1]))*_taillemodule + _contours;
+                    }
+                }
+
+                i++;
+            }
+        }
+        catch (FileNotFoundException e)
+        {
+            Console.WriteLine(" Le fichier spécifié " + nomfichier + " est introuvable, veuillez réessayer.\nMessage d'erreur : \n" + e.Message);
+        }
+        catch (Exception e1)
+        {
+            Console.WriteLine(e1.Message);
+        }
+        finally
+        {
+            if (flux != null) flux.Close();
+        }
+            
+        var donees = Combinaisons(coordonee);
+            
+        return donees.Where(x => x.Length ==2).ToArray();
     }
 
 

@@ -1,4 +1,10 @@
 // ReSharper disable All
+using System;
+using System.IO;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using ReedSolomon;
 
 namespace Projet_S4
 {
@@ -132,6 +138,7 @@ namespace Projet_S4
             this._typeImage = image._typeImage;
             this._height = image._height;
             this._width = image._width;
+            this._sizeFile = Height*Width*3 +Offset;
             _numberRgb = image._numberRgb;
             this._offset = image._offset;
             _imageData = image._imageData;
@@ -142,7 +149,8 @@ namespace Projet_S4
             _numberRgb = 24;
             _offset = 54;
             _typeImage = "BMP";
-            
+            _sizeFile = Height * Width * 3 + Offset;
+
         }
 
         #endregion
@@ -267,7 +275,7 @@ namespace Projet_S4
  
         #region Méthode qui tranforme une image en fichier binaire
         //Méthode ok après check Debug
-        public void From_Image_To_File( string path)
+        public void From_Image_To_File(string path)
         {
             // creation de 3 lists, une pour chaque catégorie, où on y ajoute les données une à une 
 
@@ -336,7 +344,7 @@ namespace Projet_S4
             #region Image
 
             List<byte> image = new List<byte>(); //Image
-            for (int i = 0; i < this.Height; i++)
+            for (int i = 0; i < this.Height; i++)//Lecture inverse donc de i = height-1; i>=0;i--) changer et tester tt les méthdodes depuis le début
             {
                 for (int j = 0; j < this.Width; j++)
                 {
@@ -1155,7 +1163,25 @@ namespace Projet_S4
         
         #endregion
         
-        
+        //TD8
+        #region Méthode pour Combinaisons 
+      public static IEnumerable<T[]> Combinaisons<T>(IEnumerable<T> source)
+          {
+              if (null == source)
+                  throw new ArgumentNullException(nameof(source));
+
+              var data = source.ToArray();
+
+              return Enumerable
+                  .Range(0, 1 << (data.Length))
+                  .Select(index => data
+                      .Where((v, i) => (index & (1 << i)) != 0)
+                      .ToArray());
+          }
+
+      #endregion
     }
+    
+    
 }
 
