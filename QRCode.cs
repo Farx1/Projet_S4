@@ -97,7 +97,10 @@ public class QRCode : MyImage
 
 
     }
-
+    #endregion
+    
+    #region Constructeur et écriture du QRCode
+    //Peut être séparé plus tard
     public QRCode(int taillemodule, int version, int contours, string mode)
     {
         int bordsQR = (8 * 2 + (4 * version + 1)) * taillemodule + 2 * contours;
@@ -124,6 +127,7 @@ public class QRCode : MyImage
         EcritureMotifsAlignement();
         MotifsDeSynchro();
         DarkModule();
+        EcritureInfoVersionQRCode();
         
         
         
@@ -347,6 +351,80 @@ public void DarkModule()
         return donees.Where(x => x.Length ==2).ToArray();
     }
     #endregion
+
+    public int[] InfoVersionQRCode()
+    {
+        
+        StreamReader? flux = null;
+        int i = 0;
+        string? lines;
+        int[] final = new int[] { };
+        if (_version < 7)
+        {
+            return Array.Empty<int>();
+        }
+        try
+        {
+            flux = new StreamReader(@"../../../InfosVersionQRCode.txt");
+            while((lines = flux.ReadLine()) != null)
+            {
+                if (i == _version - 7)
+                {
+                    string [] ligne = lines.Split(" ");
+                    final = new int [ligne[1].Length];
+                    for (int j = 0; j < ligne[1].Length; j++)
+                    {
+                        final[j] = (int) ligne[1][j] - 48;
+                        Console.WriteLine(final[j]);
+                    }
+                }
+
+                i++;
+            }
+
+            
+        }
+        catch (FileNotFoundException e)
+        {
+            Console.WriteLine(" Le fichier spécifié " + "InfosVersionQRCode.txt" + " est introuvable, veuillez réessayer.\nMessage d'erreur : \n" + e.Message);
+        }
+        catch (Exception e1)
+        {
+            Console.WriteLine(e1.Message);
+        }
+        finally
+        {
+            if (flux != null) flux.Close();
+        }
+        
+        return final;
+    }
+
+    public void EcritureInfoVersionQRCode()
+    {
+        if (_version < 7)
+        {
+            return;
+        }
+        else
+        {
+            int[] couleur = InfoVersionQRCode();
+            for (int i = 0; i < couleur.Length; i++)
+            {
+                Pixel pixel = couleur[i] == 1 ? new Pixel(0, 0, 0) : new Pixel(255, 255, 255);
+                int ligne = (2 - i % 3) * _taillemodule + ImageData.GetLength(0) - 11 * _taillemodule - _contours;
+                int colonne = (5 - i / 3) * _taillemodule + _contours;
+                for (int a = ligne; a < _taillemodule + ligne; a++)
+                {
+                    for (int b = colonne; b < _taillemodule + colonne; b++)
+                    {
+                        ImageData[a, b] = pixel;
+                        ImageData[b, a] = pixel;
+                    }
+                }
+            }
+        }
+    }
 
 
 
