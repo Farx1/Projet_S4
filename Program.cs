@@ -8,7 +8,7 @@
           
             MyImage test = new MyImage("../../../Images/tunnel.bmp");
             MyImage test2 = new MyImage("../../../Images/coco.bmp");
-            MyImage test3 = new MyImage();
+            MyImage test3 = new MyImage("../../../Images/lac.bmp");
             /*
           byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
           Console.WriteLine("\n Header \n");
@@ -48,14 +48,15 @@
           */
             
             /*
-            for (int i = 0; i <=360; i++)
+            for (int i = 90; i <=94; i++)
             {
-                MyImage test3 = new MyImage("../../../Images/lac.bmp");
-                var lol = test3.Rotate(i);//marche pour 47 -75 mais pas pour d'autres valeurs
+                MyImage test1 = new MyImage("../../../Images/lac.bmp");
+                var lol = test1.Rotate(i);//marche pour 47 -75 mais pas pour d'autres valeurs
                 lol.From_Image_To_File($@"../../../Images/Test{i}.bmp");
                 
             }
             */
+            
 
             //var lol = test;
             //MyImage mirr= test.Rotate(5);
@@ -64,6 +65,8 @@
             //mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
             
             //MyImage mand = test;
+            //MyImage rot =mand.Rotate(67);
+            //rot.From_Image_To_File(@"../../../Images/Test4.bmp");
             //MyImage coco = test2;
             //mand.DrawMandelbrotB();
             //mand.CacherImage(test2); 
@@ -77,10 +80,8 @@
             //gris.From_Image_To_File("../../../Images/Test5.bmp");
             //MyImage zut =mand.Rotate(67);
             //zut.From_Image_To_File("../../../Images/Test6.bmp");
-            //QRCode test3 = new QRCode("bonsoir");
-            //test3.Affichage(1);
             //gris.From_Image_To_File("../../../Test5.bmp");
-            
+
             // test3.ImageData = new Pixel[500, 500];
             // test3.Height = 500;
             // test3.Width = 500;
@@ -88,10 +89,16 @@
             // test3.From_Image_To_File("../../../Images/Test5.bmp");
             //gris.DrawHistogram();
             //gris.From_Image_To_File(@"../../../Images/Test5.bmp");
-            QRCode test4 = new QRCode(1,40,0,"0010");//rajouter le mask
-            //test4.toString();
-            //zut.toString();
-            //test4.Coordonees(@"../../../Coordonées.txt", 4);
+            
+            /*
+            for (int i = 1; i <= 40; i++)
+            {
+                QRCode qrcode = new QRCode(10,i,0,"0010");//rajouter le mask
+
+            }
+            */
+            QRCode test4 = new QRCode(10,7,0,"0010");
+            
 
 
 

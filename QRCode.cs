@@ -99,6 +99,7 @@ public class QRCode : MyImage
     }
     #endregion
     
+    
     #region Constructeur et écriture du QRCode
     //Peut être séparé plus tard
     public QRCode(int taillemodule, int version, int contours, string mode)
@@ -140,7 +141,7 @@ public class QRCode : MyImage
         
         
         
-        this.From_Image_To_File("../../../Images/QRCode.bmp");
+        this.From_Image_To_File($"../../../Images/QRCode(V{_version}).bmp");
     }
     #endregion
     
@@ -352,6 +353,8 @@ public void DarkModule()
     }
     #endregion
 
+    
+    #region Version du QRCode et Ecriture
     public int[] InfoVersionQRCode()
     {
         
@@ -375,7 +378,7 @@ public void DarkModule()
                     for (int j = 0; j < ligne[1].Length; j++)
                     {
                         final[j] = (int) ligne[1][j] - 48;
-                        Console.WriteLine(final[j]);
+                        //Console.WriteLine(final[j]);debug
                     }
                 }
 
@@ -425,6 +428,7 @@ public void DarkModule()
             }
         }
     }
+    #endregion
 
 
 

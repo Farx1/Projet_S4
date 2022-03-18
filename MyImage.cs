@@ -344,7 +344,7 @@ namespace Projet_S4
             #region Image
 
             List<byte> image = new List<byte>(); //Image
-            for (int i = this.Height-1; i >= 0; i--)//Lecture inverse donc de i = height-1; i>=0;i--) changer et tester tt les méthdodes depuis le début
+            for (int i =Height-1; i >=0; i--)//Lecture inverse donc de i = height-1; i>=0;i--) changer et tester tt les méthdodes depuis le début
             {
                 for (int j = 0; j < this.Width; j++)
                 {
@@ -379,7 +379,7 @@ namespace Projet_S4
                 for (int j = 0; j < _width; j++)
                 {
                     byte moyenne = Convert.ToByte((this.ImageData[i,j].Red+ this.ImageData[i,j].Green + this.ImageData[i,j].Blue)/3) ;
-                    nuancgris[i, j] = new Pixel(moyenne, moyenne, moyenne);
+                    nuancgris[Height-i-1, j] = new Pixel(moyenne, moyenne, moyenne);
                 }
             }
 
@@ -397,11 +397,11 @@ namespace Projet_S4
                     byte moyenne = Convert.ToByte((this.ImageData[i,j].Red+ this.ImageData[i,j].Green + this.ImageData[i,j].Blue)/3) ;
                     if (moyenne > 127)
                     {
-                        neb[i, j] = new Pixel(255, 255, 255);
+                        neb[Height-i-1, j] = new Pixel(255, 255, 255);
                     }
                     else
                     {
-                        neb[i, j] = new Pixel(0, 0, 0);
+                        neb[Height-i-1, j] = new Pixel(0, 0, 0);
 
                     }
                 }
@@ -418,7 +418,7 @@ namespace Projet_S4
             {
                 for (int j = 0; j < this._imageData.GetLength(1); j++)
                 {
-                    neg[i, j] = new Pixel(Convert.ToByte(255-this._imageData[i,j].Red) , Convert.ToByte(255-this._imageData[i,j].Green), Convert.ToByte(255-this._imageData[i,j].Blue));
+                    neg[Height-i-1, j] = new Pixel(Convert.ToByte(255-this._imageData[i,j].Red) , Convert.ToByte(255-this._imageData[i,j].Green), Convert.ToByte(255-this._imageData[i,j].Blue));
 
                 }
             }
@@ -445,7 +445,7 @@ namespace Projet_S4
             {
                 for (int j = 0; j < _width; j++)
                 {
-                    grand[i, j] = new Pixel (_imageData[(int)(i / facteur),(int) (j / facteur)]);
+                    grand[Height-i-1, j] = new Pixel (_imageData[(int)(i / facteur),(int) (j / facteur)]);
                 }
             }
             _imageData = grand;
@@ -467,7 +467,7 @@ namespace Projet_S4
             {
                 for (int j = 0; j < _width; j++)
                 {
-                    petit[i, j] = new Pixel(this._imageData[(int) (i * facteur), (int) (j * facteur)]); 
+                    petit[Height-i-1, j] = new Pixel(this._imageData[(int) (i * facteur), (int) (j * facteur)]); 
                 }
             }
 
@@ -478,27 +478,27 @@ namespace Projet_S4
 
         
         #region Méthodes mirroir(Horizontal/Vertical)
-        public void MirroirHorizontal()
+        public void MirroirVertical()
         {
             Pixel[,] mirh = new Pixel [_height, _width];
             for (int i = 0; i < this._imageData.GetLength(0); i++)
             {
                 for (int j = 0; j < this._imageData.GetLength(1); j++)
                 {
-                    mirh[i, j] = this._imageData[i,this._imageData.GetLength(1)-1- j];
+                    mirh[Height-i-1, j] = this._imageData[i,this._imageData.GetLength(1)-1- j];
                 }
             }
 
             _imageData = mirh;
         }
-        public void MirroirVertical()
+        public void MirroirHorizontal()
         {
             Pixel[,] mirv = new Pixel [_height, _width];
             for (int i = 0; i < this._imageData.GetLength(0); i++)
             {
                 for (int j = 0; j < this._imageData.GetLength(1); j++)
                 {
-                    mirv[i, j] = this._imageData[this._imageData.GetLength(0)-1- i,j];
+                    mirv[Height-i-1, j] = this._imageData[this._imageData.GetLength(0)-1- i,j];
                 }
             }
 
@@ -564,12 +564,13 @@ namespace Projet_S4
         */
             
             Pixel[,] rot = new Pixel[_width, _height];
-            for (int i = 0; i < _width; i++)
+            
+            for (int i = 0; i<_width; i++)
                 {
                     
                     for (int j = 0; j < _height; j++)
                     {
-                        rot[i, j] = _imageData[_imageData.GetLength(0)-j-1, i];
+                        rot[_imageData.GetLength(1)-i-1,j] = _imageData[_imageData.GetLength(0)-j-1, i];
                     }
                 }
                 (_height, _width) = (_width, _height);
@@ -600,9 +601,10 @@ namespace Projet_S4
                 for (int i = 0; i < prerot; i++)
                 {
                     //On fait plusieurs rotation majeures
-                    Rotate90();
-                }   
+                    imagerot.Rotate90();
+                } 
             }
+            
             
             if (rotation > 0)
                 
@@ -640,7 +642,7 @@ namespace Projet_S4
                         if (nvlhauteur >= 0 && nvllargeur >= 0 && nvlhauteur < this._imageData.GetLength(0) && nvllargeur < this._imageData.GetLength(1))
                         {
                             //Console.WriteLine($"({nvllargeur}, {nvlhauteur}) ==> ({i}, {j})");//Pour voir ancienne/nouvelle coordonées
-                            imagerot._imageData[i, j] = this._imageData[nvlhauteur, nvllargeur];
+                            imagerot._imageData[imagerot._height-i-1, j] = this._imageData[nvlhauteur, nvllargeur];
                         }
                     }
                 }
@@ -938,16 +940,16 @@ namespace Projet_S4
               } 
         */
        #endregion
-
-       
+        
+        
         #region Histogramme des couleurs d'une photo
        public void DrawHistogram() //histogramme des couleurs d'une photo
         {
             Pixel[,] pix = new Pixel[_height,_width];
             //il faudrait trouver comment calculer les facteurs automatiquement
             
-            double coeflargeur = 3;   //coco 1.245      lac 3
-            double coefhauteur = 0.09;//coco 0.086      lac 0.09
+            double coeflargeur = 1.235;   //coco 1.245      lac 3
+            double coefhauteur = 0.086;//coco 0.086      lac 0.09
             for (int i = 0; i < _height; i++)
             {
                 for (int j = 0; j < _width; j++)
@@ -975,7 +977,7 @@ namespace Projet_S4
                 {
                     for (int k = 0; k < 3; k++)
                     { 
-                        pix[i,Convert.ToInt32((int)(r * coeflargeur))+k].Red = 255;
+                        pix[Height-i-1,Convert.ToInt32((int)(r * coeflargeur))+k].Red = 255;
                     }
 
                 }
@@ -1001,7 +1003,7 @@ namespace Projet_S4
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        pix[i,Convert.ToInt32((int)(g * coeflargeur))+k].Blue = 255;
+                        pix[Height-i-1,Convert.ToInt32((int)(g * coeflargeur))+k].Blue = 255;
                     }
                     
 
@@ -1030,7 +1032,7 @@ namespace Projet_S4
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        pix[i,Convert.ToInt32((int)(b * coeflargeur))+k].Green = 255;
+                        pix[Height-i-1,Convert.ToInt32((int)(b * coeflargeur))+k].Green = 255;
                     }
                     
 
@@ -1050,6 +1052,8 @@ namespace Projet_S4
         #region Cacher l'image
         public void CacherImage(MyImage imagecach)
         {
+            this.MirroirVertical();
+            this.MirroirHorizontal();
             if(imagecach._height>_height)
             {
                 imagecach.Retrecir(Math.Ceiling((double)imagecach._height/(double)_height));
@@ -1058,7 +1062,14 @@ namespace Projet_S4
             {
                 imagecach.Retrecir(Math.Ceiling((double)imagecach._width/(double)_width));
             }
-            for (int i = 0; i < _height; i++)
+
+            if (imagecach._height < 2 * _height && imagecach._width < 2 * _width)
+            {
+                imagecach.Agrandir(2);
+            }
+
+            
+            for (int i = 0; i<_height; i++)
             {
                 //Console.WriteLine($"{i}");
                 for (int j = 0; j < _width; j++)
@@ -1089,8 +1100,8 @@ namespace Projet_S4
                         }
                         _imageData[i, j] = new Pixel(octet[0], octet[1], octet[2]);//on applique les nouvelles valeurs du pixel après incrustation de l'image a cacher
                     }
-                    
                 }
+                
             }
         }
         #region Méthodes pour convertir et utiliser les octets et valeurs en base de 2
@@ -1132,17 +1143,18 @@ namespace Projet_S4
         
         public MyImage DecoderImage()
         {
+            
             MyImage imagecach = new MyImage("../../../Images/Test5.bmp");
             Pixel[,] matrice = new Pixel[_height, _width];
             imagecach._height = _height;
             imagecach._width = _width;
             
-            for (int i = 0; i < _height; i++)
+            for (int i = 0;i<_height;i++)
             {
                 for (int j = 0; j < _width; j++)
                 {
                     byte[] octet = new byte[3] {0, 0, 0};
-                    byte[] octetcach = new byte[3] {_imageData[i, j].Red, _imageData[i, j].Green, _imageData[i, j].Blue};
+                    byte[] octetcach = new byte[3] {_imageData[imagecach._height-i-1, j].Red, _imageData[imagecach._height-i-1, j].Green, _imageData[imagecach._height-i-1, j].Blue};
 
                     for (int k = 0; k < 3; k++)
                     {
@@ -1151,12 +1163,13 @@ namespace Projet_S4
                             octet[k] = ValCachee(octet[k], Decalage(octetcach[k], l), l);
                         }
 
-                        _imageData[i, j] = new Pixel(octet[0], octet[1], octet[2]);
+                        _imageData[Height-i-1, j] = new Pixel(octet[0], octet[1], octet[2]);
                     }
                 }
             }
 
-            imagecach._imageData = matrice;                             
+            imagecach._imageData = matrice;
+            
             return imagecach;
         }
         #endregion
@@ -1180,6 +1193,7 @@ namespace Projet_S4
           }
 
       #endregion
+      
     }
     
     
