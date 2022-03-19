@@ -7,7 +7,7 @@ public class QRCode : MyImage
     #region Constructeur et Attributs
     
     private int _version;
-    private string _mode ; 
+    private string _modecorrection ; 
     private int _contours;
     private char[] _alphanum =
     {
@@ -15,7 +15,7 @@ public class QRCode : MyImage
         'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ', '$', '%', '*', '+', '-', '.', '/',
         ':'
     };
-    private string _chainbits = "";
+    private int[] _polymasque ;
     private int _mask;
     private int _taillemodule;
     private int _nivcorrection;
@@ -28,8 +28,8 @@ public class QRCode : MyImage
 
     public string Mode
     {
-        get => _mode;
-        set => _mode = value ?? throw new ArgumentNullException(nameof(value));
+        get => _modecorrection;
+        set => _modecorrection = value ?? throw new ArgumentNullException(nameof(value));
     }
 
     public int Contours
@@ -45,10 +45,10 @@ public class QRCode : MyImage
         set => _alphanum = value ?? throw new ArgumentNullException(nameof(value));
     }
 
-    public string Chainbits
+    public int[] Chainbits
     {
-        get => _chainbits;
-        set => _chainbits = value ?? throw new ArgumentNullException(nameof(value));
+        get => _polymasque;
+        set => _polymasque = value ?? throw new ArgumentNullException(nameof(value));
     }
 
     public int Mask
@@ -69,16 +69,16 @@ public class QRCode : MyImage
         set => _nivcorrection = value;
     }
 
-    public QRCode(int version,int contours, string chainbits, int mask, int taillemodule, int nivcorrection,Pixel[,] imageData, string paires,string mode,int height,int width,string typeImage,int numberRgb,int offset)
+    public QRCode(int version,int contours, int[] polymasque, int mask, int taillemodule, int nivcorrection,Pixel[,] imageData, string paires,string modecorrection,int height,int width,string typeImage,int numberRgb,int offset)
     {
         _version = version;
         _contours = contours;
-        _chainbits = chainbits;
+        _polymasque = polymasque;
         _mask = mask;
         _taillemodule = taillemodule;
         _nivcorrection = nivcorrection;
         ImageData = imageData;
-        _mode = mode;
+        _modecorrection = modecorrection;
         Height = height;
         Width = width;
         TypeImage = typeImage;
@@ -94,7 +94,7 @@ public class QRCode : MyImage
     
     #region Constructeur et écriture du QRCode
     //Peut être séparé plus tard
-    public QRCode(int taillemodule, int version, int contours, string mode)
+    public QRCode(int taillemodule, int version, int contours, string modecorrection)
     {
         int bordsQR = (8 * 2 + (4 * version + 1)) * taillemodule + 2 * contours;
         Height = bordsQR;
@@ -104,14 +104,13 @@ public class QRCode : MyImage
         
         _version = version;
         _contours = contours;
-        _mode = mode;
+        _modecorrection = modecorrection;
         SizeFile = Height * Width * 3 + Offset;
         _taillemodule = taillemodule;
         Offset = 54;
         NumberRgb = 24;
         _mask = 4;
         _nivcorrection = 1;
-        
         ModulesDeRecherches(0 + _contours, 0 + _contours);
         ModulesDeRecherches(0 + Height - (7 * _taillemodule) - _contours,0+_contours);
         ModulesDeRecherches(0 +  _contours, 0 + Width - (7 * _taillemodule) - _contours);
@@ -431,17 +430,18 @@ public void DarkModule()
     #region Récupération des informations du format du QRCode sous un int[]
     public int[] InfoFormatQRcode()
     {
+        
         var bin = Convert.ToString(_mask,2);
         int[] tab = new int[bin.Length];
         for (int i = 0; i < bin.Length; i++)
         {
-            tab[i] = bin[i] - 48;
+            tab[i] = bin[i] -48;
         }
         var correction = Convert.ToString(_nivcorrection,2);
         int[] tabcor = new int[correction.Length];
         for (int i = 0; i < correction.Length; i++)
         {
-            tabcor[i] = correction[i] - 48;
+            tabcor[i] = correction[i] -48;
         }
 
         var finalbin = tab;
@@ -460,7 +460,7 @@ public void DarkModule()
         var final = finalcor.Concat(finalbin).ToArray();
         
         
-
+        
         int[] inform = MyImage.TrimAndPad(tabcor,14);
         var poly = new[] {1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1};
         var polynome = MyImage.TrimAndPad(poly, 14);
@@ -482,7 +482,7 @@ public void DarkModule()
         
         
         return MyImage.XOR(masque,final.Concat(div).ToArray());
-
+        
     }
     #endregion
     
@@ -533,7 +533,70 @@ public void DarkModule()
     
     #endregion
     
-    
+    #region Méthode pour récupérer le polynome ( a revoir meme a supprimer)
+    /*
+    public int[] PolynomeMasque()
+    {
+        //faire un .txt avec tt puis le lire prcq c'est relou
+        int[] polymasque = new int[] { };
+        if (_modecorrection == "L")
+        {
+            if (_mask == 0) polymasque = new int[] {1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0};
+            if (_mask == 1) polymasque = new int[] {1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1};
+            if (_mask == 2) polymasque = new int[] {1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0};
+            if (_mask == 3) polymasque = new int[] {1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1};
+            if (_mask == 4) polymasque = new int[] {1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1};
+            if (_mask == 5) polymasque = new int[] {1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0};
+            if (_mask == 6) polymasque = new int[] {1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1};
+            if (_mask == 7) polymasque = new int[] {1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0};
+            return polymasque;
+
+        }
+        if (_modecorrection == "M")
+        {
+            if (_mask == 0) polymasque = new int[] {1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0};
+            if (_mask == 1) polymasque = new int[] {1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1};
+            if (_mask == 2) polymasque = new int[] {1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0};
+            if (_mask == 3) polymasque = new int[] {1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1};
+            if (_mask == 4) polymasque = new int[] {1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1};
+            if (_mask == 5) polymasque = new int[] {1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0};
+            if (_mask == 6) polymasque = new int[] {1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1};
+            if (_mask == 7) polymasque = new int[] {1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0};
+            return polymasque;
+        }                                            
+        if (_modecorrection == "Q")
+        {
+            if (_mask == 0) polymasque = new int[] {0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1};
+            if (_mask == 1) polymasque = new int[] {0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0};
+            if (_mask == 2) polymasque = new int[] {0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1};
+            if (_mask == 3) polymasque = new int[] {0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0};
+            if (_mask == 4) polymasque = new int[] {0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0};
+            if (_mask == 5) polymasque = new int[] {0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1};
+            if (_mask == 6) polymasque = new int[] {0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0};
+            if (_mask == 7) polymasque = new int[] {0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1};
+            return polymasque;
+        }                                            
+        if (_modecorrection == "H")
+        {
+            if (_mask == 0) polymasque = new int[] {0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1};
+            if (_mask == 1) polymasque = new int[] {0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0};
+            if (_mask == 2) polymasque = new int[] {0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1};
+            if (_mask == 3) polymasque = new int[] {0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0};
+            if (_mask == 4) polymasque = new int[] {0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0};
+            if (_mask == 5) polymasque = new int[] {0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1};
+            if (_mask == 6) polymasque = new int[] {0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0};
+            if (_mask == 7) polymasque = new int[] {0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1};
+            return polymasque;
+        }
+        else
+        {
+            throw new ArgumentException("Mode de correction introuvable");
+        }
+
+        return polymasque;
+    }
+    */
+    #endregion
     
     
     #endregion

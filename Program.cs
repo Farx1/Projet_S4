@@ -90,14 +90,15 @@
             //gris.DrawHistogram();
             //gris.From_Image_To_File(@"../../../Images/Test5.bmp");
             
-            
+            /*
             for (int i = 1; i <= 40; i++)
             {
                 QRCode qrcode = new QRCode(10,i,0,"0010");//rajouter le mask
 
             }
+            */
             
-            //QRCode test4 = new QRCode(10,7,0,"0010");
+            QRCode test4 = new QRCode(10,7,0,"0010");
             
 
 
