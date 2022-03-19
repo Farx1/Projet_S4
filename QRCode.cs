@@ -109,7 +109,8 @@ public class QRCode : MyImage
         _taillemodule = taillemodule;
         Offset = 54;
         NumberRgb = 24;
-        
+        _mask = 4;
+        _nivcorrection = 1;
         
         ModulesDeRecherches(0 + _contours, 0 + _contours);
         ModulesDeRecherches(0 + Height - (7 * _taillemodule) - _contours,0+_contours);
@@ -121,6 +122,7 @@ public class QRCode : MyImage
         MotifsDeSynchro();
         DarkModule();
         EcritureInfoVersionQRCode();
+        EcritureInfoFormat();
         
         
         
@@ -423,32 +425,41 @@ public void DarkModule()
     #endregion
     
     
-    #region Format QRCode et Ecriture Format (a finir)
+    #region Format QRCode et Ecriture des Info du Format (a finir)
+    
 
+    #region Récupération des informations du format du QRCode sous un int[]
     public int[] InfoFormatQRcode()
     {
         var bin = Convert.ToString(_mask,2);
         int[] tab = new int[bin.Length];
         for (int i = 0; i < bin.Length; i++)
         {
-            tab[i] = bin[i];
-        }
-        if (tab.Length < 3)
-        {
-            tab = MyImage.UnShift(tab, 2);
+            tab[i] = bin[i] - 48;
         }
         var correction = Convert.ToString(_nivcorrection,2);
-        int[] tabcor = new int[bin.Length];
-        for (int i = 0; i < bin.Length; i++)
+        int[] tabcor = new int[correction.Length];
+        for (int i = 0; i < correction.Length; i++)
         {
-            tabcor[i] = correction[i];
+            tabcor[i] = correction[i] - 48;
         }
-        if (tabcor.Length < 2)
+
+        var finalbin = tab;
+        var finalcor = tabcor;
+        
+        if (finalbin.Length < 3)
         {
-            tabcor = MyImage.UnShift(tabcor, 2);
+            finalbin = MyImage.UnShift(finalbin, 2);
         }
         
-        tabcor.Concat(tab).ToArray();
+        if (finalcor.Length < 2)
+        {
+            finalcor = MyImage.UnShift(finalcor, 2);
+        }
+        
+        var final = finalcor.Concat(finalbin).ToArray();
+        
+        
 
         int[] inform = MyImage.TrimAndPad(tabcor,14);
         var poly = new[] {1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1};
@@ -469,9 +480,58 @@ public void DarkModule()
         
         var masque = new[] {1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0};
         
-        return MyImage.XOR(masque,tabcor.Concat(div).ToArray());
+        
+        return MyImage.XOR(masque,final.Concat(div).ToArray());
 
     }
+    #endregion
+    
+    
+    #region Ecriture du Format sur le QRCode
+
+    public void EcritureInfoFormat()
+    {
+        int[] infoformat = InfoFormatQRcode();
+        int colonne = 8 * _taillemodule + _contours;
+        int ligne = 8 * _taillemodule + _contours;
+        
+        int i = Height - _contours -_taillemodule;
+        int j = 0 + _contours;
+        foreach(int n in infoformat)
+        {
+            if (ImageData[i, colonne] != null) i -= _taillemodule;
+            if (ImageData[ligne, j] != null) j += _taillemodule;
+
+            for (int l = 0; l < _taillemodule; l++)
+            {
+                for (int c = 0; c < _taillemodule; c++)
+                {
+                    ImageData[i + l, colonne + c] = n == 0 ? new Pixel(255, 255, 255) : new Pixel(0, 0, 0);
+                    ImageData[ligne+l, j + c] = n == 0 ? new Pixel(255, 255, 255) : new Pixel(0, 0, 0);
+
+                }
+            }
+
+            if (i -_taillemodule == (4 * _version + 9) * _taillemodule + _contours)
+            {
+                i = 8 * _taillemodule + _contours;
+                continue;
+            }
+
+            if (j == 8 * _taillemodule + _contours)
+            {
+                j = Width - 8 * _taillemodule - _contours;
+                continue;
+            }
+
+            i -= _taillemodule;
+            j += _taillemodule;
+        }
+
+    }
+    
+    
+    #endregion
     
     
     
