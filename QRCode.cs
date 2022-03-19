@@ -1,14 +1,6 @@
 // ReSharper disable All
-using System;
-using System.IO;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using ReedSolomon;
 
 namespace Projet_S4;
-
-
 public class QRCode : MyImage
 {
     
@@ -354,7 +346,7 @@ public void DarkModule()
     #endregion
 
     
-    #region Version du QRCode et Ecriture
+    #region Version du QRCode et Ecriture Version
     public int[] InfoVersionQRCode()
     {
         
@@ -429,7 +421,61 @@ public void DarkModule()
         }
     }
     #endregion
+    
+    
+    #region Format QRCode et Ecriture Format (a finir)
 
+    public int[] InfoFormatQRcode()
+    {
+        var bin = Convert.ToString(_mask,2);
+        int[] tab = new int[bin.Length];
+        for (int i = 0; i < bin.Length; i++)
+        {
+            tab[i] = bin[i];
+        }
+        if (tab.Length < 3)
+        {
+            tab = MyImage.UnShift(tab, 2);
+        }
+        var correction = Convert.ToString(_nivcorrection,2);
+        int[] tabcor = new int[bin.Length];
+        for (int i = 0; i < bin.Length; i++)
+        {
+            tabcor[i] = correction[i];
+        }
+        if (tabcor.Length < 2)
+        {
+            tabcor = MyImage.UnShift(tabcor, 2);
+        }
+        
+        tabcor.Concat(tab).ToArray();
 
+        int[] inform = MyImage.TrimAndPad(tabcor,14);
+        var poly = new[] {1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1};
+        var polynome = MyImage.TrimAndPad(poly, 14);
+        var div = MyImage.XOR(inform, polynome);
+        div = MyImage.Trim(div);
+        while (div.Length > 10)
+        {
+            polynome = MyImage.TrimAndPad(poly, div.Length);
+            div = MyImage.XOR(div, polynome);
+            div = MyImage.Trim(div);
+        }
+
+        if (div.Length < 10)
+        {
+            div = MyImage.Pad(div, 10);
+        }
+        
+        var masque = new[] {1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0};
+        
+        return MyImage.XOR(masque,tabcor.Concat(div).ToArray());
+
+    }
+    
+    
+    
+    
+    #endregion
 
 }
