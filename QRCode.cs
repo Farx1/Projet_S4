@@ -514,13 +514,13 @@ public void DarkModule()
 
             if (i -_taillemodule == (4 * _version + 9) * _taillemodule + _contours)
             {
-                i = 8 * _taillemodule + _contours;
+                i = 9 * _taillemodule + _contours;
                 continue;
             }
 
             if (j == 8 * _taillemodule + _contours)
             {
-                j = Width - 8 * _taillemodule - _contours;
+                j = ImageData.GetLength(0) - 8 * _taillemodule - _contours;
                 continue;
             }
 

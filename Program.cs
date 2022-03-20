@@ -98,7 +98,7 @@
             }
             */
             
-            QRCode test4 = new QRCode(10,7,0,"0010");
+            QRCode test4 = new QRCode(1,7,0,"0010");
             
 
 

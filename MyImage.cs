@@ -1226,7 +1226,7 @@ namespace Projet_S4
           var result = new int[x.Length];
           for (int i = 0; i < result.Length; i++)
           {
-              result[i] = x[i] == 1 && y[i] == 1 ? 0 : x[i] != y[i] ? 1 : 0;
+              result[i] = x[i] == 1 && y[i] == 1 ? 0 : x[i] != y[i] ? 1 : 0; 
           }
           return result;
       }
