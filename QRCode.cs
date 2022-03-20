@@ -126,12 +126,6 @@ public class QRCode : MyImage
         
         
         QRCode.FillImageWithWhite();
-
-        
-        
-        
-        
-        
         
         
         this.From_Image_To_File($"../../../Images/QRCode(V{_version}).bmp");
@@ -512,7 +506,7 @@ public void DarkModule()
                 }
             }
 
-            if (i -_taillemodule == (4 * _version + 9) * _taillemodule + _contours)
+            if (i -1*_taillemodule == (4 * _version + 9) * _taillemodule + _contours)
             {
                 i = 9 * _taillemodule + _contours;
                 continue;

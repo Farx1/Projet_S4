@@ -75,9 +75,9 @@
             //code.DecoderImage();
 
             //code.From_Image_To_File("../../../Images/Test6.bmp");
-            //MyImage gris = new MyImage("../../../Images/coco.bmp");
-            //gris.Agrandir(20);
-            //gris.From_Image_To_File("../../../Images/Test5.bmp");
+            MyImage gris = new MyImage("../../../Images/coco.bmp");
+            gris.DrawHistogram();
+            gris.From_Image_To_File("../../../Images/Test5.bmp");
             //MyImage zut =mand.Rotate(67);
             //zut.From_Image_To_File("../../../Images/Test6.bmp");
             //gris.From_Image_To_File("../../../Test5.bmp");
@@ -98,11 +98,11 @@
             }
             */
             
-            QRCode test4 = new QRCode(1,7,0,"0010");
+            //QRCode test4 = new QRCode(1,7,0,"0010");
             
 
 
-
+            //Finir QRCode, Finir corriger méthodes MyImage , Voir si on fait un affichage
 
 
 

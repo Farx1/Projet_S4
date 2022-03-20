@@ -1,10 +1,5 @@
 // ReSharper disable All
-using System;
-using System.IO;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using ReedSolomon;
+
 
 namespace Projet_S4
 {
@@ -1177,6 +1172,9 @@ namespace Projet_S4
         #endregion
         
         //TD8
+        
+        #region Méthodes QRCode
+        
         #region Méthode pour Combinaisons 
       public static IEnumerable<T[]> Combinaisons<T>(IEnumerable<T> source)
           {
@@ -1231,6 +1229,8 @@ namespace Projet_S4
           return result;
       }
       #endregion
+      
+        #endregion
       
       
     }
