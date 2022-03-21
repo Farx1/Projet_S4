@@ -188,13 +188,17 @@ public class QRCode : MyImage
             {
                 if ((i - _contours) / _taillemodule % 2 == 0)
                 {
-                    ImageData[i, j] = new Pixel(0,0 ,0 );
+                    ImageData[i, j] ??= new Pixel(0,0 ,0 );
+                }
+                else
+                {
+                    ImageData[i, j] ??= new Pixel(255, 255, 255);
                 }
                 //On utilise le else pour vérifie l'écriture
                 /*
                 else
                 {
-                    ImageData[i, j] = new Pixel(0,0,0);
+                    ImageData[i, j] = new Pixel(0,0,255);
                 }
                 */
             }
@@ -208,13 +212,11 @@ public class QRCode : MyImage
                 {
                     ImageData[i, j] = new Pixel(0, 0, 0);
                 }
-                //On utilise le else pour vérifie l'écriture
-                /*
                 else
                 {
-                    ImageData[i, j] = new Pixel(0,0,255);
+                    ImageData[i, j] = new Pixel(255,255,255);
                 }
-                */
+                
             }
         }
         
@@ -584,72 +586,8 @@ public void DarkModule()
     
     
     #endregion
-    
-    #region Méthode pour récupérer le polynome ( a revoir meme a supprimer)
-    
-    public int[] PolynomeMasque()
-    {
-        //faire un .txt avec tt puis le lire prcq c'est relou
-        int[] polymasque = new int[] { };
-        if (_modecorrection == "L")
-        {
-            if (_mask == 0) polymasque = new int[] {1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0};
-            if (_mask == 1) polymasque = new int[] {1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1};
-            if (_mask == 2) polymasque = new int[] {1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0};
-            if (_mask == 3) polymasque = new int[] {1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1};
-            if (_mask == 4) polymasque = new int[] {1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1};
-            if (_mask == 5) polymasque = new int[] {1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0};
-            if (_mask == 6) polymasque = new int[] {1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1};
-            if (_mask == 7) polymasque = new int[] {1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0};
-            return polymasque;
 
-        }
-        if (_modecorrection == "M")
-        {
-            if (_mask == 0) polymasque = new int[] {1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0};
-            if (_mask == 1) polymasque = new int[] {1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1};
-            if (_mask == 2) polymasque = new int[] {1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0};
-            if (_mask == 3) polymasque = new int[] {1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1};
-            if (_mask == 4) polymasque = new int[] {1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1};
-            if (_mask == 5) polymasque = new int[] {1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0};
-            if (_mask == 6) polymasque = new int[] {1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1};
-            if (_mask == 7) polymasque = new int[] {1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0};
-            return polymasque;
-        }                                            
-        if (_modecorrection == "Q")
-        {
-            if (_mask == 0) polymasque = new int[] {0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1};
-            if (_mask == 1) polymasque = new int[] {0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0};
-            if (_mask == 2) polymasque = new int[] {0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1};
-            if (_mask == 3) polymasque = new int[] {0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0};
-            if (_mask == 4) polymasque = new int[] {0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0};
-            if (_mask == 5) polymasque = new int[] {0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1};
-            if (_mask == 6) polymasque = new int[] {0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0};
-            if (_mask == 7) polymasque = new int[] {0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1};
-            return polymasque;
-        }                                            
-        if (_modecorrection == "H")
-        {
-            if (_mask == 0) polymasque = new int[] {0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1};
-            if (_mask == 1) polymasque = new int[] {0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0};
-            if (_mask == 2) polymasque = new int[] {0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1};
-            if (_mask == 3) polymasque = new int[] {0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0};
-            if (_mask == 4) polymasque = new int[] {0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0};
-            if (_mask == 5) polymasque = new int[] {0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1};
-            if (_mask == 6) polymasque = new int[] {0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0};
-            if (_mask == 7) polymasque = new int[] {0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1};
-            return polymasque;
-        }
-        else
-        {
-            throw new ArgumentException("Mode de correction introuvable");
-        }
-        
-    }
-    
-    #endregion
-    
-    
+
     #endregion
 
 }
