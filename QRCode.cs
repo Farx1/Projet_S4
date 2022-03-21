@@ -425,6 +425,8 @@ public void DarkModule()
     public int[] InfoFormatQRcode()
     {
         
+        #region Méthode pas bonne
+        /*
         var bin = Convert.ToString(_mask,2);
         int[] tab = new int[bin.Length];
         for (int i = 0; i < bin.Length; i++)
@@ -476,6 +478,52 @@ public void DarkModule()
         
         
         return MyImage.XOR(masque,final.Concat(div).ToArray());
+        */
+        #endregion
+        
+        StreamReader? flux = null;
+        int i = 0;
+        int k = 0;
+        if (_nivcorrection == 2) k = 9;
+        if (_nivcorrection == 3) k = 17;
+        if (_nivcorrection == 4) k = 25;
+
+            string? lines;
+        int[] final = new int[] { };
+        try
+        {
+            flux = new StreamReader(@"../../../InfosFormatQRCode.txt");
+            while((lines = flux.ReadLine()) != null)
+            {
+                if (i == _mask + k)
+                {
+                    string [] ligne = lines.Split(" ");
+                    final = new int [ligne[2].Length];
+                    for (int j = 0; j < ligne[2].Length; j++) 
+                    {
+                        final[j] = (int) ligne[2][j] - 48; 
+                        Console.Write(final[j]);
+                    }
+                }
+                i++;
+            }
+
+            
+        }
+        catch (FileNotFoundException e)
+        {
+            Console.WriteLine(" Le fichier spécifié " + "InfosFormatQRCode.txt" + " est introuvable, veuillez réessayer.\nMessage d'erreur : \n" + e.Message);
+        }
+        catch (Exception e1)
+        {
+            Console.WriteLine(e1.Message);
+        }
+        finally
+        {
+            if (flux != null) flux.Close();
+        }
+        
+        return final;
         
     }
     #endregion
@@ -500,27 +548,37 @@ public void DarkModule()
             {
                 for (int c = 0; c < _taillemodule; c++)
                 {
-                    ImageData[i + l, colonne + c] = n == 0 ? new Pixel(255, 255, 255) : new Pixel(0, 0, 0);
                     ImageData[ligne+l, j + c] = n == 0 ? new Pixel(255, 255, 255) : new Pixel(0, 0, 0);
-
+                    ImageData[i + l, colonne + c] = n == 0 ? new Pixel(255, 255, 255) : new Pixel(0, 0, 0);
                 }
             }
 
-            if (i -1*_taillemodule == (4 * _version + 9) * _taillemodule + _contours)
+            if (i - _taillemodule == (4 * _version + 9) * _taillemodule + _contours)
             {
-                i = 9 * _taillemodule + _contours;
+                i = 8 * _taillemodule + _contours;
                 continue;
             }
 
             if (j == 8 * _taillemodule + _contours)
             {
-                j = ImageData.GetLength(0) - 8 * _taillemodule - _contours;
+                j = ImageData.GetLength(0) - 7 * _taillemodule - _contours;
                 continue;
             }
-
+            
+            for (int l = 0; l < _taillemodule; l++)
+            {
+                for (int c = 0; c < _taillemodule; c++)
+                {
+                    ImageData[ligne+l,ImageData.GetLength(0) - 8 * _taillemodule - _contours+c] = ImageData[ligne +l,ImageData.GetLength(0) - 7 * _taillemodule - _contours+c];
+                }
+            }
+            
             i -= _taillemodule;
             j += _taillemodule;
         }
+
+        
+        
 
     }
     
@@ -528,7 +586,7 @@ public void DarkModule()
     #endregion
     
     #region Méthode pour récupérer le polynome ( a revoir meme a supprimer)
-    /*
+    
     public int[] PolynomeMasque()
     {
         //faire un .txt avec tt puis le lire prcq c'est relou
@@ -586,10 +644,9 @@ public void DarkModule()
         {
             throw new ArgumentException("Mode de correction introuvable");
         }
-
-        return polymasque;
+        
     }
-    */
+    
     #endregion
     
     
