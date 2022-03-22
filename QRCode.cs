@@ -15,7 +15,7 @@ public class QRCode : MyImage
         'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ', '$', '%', '*', '+', '-', '.', '/',
         ':'
     };
-    private int[] _polymasque ;
+    private string _chainbits ;
     private int _mask;
     private int _taillemodule;
     private int _nivcorrection;
@@ -45,10 +45,10 @@ public class QRCode : MyImage
         set => _alphanum = value ?? throw new ArgumentNullException(nameof(value));
     }
 
-    public int[] Chainbits
+    public string Chainbits
     {
-        get => _polymasque;
-        set => _polymasque = value ?? throw new ArgumentNullException(nameof(value));
+        get => _chainbits;
+        set => _chainbits = value ;
     }
 
     public int Mask
@@ -69,11 +69,11 @@ public class QRCode : MyImage
         set => _nivcorrection = value;
     }
 
-    public QRCode(int version,int contours, int[] polymasque, int mask, int taillemodule, int nivcorrection,Pixel[,] imageData, string paires,string modecorrection,int height,int width,string typeImage,int numberRgb,int offset)
+    public QRCode(int version,int contours, string chainbits, int mask, int taillemodule, int nivcorrection,Pixel[,] imageData, string paires,string modecorrection,int height,int width,string typeImage,int numberRgb,int offset)
     {
         _version = version;
         _contours = contours;
-        _polymasque = polymasque;
+        _chainbits = chainbits;
         _mask = mask;
         _taillemodule = taillemodule;
         _nivcorrection = nivcorrection;
@@ -94,7 +94,7 @@ public class QRCode : MyImage
     
     #region Constructeur et écriture du QRCode
     //Peut être séparé plus tard
-    public QRCode(int taillemodule, int version, int contours, string modecorrection)
+    public QRCode(int taillemodule, int version, int contours, int nivcorrection, int mask)
     {
         int bordsQR = (8 * 2 + (4 * version + 1)) * taillemodule + 2 * contours;
         Height = bordsQR;
@@ -104,13 +104,12 @@ public class QRCode : MyImage
         
         _version = version;
         _contours = contours;
-        _modecorrection = modecorrection;
         SizeFile = Height * Width * 3 + Offset;
         _taillemodule = taillemodule;
         Offset = 54;
         NumberRgb = 24;
-        _mask = 4;
-        _nivcorrection = 1;
+        _mask = mask;
+        _nivcorrection = nivcorrection;
         ModulesDeRecherches(0 + _contours, 0 + _contours);
         ModulesDeRecherches(0 + Height - (7 * _taillemodule) - _contours,0+_contours);
         ModulesDeRecherches(0 +  _contours, 0 + Width - (7 * _taillemodule) - _contours);
@@ -125,10 +124,10 @@ public class QRCode : MyImage
         
         
         
-        QRCode.FillImageWithWhite();
+        QRCode.FillImageWithGrey();//pour voir les modules non remplis
         
         
-        this.From_Image_To_File($"../../../Images/QRCode(V{_version}).bmp");
+        this.From_Image_To_File($"../../../Images/QRCode_V{_version}_N{_nivcorrection}_M{_mask}.bmp");
     }
     #endregion
     
@@ -483,12 +482,13 @@ public void DarkModule()
         */
         #endregion
         
+        #region méthode Fonctionelle
         StreamReader? flux = null;
         int i = 0;
         int k = 0;
-        if (_nivcorrection == 2) k = 9;
-        if (_nivcorrection == 3) k = 17;
-        if (_nivcorrection == 4) k = 25;
+        if (_nivcorrection == 2) k = 8;
+        if (_nivcorrection == 3) k = 16;
+        if (_nivcorrection == 4) k = 24;
 
             string? lines;
         int[] final = new int[] { };
@@ -504,7 +504,7 @@ public void DarkModule()
                     for (int j = 0; j < ligne[2].Length; j++) 
                     {
                         final[j] = (int) ligne[2][j] - 48; 
-                        Console.Write(final[j]);
+                        //Console.Write(final[j]);
                     }
                 }
                 i++;
@@ -526,8 +526,10 @@ public void DarkModule()
         }
         
         return final;
+        #endregion
         
     }
+
     #endregion
     
     

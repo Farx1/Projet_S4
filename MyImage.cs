@@ -653,6 +653,16 @@ namespace Projet_S4
            {
                for (int j = 0; j < this._imageData.GetLength(1); j++)
                {
+                   _imageData[i, j] ??= new Pixel(255, 255, 255);
+               }
+           }
+       }
+       public void FillImageWithGrey()
+       {
+           for (int i = 0; i < this._imageData.GetLength(0); i++)
+           {
+               for (int j = 0; j < this._imageData.GetLength(1); j++)
+               {
                    _imageData[i, j] ??= new Pixel(177, 177, 177);
                }
            }

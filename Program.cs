@@ -1,4 +1,6 @@
-﻿namespace Projet_S4
+﻿using System.Drawing.Printing;
+
+namespace Projet_S4
 {
     class Program
     {
@@ -98,7 +100,20 @@
             }
             */
             
-            QRCode test4 = new QRCode(1,7,0,"M");
+            //tt les qrcodes
+            /*
+            for(int i =1;i<=40;i++)
+            {
+                for (int j = 1; j <= 4; j++)
+                {
+                    for (int k = 0; k <= 7; k++)
+                    {
+                        QRCode QRCode = new QRCode(5,i,5,j,k);
+                    }
+                }
+            }
+            */
+            QRCode test4 = new QRCode(1,7,1,1,4);
 
 
 
