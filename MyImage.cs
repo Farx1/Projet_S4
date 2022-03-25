@@ -16,6 +16,7 @@ namespace Projet_S4
         private int _numberRgb;
         private int _offset;
         private Pixel[,] _imageData;
+        private int _ecriture;
 
         #endregion
 
@@ -32,11 +33,11 @@ namespace Projet_S4
         /// <param name="numberRgb"> nombre de bits par couleur </param>
         /// <param name="offset"> taille du header + headerinfo </param>
         /// <param name="imageData"> matrice RGB de l'image elle-même </param>
+        /// <param name="ecriture"></param>
 
         #region Premier constructeur
 
-        public MyImage(string typeImage, int height, int width, int size, int numberRgb, int offset,
-            Pixel[,] imageData)
+        public MyImage(string typeImage, int height, int width, int size, int numberRgb, int offset, Pixel[,] imageData, int ecriture)
         {
             this._typeImage = typeImage;
             this._height = height;
@@ -45,6 +46,7 @@ namespace Projet_S4
             _numberRgb = numberRgb;
             this._offset = offset;
             _imageData = imageData;
+            _ecriture = ecriture ;
         }
 
 
@@ -197,6 +199,11 @@ namespace Projet_S4
             set => _imageData = value;
         }
 
+        public int Ecriture
+        {
+            get => _ecriture;
+            set => _ecriture = value;
+        }
 
         #endregion
 
@@ -273,7 +280,6 @@ namespace Projet_S4
         public void From_Image_To_File(string path)
         {
             // creation de 3 lists, une pour chaque catégorie, où on y ajoute les données une à une 
-
             #region Header
 
             List<byte> header = new List<byte>(); //header
@@ -338,23 +344,48 @@ namespace Projet_S4
 
             #region Image
 
-            List<byte> image = new List<byte>(); //Image
-            for (int i =Height-1; i >=0; i--)//Lecture inverse donc de i = height-1; i>=0;i--) changer et tester tt les méthdodes depuis le début
+            if (_ecriture == 1)
             {
-                for (int j = 0; j < this.Width; j++)
+                List<byte> image = new List<byte>(); //Image
+                for (int i =Height-1; i >=0; i--)//Lecture inverse donc de i = height-1; i>=0;i--) changer et tester tt les méthdodes depuis le début
                 {
-                    image.Add(this.ImageData[i, j].Red);
-                    image.Add(this.ImageData[i, j].Green);
-                    image.Add(this.ImageData[i, j].Blue);
-                }
+                    for (int j = 0; j < this.Width; j++)
+                    {
+                        image.Add(this.ImageData[i, j].Red);
+                        image.Add(this.ImageData[i, j].Green);
+                        image.Add(this.ImageData[i, j].Blue);
+                    }
 
-                for (int l = 0; l < this._imageData.GetLength(1)%4; l++)
-                {
-                    image.Add(Convert.ToByte(0));
+                    for (int l = 0; l < this._imageData.GetLength(1)%4; l++)
+                    {
+                        image.Add(Convert.ToByte(0));
+                    }
                 }
+                var output = header.Concat(headerInfo).Concat(image); //fusionne les 3 listes
+                File.WriteAllBytes(path, output.ToArray());
             }
-             var output = header.Concat(headerInfo).Concat(image); //fusionne les 3 listes
-             File.WriteAllBytes(path, output.ToArray());
+
+            if (_ecriture == 0)
+            {
+                List<byte> image = new List<byte>(); //Image
+                for (int i = 0; i < this.Height; i++)//Lecture inverse donc de i = height-1; i>=0;i--) changer et tester tt les méthdodes depuis le début
+                {
+                    for (int j = 0; j < this.Width; j++)
+                    {
+                        image.Add(this.ImageData[i, j].Red);
+                        image.Add(this.ImageData[i, j].Green);
+                        image.Add(this.ImageData[i, j].Blue);
+                    }
+
+                    for (int l = 0; l < this._imageData.GetLength(1)%4; l++)
+                    {
+                        image.Add(Convert.ToByte(0));
+                    }
+                }
+                var output = header.Concat(headerInfo).Concat(image); //fusionne les 3 listes
+                File.WriteAllBytes(path, output.ToArray());
+            }
+            
              
             #endregion
             
@@ -374,7 +405,7 @@ namespace Projet_S4
                 for (int j = 0; j < _width; j++)
                 {
                     byte moyenne = Convert.ToByte((this.ImageData[i,j].Red+ this.ImageData[i,j].Green + this.ImageData[i,j].Blue)/3) ;
-                    nuancgris[Height-i-1, j] = new Pixel(moyenne, moyenne, moyenne);
+                    nuancgris[i, j] = new Pixel(moyenne, moyenne, moyenne);
                 }
             }
 
@@ -392,11 +423,11 @@ namespace Projet_S4
                     byte moyenne = Convert.ToByte((this.ImageData[i,j].Red+ this.ImageData[i,j].Green + this.ImageData[i,j].Blue)/3) ;
                     if (moyenne > 127)
                     {
-                        neb[Height-i-1, j] = new Pixel(255, 255, 255);
+                        neb[i, j] = new Pixel(255, 255, 255);
                     }
                     else
                     {
-                        neb[Height-i-1, j] = new Pixel(0, 0, 0);
+                        neb[i, j] = new Pixel(0, 0, 0);
 
                     }
                 }
@@ -413,7 +444,7 @@ namespace Projet_S4
             {
                 for (int j = 0; j < this._imageData.GetLength(1); j++)
                 {
-                    neg[Height-i-1, j] = new Pixel(Convert.ToByte(255-this._imageData[i,j].Red) , Convert.ToByte(255-this._imageData[i,j].Green), Convert.ToByte(255-this._imageData[i,j].Blue));
+                    neg[i, j] = new Pixel(Convert.ToByte(255-this._imageData[i,j].Red) , Convert.ToByte(255-this._imageData[i,j].Green), Convert.ToByte(255-this._imageData[i,j].Blue));
 
                 }
             }
@@ -440,7 +471,7 @@ namespace Projet_S4
             {
                 for (int j = 0; j < _width; j++)
                 {
-                    grand[Height-i-1, j] = new Pixel (_imageData[(int)(i / facteur),(int) (j / facteur)]);
+                    grand[i, j] = new Pixel (_imageData[(int)(i / facteur),(int) (j / facteur)]);
                 }
             }
             _imageData = grand;
@@ -462,7 +493,7 @@ namespace Projet_S4
             {
                 for (int j = 0; j < _width; j++)
                 {
-                    petit[Height-i-1, j] = new Pixel(this._imageData[(int) (i * facteur), (int) (j * facteur)]); 
+                    petit[i, j] = new Pixel(this._imageData[(int) (i * facteur), (int) (j * facteur)]); 
                 }
             }
 
@@ -473,27 +504,27 @@ namespace Projet_S4
 
         
         #region Méthodes mirroir(Horizontal/Vertical)
-        public void MirroirVertical()
+        public void MirroirAxeVertical()
         {
             Pixel[,] mirh = new Pixel [_height, _width];
             for (int i = 0; i < this._imageData.GetLength(0); i++)
             {
                 for (int j = 0; j < this._imageData.GetLength(1); j++)
                 {
-                    mirh[Height-i-1, j] = this._imageData[i,this._imageData.GetLength(1)-1- j];
+                    mirh[i ,j] = this._imageData[i,this._imageData.GetLength(1)-1-j];
                 }
             }
 
             _imageData = mirh;
         }
-        public void MirroirHorizontal()
+        public void MirroirAxeHorizontal()
         {
             Pixel[,] mirv = new Pixel [_height, _width];
             for (int i = 0; i < this._imageData.GetLength(0); i++)
             {
                 for (int j = 0; j < this._imageData.GetLength(1); j++)
                 {
-                    mirv[Height-i-1, j] = this._imageData[this._imageData.GetLength(0)-1- i,j];
+                    mirv[i, j] = this._imageData[this._imageData.GetLength(0)-1- i,j];
                 }
             }
 
@@ -503,10 +534,10 @@ namespace Projet_S4
 
         
         #region Méthodes pour la rotation d'une Image
-       public void Rotate90()
+       public void Rotatesupp(int deg)
        {
            //première méthode faite avec les méthodes miroirs pour plus d'efficacité dans la méthode Rotate()
-            /*
+            
            while (deg < 0) deg += 360;
            while (deg >= 360) deg -= 360;
 
@@ -530,9 +561,9 @@ namespace Projet_S4
                }
                else
                {
-                   this.Rotate90(90);
-                   this.MirroirVertical();
-                   this.MirroirHorizontal();
+                   this.Rotatesupp(90);
+                   this.MirroirAxeVertical();
+                   this.MirroirAxeHorizontal();
                }
            }
            else
@@ -556,26 +587,31 @@ namespace Projet_S4
                    _imageData = rot;
                }
            }
-        */
-            
-            Pixel[,] rot = new Pixel[_width, _height];
-            
-            for (int i = 0; i<_width; i++)
-                {
-                    
-                    for (int j = 0; j < _height; j++)
-                    {
-                        rot[_imageData.GetLength(1)-i-1,j] = _imageData[_imageData.GetLength(0)-j-1, i];
-                    }
-                }
-                (_height, _width) = (_width, _height);
-                _imageData = rot;
-           
        }
+       
+        #region Méthode Rotate90 basique
+       public void Rotate90()
+       {
+           Pixel[,] rot = new Pixel[this._width, this._height];
+           for (int i = 0; i<_width-1; i++)
+           {
+                    
+               for (int j = 0; j < _height; j++)
+               {
+                   rot[i,_imageData.GetLength(0)-j-1] = _imageData[j, i];
+               }
+           }
+
+           (_height, _width) = (_width, _height);
+           _imageData = rot;  
+       }
+       
+       #endregion
        
        public MyImage Rotate(int deg)
         {
             MyImage imagerot = new MyImage(this);
+            
             
             //On remet l'angle entre 0 et 360°
             while (deg < 0) deg += 360;
@@ -583,26 +619,21 @@ namespace Projet_S4
 
             int prerot = deg / 90;
             int rotation = deg % 90;
-            if (deg == 90 || deg == 180 || deg == 270 || deg == 360)
+
+            if (deg == 90 || deg == 180 || deg == 270)
             {
-                for (int i = 0; i < prerot; i++)
+                for (int k = 0; k < prerot; k++)
                 {
-                    //On fait plusieurs rotation majeures
                     imagerot.Rotate90();
-                } 
+                }
+                
             }
-            else
-            {
-                for (int i = 0; i < prerot; i++)
-                {
-                    //On fait plusieurs rotation majeures
-                    imagerot.Rotate90();
-                } 
-            }
+
+            //On fait plusieurs rotation majeures
+            Rotatesupp(deg-rotation);
             
             
             if (rotation > 0)
-                
             {
                 // On met l'angle de rotation en radians
                 double rad = (double)rotation * (Math.PI / 180.0);
@@ -637,7 +668,7 @@ namespace Projet_S4
                         if (nvlhauteur >= 0 && nvllargeur >= 0 && nvlhauteur < this._imageData.GetLength(0) && nvllargeur < this._imageData.GetLength(1))
                         {
                             //Console.WriteLine($"({nvllargeur}, {nvlhauteur}) ==> ({i}, {j})");//Pour voir ancienne/nouvelle coordonées
-                            imagerot._imageData[imagerot._height-i-1, j] = this._imageData[nvlhauteur, nvllargeur];
+                            imagerot._imageData[i, j] = this._imageData[nvlhauteur, nvllargeur];
                         }
                     }
                 }
@@ -953,7 +984,7 @@ namespace Projet_S4
             Pixel[,] pix = new Pixel[_height,_width];
             //il faudrait trouver comment calculer les facteurs automatiquement
             
-            double coeflargeur = 1.235;   //coco 1.245      lac 3
+            double coeflargeur = 1.245;   //coco 1.245      lac 3
             double coefhauteur = 0.086;//coco 0.086      lac 0.09
             for (int i = 0; i < _height; i++)
             {
@@ -982,7 +1013,7 @@ namespace Projet_S4
                 {
                     for (int k = 0; k < 3; k++)
                     { 
-                        pix[Height-i-1,Convert.ToInt32((int)(r * coeflargeur))+k].Red = 255;
+                        pix[i,Convert.ToInt32((int)(r * coeflargeur))+k].Red = 255;
                     }
 
                 }
@@ -1008,7 +1039,7 @@ namespace Projet_S4
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        pix[Height-i-1,Convert.ToInt32((int)(g * coeflargeur))+k].Blue = 255;
+                        pix[i,Convert.ToInt32((int)(g * coeflargeur))+k].Blue = 255;
                     }
                     
 
@@ -1037,7 +1068,7 @@ namespace Projet_S4
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        pix[Height-i-1,Convert.ToInt32((int)(b * coeflargeur))+k].Green = 255;
+                        pix[i,Convert.ToInt32((int)(b * coeflargeur))+k].Green = 255;
                     }
                     
 
@@ -1057,8 +1088,7 @@ namespace Projet_S4
         #region Cacher l'image
         public void CacherImage(MyImage imagecach)
         {
-            this.MirroirVertical();
-            this.MirroirHorizontal();
+
             if(imagecach._height>_height)
             {
                 imagecach.Retrecir(Math.Ceiling((double)imagecach._height/(double)_height));
@@ -1144,6 +1174,7 @@ namespace Projet_S4
         #endregion
         #endregion
         
+        
         #region Decoder l'image 
         
         public MyImage DecoderImage()
@@ -1159,7 +1190,7 @@ namespace Projet_S4
                 for (int j = 0; j < _width; j++)
                 {
                     byte[] octet = new byte[3] {0, 0, 0};
-                    byte[] octetcach = new byte[3] {_imageData[imagecach._height-i-1, j].Red, _imageData[imagecach._height-i-1, j].Green, _imageData[imagecach._height-i-1, j].Blue};
+                    byte[] octetcach = new byte[3] {_imageData[i, j].Red, _imageData[i, j].Green, _imageData[i, j].Blue};
 
                     for (int k = 0; k < 3; k++)
                     {
@@ -1168,7 +1199,7 @@ namespace Projet_S4
                             octet[k] = ValCachee(octet[k], Decalage(octetcach[k], l), l);
                         }
 
-                        _imageData[Height-i-1, j] = new Pixel(octet[0], octet[1], octet[2]);
+                        _imageData[i, j] = new Pixel(octet[0], octet[1], octet[2]);
                     }
                 }
             }

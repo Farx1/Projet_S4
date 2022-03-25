@@ -50,7 +50,7 @@ namespace Projet_S4
           */
             
             /*
-            for (int i = 90; i <=94; i++)
+            for (int i = 0; i <=360; i++)
             {
                 MyImage test1 = new MyImage("../../../Images/lac.bmp");
                 var lol = test1.Rotate(i);//marche pour 47 -75 mais pas pour d'autres valeurs
@@ -59,13 +59,14 @@ namespace Projet_S4
             }
             */
             
+            
 
             //var lol = test;
-            //MyImage mirr= test.Rotate(5);
+            //MyImage mirr= test;
+            //mirr.Rotate90();
             //var lol = test.Negatif();//marche pour 47 -75 mais pas pour d'autres valeurs
             //mirr.DetectionSobel(Matrice.Sobel1,Matrice.Sobel2);//Flou(facteur= 0.11111)--Contour--Renforcement--Repoussage
             //mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
-            
             //MyImage mand = test;
             //MyImage rot =mand.Rotate(67);
             //rot.From_Image_To_File(@"../../../Images/Test4.bmp");
@@ -91,7 +92,7 @@ namespace Projet_S4
             // test3.From_Image_To_File("../../../Images/Test5.bmp");
             //gris.DrawHistogram();
             //gris.From_Image_To_File(@"../../../Images/Test5.bmp");
-            
+
             /*
             for (int i = 1; i <= 40; i++)
             {
@@ -99,9 +100,9 @@ namespace Projet_S4
 
             }
             */
-            
+
             //tt les qrcodes
-            /*
+            
             for(int i =1;i<=40;i++)
             {
                 for (int j = 1; j <= 4; j++)
@@ -112,10 +113,12 @@ namespace Projet_S4
                     }
                 }
             }
-            */
-            QRCode test4 = new QRCode(1,7,1,1,4);
+            
+            //QRCode test4 = new QRCode(1,7,1,1,4);
 
-
+            //MyImage testOH = test;
+            //testOH.MirroirAxeHorizontal();
+            //testOH.From_Image_To_File(@"../../../Images/Test5.bmp");
 
             //Finir QRCode, Finir corriger méthodes MyImage , Voir si on fait un affichage
 

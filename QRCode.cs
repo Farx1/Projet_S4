@@ -107,6 +107,7 @@ public class QRCode : MyImage
         SizeFile = Height * Width * 3 + Offset;
         _taillemodule = taillemodule;
         Offset = 54;
+        Ecriture = 1;
         NumberRgb = 24;
         _mask = mask;
         _nivcorrection = nivcorrection;
