@@ -7,7 +7,7 @@ public class QRCode : MyImage
     #region Constructeur et Attributs
     
     private int _version;
-    private string _modecorrection ; 
+    private int[] _modecorrection ; 
     private int _contours;
     private char[] _alphanum =
     {
@@ -26,7 +26,7 @@ public class QRCode : MyImage
         set => _version = value;
     }
 
-    public string Mode
+    public int[] Mode
     {
         get => _modecorrection;
         set => _modecorrection = value ?? throw new ArgumentNullException(nameof(value));
@@ -69,7 +69,7 @@ public class QRCode : MyImage
         set => _nivcorrection = value;
     }
 
-    public QRCode(int version,int contours, string chainbits, int mask, int taillemodule, int nivcorrection,Pixel[,] imageData, string paires,string modecorrection,int height,int width,string typeImage,int numberRgb,int offset)
+    public QRCode(int version,int contours, string chainbits, int mask, int taillemodule, int nivcorrection,Pixel[,] imageData, string paires,int[] modecorrection,int height,int width,string typeImage,int numberRgb,int offset)
     {
         _version = version;
         _contours = contours;
@@ -101,7 +101,6 @@ public class QRCode : MyImage
         Width = bordsQR;
         ImageData = new Pixel[Height,Width];
         MyImage QRCode = new MyImage(Height,Width,ImageData);
-        
         _version = version;
         _contours = contours;
         SizeFile = Height * Width * 3 + Offset;
@@ -111,6 +110,8 @@ public class QRCode : MyImage
         NumberRgb = 24;
         _mask = mask;
         _nivcorrection = nivcorrection;
+        
+        
         ModulesDeRecherches(0 + _contours, 0 + _contours);
         ModulesDeRecherches(0 + Height - (7 * _taillemodule) - _contours,0+_contours);
         ModulesDeRecherches(0 +  _contours, 0 + Width - (7 * _taillemodule) - _contours);
@@ -420,7 +421,7 @@ public void DarkModule()
     #endregion
     
     
-    #region Format QRCode et Ecriture des Info du Format (a finir)
+    #region Format QRCode et Ecriture des Info du Format 
     
 
     #region Récupération des informations du format du QRCode sous un int[]
@@ -591,6 +592,16 @@ public void DarkModule()
     #endregion
 
 
+    #endregion
+    
+    #region
+
+    public void MessageData()
+    {
+        
+    }
+    
+    
     #endregion
 
 }
