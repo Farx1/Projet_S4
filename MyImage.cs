@@ -826,8 +826,8 @@ namespace Projet_S4
                             else
                             {
                                 prec = ((prec) % 255);
-                                _imageData[i, j].Red = Convert.ToByte(prec);
-                                _imageData[i, j].Green = Convert.ToByte(prec);
+                                _imageData[i, j].Red = 0;//Convert.ToByte(prec);
+                                _imageData[i, j].Green = 0; //Convert.ToByte(prec);
                                 _imageData[i, j].Blue = Convert.ToByte(prec);
  
                             }
@@ -845,10 +845,10 @@ namespace Projet_S4
             int lines = _imageData.GetLength(0);
             int column = _imageData.GetLength(1);
 
-            double xmin = -2.1;
-            double xmax = 0.6;
-            double ymin = -1.2;
-            double ymax = 1.2;
+            double xmin = -2;
+            double xmax = 0.5;
+            double ymin = -1.25;
+            double ymax = 1.25;
            
             int count = 200;
            
@@ -886,7 +886,7 @@ namespace Projet_S4
                             {
                                 _imageData[i, j].Red = 0; 
                                 _imageData[i, j].Green = 0;
-                                _imageData[i, j].Blue = (byte) (Convert.ToByte((byte)(10000*(prec-xn)%255)));
+                                _imageData[i, j].Blue = 0; //(byte) (Convert.ToByte((byte)(1000*(prec-yn/xn)%255)));
                             }
                             else
                             {
@@ -894,7 +894,76 @@ namespace Projet_S4
                                 _imageData[i, j].Red = Convert.ToByte((byte)(prec));
                                 _imageData[i, j].Green = Convert.ToByte((byte)(prec));
                                 _imageData[i, j].Blue = Convert.ToByte((byte)(prec));
-                                //_imageData[i, j].Blue = Convert.ToByte((byte)(100*prec-xn)%255);-- à tester aussi
+                                //_imageData[i, j].Blue = Convert.ToByte((byte)(100*prec-xn)%255);//-- à tester aussi
+                            }
+                               
+                        }
+                   
+                   
+                }
+            }
+
+        }
+       
+       public void DrawMandelbrotC() //on peut s'amuser un peu avec les valeurs des Pixels rouge et bleus pour dessiner d'autre sorte de forme
+        {
+
+            int lines = _imageData.GetLength(0);
+            int column = _imageData.GetLength(1);
+
+            double xmin = -2;
+            double xmax = 0.5;
+            double ymin = -1.25;
+            double ymax = 1.25;
+           
+            int countmax = 10000;
+           
+            for (int i = 0; i < lines; i++)
+            {
+                for (int j = 0; j < column; j++)
+                {
+
+                    double xn = 0;
+                    double yn = 0;
+                    double prec = 0;
+                    double xnstocked = 0;
+                    double count = 0;
+                   
+                    double cx = j * ((Math.Abs(ymax) + Math.Abs(ymin)) / column);
+                    double cy = i * ((Math.Abs(xmax) + Math.Abs(xmin)) / lines);
+
+                    for (int k = 0; k < countmax; k++)
+                    {
+                        xnstocked = xn;
+                        xn = xn * xn - yn * yn + cx + 1.5 * ymin;
+                        yn = 2 * yn * xnstocked +  cy + 0.6 * xmin;
+                        prec = xn * xn + yn * yn;
+                       
+                        if (prec > countmax)
+                        {
+                            {
+                                goto recuperer;
+                            }
+                        }
+
+                        count++;
+                    }
+
+                    recuperer:
+                        { 
+                            if ((prec) < 4.0)
+                            {
+                                _imageData[i, j].Red = 0; 
+                                _imageData[i, j].Green = 0;
+                                _imageData[i, j].Blue = 0; //(byte) (Convert.ToByte((byte)(1000*(prec-yn/xn)%255)));
+                            }
+                            else
+                            {
+                                prec = ((xn) % 255);
+                                _imageData[i, j].Red = Convert.ToByte((byte)(count % 16 *14));
+                                _imageData[i, j].Green = Convert.ToByte((byte)(count % 32 *7));
+                                _imageData[i, j].Blue = Convert.ToByte((byte)(count %128 *2));
+                                //_imageData[i, j].Blue = Convert.ToByte((byte)(100*prec-xn)%255);//-- à tester aussi
                             }
                                
                         }
@@ -1269,6 +1338,8 @@ namespace Projet_S4
           }
           return result;
       }
+      
+      
       #endregion
       
         #endregion

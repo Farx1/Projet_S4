@@ -11,6 +11,8 @@ namespace Projet_S4
             MyImage test = new MyImage("../../../Images/tunnel.bmp");
             MyImage test2 = new MyImage("../../../Images/coco.bmp");
             MyImage test3 = new MyImage("../../../Images/lac.bmp");
+            MyImage test4 = new MyImage("../../../Images/chemin.bmp");
+            MyImage test5 = new MyImage("../../../Images/Multicolore.bmp");
             /*
           byte[] myfile = File.ReadAllBytes("C:\\Users\\jules\\RiderProjects\\Projet S4\\Images\\Test.bmp");
           Console.WriteLine("\n Header \n");
@@ -67,13 +69,13 @@ namespace Projet_S4
             //var lol = test.Negatif();//marche pour 47 -75 mais pas pour d'autres valeurs
             //mirr.DetectionSobel(Matrice.Sobel1,Matrice.Sobel2);//Flou(facteur= 0.11111)--Contour--Renforcement--Repoussage
             //mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
-            //MyImage mand = test;
+            MyImage mand = test4;
             //MyImage rot =mand.Rotate(67);
             //rot.From_Image_To_File(@"../../../Images/Test4.bmp");
             //MyImage coco = test2;
-            //mand.DrawMandelbrotB();
+            mand.DrawMandelbrotC();
             //mand.CacherImage(test2); 
-            //mand.From_Image_To_File(@"../../../Images/Test5.bmp");
+            mand.From_Image_To_File(@"../../../Images/FractaleC.bmp");
             //MyImage code = new MyImage(@"../../../Images/Test5.bmp");
             //code.DecoderImage();
 
@@ -102,26 +104,44 @@ namespace Projet_S4
             */
 
             //tt les qrcodes
-            
+            /*
             for(int i =1;i<=40;i++)
             {
                 for (int j = 1; j <= 4; j++)
                 {
                     for (int k = 0; k <= 7; k++)
                     {
-                        QRCode QRCode = new QRCode(5,i,5,j,k);
+                        QRCode qrCode = new QRCode(5,i,5,j,k);
                     }
                 }
             }
+            */
             
-            //QRCode test4 = new QRCode(1,7,1,1,4);
+            //QRCode qrcode = new QRCode(10,7,5,2,7);
 
-            //MyImage testOH = test;
-            //testOH.MirroirAxeHorizontal();
-            //testOH.From_Image_To_File(@"../../../Images/Test5.bmp");
+            //MyImage testOH = test4;
+            //testOH.DrawMandelbrotA();
+            //testOH.From_Image_To_File(@"../../../Images/Test7.bmp");
 
             //Finir QRCode, Finir corriger méthodes MyImage , Voir si on fait un affichage
 
+            /*
+            Data Analysis
+            Data Encoding
+            Error Correction Coding
+            Structure Final Message
+            ==Module Placement in Matrix
+            Data Masking
+            ==Format and Version Information
+            ==Character Capacities by Version, Mode, and Error Correction
+            Error Correction Code Words and Block Information
+            QR Code Log Antilog Table for Galois Field 256
+            How to Create a Generator Polynomial
+            Generator Polynomial Tool
+            Show Polynomial Division Steps
+            QR Mask Patterns Explained
+            ==Format and Version String Tables
+             */
 
 
         }

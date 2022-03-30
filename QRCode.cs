@@ -485,6 +485,7 @@ public void DarkModule()
         #endregion
         
         #region méthode Fonctionelle
+        
         StreamReader? flux = null;
         int i = 0;
         int k = 0;
@@ -492,7 +493,7 @@ public void DarkModule()
         if (_nivcorrection == 3) k = 16;
         if (_nivcorrection == 4) k = 24;
 
-            string? lines;
+        string? lines;
         int[] final = new int[] { };
         try
         {
@@ -596,9 +597,70 @@ public void DarkModule()
     
     #region
 
-    public void MessageData()
+    /*
+    public void DertermineVersionEtModeCorrection()
     {
+        StreamReader? flux = null;
+        string? lines;
+        int i = 0;
+        try
+        {
+            flux = new StreamReader(@"../../../CharacterCapacitiesQRCode.txt");
+            while((lines = flux.ReadLine()) != null)
+            {
+                if (i <)
+                {
+                    string [] ligne = lines.Split(" ");
+                    final = new int [ligne[2].Length];
+                    for (int j = 0; j < ligne[2].Length; j++) 
+                    {
+                        final[j] = (int) ligne[2][j] - 48; 
+                        //Console.Write(final[j]);
+                    }
+                }
+                i++;
+            }
+
         
+        }
+    }
+    */
+    
+    public void MessageData(string message)
+    {
+        message = message.ToUpper();
+        _modecorrection = new int[] {0, 0, 1, 0};//déterminer le mode de correction optimal pour chaque QRCode
+        List<int> final = new List<int>(_modecorrection);
+        var messagelength =message.Length;
+
+
+
+        var bin = Convert.ToString(messagelength, 2);
+        var term = new int[bin.Length];
+        for (int i = 0; i < bin.Length; i++)
+        {
+            term[i] = bin[i] - 48;
+        }
+
+        var modif = MyImage.UnShift(term, _version <= 9 ? 9 : _version <= 26 ? 11 : 13);
+        final.AddRange(modif);
+
+        for (int k = 0; k < message.Length - 1; k += 2)
+        {
+            if (k % 2 == 0)
+            {
+                
+            }
+            
+        }
+
+
+
+
+
+
+
+
     }
     
     
