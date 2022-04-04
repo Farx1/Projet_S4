@@ -973,7 +973,9 @@ namespace Projet_S4
             }
 
         }
-        //Il faut encore corriger quelques trucs sur cette méthdode
+       
+       
+       //Il faut encore corriger quelques trucs sur cette méthdode
        /*
               public void DrawMandelbrotC() //on peut s'amuser un peu avec les valeurs des Pixels rouge et bleus pour dessiner d'autre sorte de forme
               {
@@ -1284,26 +1286,21 @@ namespace Projet_S4
         //TD8
         
         #region Méthodes QRCode
+        public static IEnumerable<T[]> Combinaisons<T>(IEnumerable<T> source)
+        {
+            if (null == source)
+                throw new ArgumentNullException(nameof(source));
+
+            var data = source.ToArray();
+
+            return Enumerable
+                .Range(0, 1 << (data.Length))
+                .Select(index => data
+                    .Where((v, i) => (index & (1 << i)) != 0)
+                    .ToArray());
+        }
         
-        #region Méthode pour Combinaisons 
-      public static IEnumerable<T[]> Combinaisons<T>(IEnumerable<T> source)
-          {
-              if (null == source)
-                  throw new ArgumentNullException(nameof(source));
-
-              var data = source.ToArray();
-
-              return Enumerable
-                  .Range(0, 1 << (data.Length))
-                  .Select(index => data
-                      .Where((v, i) => (index & (1 << i)) != 0)
-                      .ToArray());
-          }
-
-      #endregion
-      
-      
-        #region Autres Méthodes QRCode
+        
       public static int[] TrimAndPad(int[] array, int desiredLength)
       {
           while (array[0] == 0) array = array.Skip(1).ToArray();
@@ -1339,10 +1336,61 @@ namespace Projet_S4
           return result;
       }
       
+      public static IEnumerable<string> CatchFile(string path)
+      {
+          var lignes = new Stack<string>();
+          try
+          {
+              using var sr = new StreamReader(path);
+              string line;
+              while ((line = sr.ReadLine()) != null)
+              {
+                  lignes.Push(line);
+              }
+          }
+          catch (Exception e)
+          {
+              Console.WriteLine("Le fichier n'as pas pu être lu, veuillez réessayer");
+              Console.WriteLine(e.Message);
+              throw new IOException();
+                
+          }
+
+          return lignes.ToArray().Reverse();
+      }
+      
+      public static int[] BitToByte(int[] data)
+      {
+          var final = new int[data.Length / 8];
+          var bytes = 0;
+          for (int i = 0; i < data.Length; i++)
+          {
+
+              bytes += (int) (Math.Pow(2, Math.Abs(i % 8 - 7)) * data[i]);
+              if (i != 0 && (i + 1) % 8 == 0)
+              {
+                  final[i / 8] = bytes;
+                  bytes = 0;
+              }
+          }
+          return final;
+      }
+      
+      public static int[] ByteToBit(int[] data)
+      {
+          var result = new int[data.Length * 8];
+          for (int i = 0; i < result.Length; i++)
+          {
+              var division =  (int) (data[i / 8] / Math.Pow(2, Math.Abs(i % 8 - 7)));
+              result[i] = division;
+              data[i / 8] -= (int) (Math.Pow(2, Math.Abs(i % 8 - 7)) * division);
+          }
+          return result;
+      }
+      
       
       #endregion
       
-        #endregion
       
       
     }

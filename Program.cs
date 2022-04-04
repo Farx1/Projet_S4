@@ -61,7 +61,6 @@ namespace Projet_S4
             }
             */
             
-            
 
             //var lol = test;
             //MyImage mirr= test;
@@ -69,13 +68,13 @@ namespace Projet_S4
             //var lol = test.Negatif();//marche pour 47 -75 mais pas pour d'autres valeurs
             //mirr.DetectionSobel(Matrice.Sobel1,Matrice.Sobel2);//Flou(facteur= 0.11111)--Contour--Renforcement--Repoussage
             //mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
-            MyImage mand = test4;
+            //MyImage mand = test4;
             //MyImage rot =mand.Rotate(67);
             //rot.From_Image_To_File(@"../../../Images/Test4.bmp");
             //MyImage coco = test2;
-            mand.DrawMandelbrotC();
+            //mand.DrawMandelbrotC();
             //mand.CacherImage(test2); 
-            mand.From_Image_To_File(@"../../../Images/FractaleC.bmp");
+            //mand.From_Image_To_File(@"../../../Images/FractaleC.bmp");
             //MyImage code = new MyImage(@"../../../Images/Test5.bmp");
             //code.DecoderImage();
 
@@ -117,7 +116,7 @@ namespace Projet_S4
             }
             */
             
-            //QRCode qrcode = new QRCode(10,7,5,2,7);
+            QRCode qrcode = new QRCode(10,7,5,2,7);
 
             //MyImage testOH = test4;
             //testOH.DrawMandelbrotA();
