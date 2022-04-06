@@ -1,6 +1,9 @@
 // ReSharper disable All
 
 
+using System.Drawing;
+using System.Drawing.Imaging;
+
 namespace Projet_S4
 {
     public class MyImage  
@@ -771,7 +774,9 @@ namespace Projet_S4
        #endregion
        
         //TD5
-        #region Dessiner une fractale (2 versions de la fractale de Mandelbrot)
+        #region Dessiner une fractale (3 versions de Mandelbrot/ Fractale de Julia)
+        
+        #region Fractale Mandelbrot (A,B,C)
        public void DrawMandelbrotA()
        {
             //MyImage fract = new MyImage("../../../Images/Fractale.bmp");
@@ -1047,6 +1052,129 @@ namespace Projet_S4
               } 
         */
        #endregion
+       
+        #region Fractale de Julia
+
+        public static MyImage FractaleJulia(int numero)
+        {
+            
+                int height = 4320;
+                int width = 7680;
+                MyImage julia = new MyImage();
+                julia._imageData = new Pixel[height, width];
+                julia.FillImageWithWhite();
+                julia.Height = height;
+                julia.Width = width;
+                ComplexNumber c;
+                RectangleF rect = new RectangleF(0,0,width, height);
+                
+                #region Les différentes valeurs de la fractale (Nombre Complexe)
+
+                c = numero switch
+                {
+                    1 => new ComplexNumber(0.3f, 0.5f),
+                    2 => new ComplexNumber(0.285f, 0.01f),
+                    3 => new ComplexNumber(-0.038088f, 0.9754633f),
+                    4 => new ComplexNumber(0.285f, 0.013f),
+                    5 => new ComplexNumber(-1.416f, 0f),
+                    6 => new ComplexNumber(-0.4f, 0.6f),
+                    7 => new ComplexNumber(-0.8f, 0.156f),
+                    _ => new ComplexNumber(-1.0f, 0f),
+                };
+                #endregion
+                
+                RectangleF rectF = new RectangleF(-2.0f, -2.0f, 4.0f, 4.0f);
+                double radius = 2;
+                int x;
+                for (x = 0; x < height; x++)
+                {
+
+                    for (int y = 0; y < width; y++)
+                    {
+                        // Create a complex number for the current pixel
+                        ComplexNumber z = new ComplexNumber(
+                            rectF.Left + x * (rectF.Right - rectF.Left) / (height),
+                            rectF.Top + y * (rectF.Bottom - rectF.Top) / (width));
+
+                        // Iterate through the pixels
+                        for (x = 0; x < height; x++)
+                        {
+                            // Create a complex number for the current pixel
+                            z = new ComplexNumber(
+                                rectF.Left + x * (rectF.Right - rectF.Left) / (height),
+                                rectF.Top + y * (rectF.Bottom - rectF.Top) / (width));
+                            // Itere sur le nomrbe complexe
+                            int i = 0;
+                            while (i < 255 && z.Magnitude < 8.0f)
+                            {
+                                z = z * z + c;
+                                i++;
+                            }
+
+                            julia._imageData[x, y].Red = (byte) ((9 * i) % 255); //8
+                            julia._imageData[x, y].Green = (byte) ((6 * i) % 255);//16
+                            julia._imageData[x, y].Blue = (byte) ((3 * i) % 255);//32
+                        }
+                    }
+                    
+                }
+                return julia;
+            
+        }
+        
+        
+        #region ComplexNumber
+        // Complex number class 
+        class ComplexNumber
+        {
+            // Real and imaginary parts
+            public float Real;
+            public float Imaginary;
+
+            // Constructor
+            public ComplexNumber(float real, float imaginary)
+            {
+                Real = real;
+                Imaginary = imaginary;
+            }
+
+            // Magnitude
+            public float Magnitude
+            {
+                get { return (float) Math.Sqrt(Real * Real + Imaginary * Imaginary); }
+            }
+
+            // Addition
+            public static ComplexNumber operator +(ComplexNumber a, ComplexNumber b)
+            {
+                return new ComplexNumber(a.Real + b.Real, a.Imaginary + b.Imaginary);
+            }
+
+            // Subtraction
+            public static ComplexNumber operator -(ComplexNumber a, ComplexNumber b)
+            {
+                return new ComplexNumber(a.Real - b.Real, a.Imaginary - b.Imaginary);
+            }
+
+            // Multiplication
+            public static ComplexNumber operator *(ComplexNumber a, ComplexNumber b)
+            {
+                return new ComplexNumber(a.Real * b.Real - a.Imaginary * b.Imaginary,
+                    a.Real * b.Imaginary + a.Imaginary * b.Real);
+            }
+            
+        }
+    
+        #endregion
+
+   
+        
+
+
+
+        #endregion
+        
+        #endregion
         
         
         #region Histogramme des couleurs d'une photo

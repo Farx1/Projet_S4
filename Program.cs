@@ -116,7 +116,11 @@ namespace Projet_S4
             }
             */
             
-            QRCode qrcode = new QRCode(10,7,5,2,7);
+            //QRCode qrcode = new QRCode(10,7,5,2,7);
+            var julia =MyImage.FractaleJulia(0);//variable a initialiser avant
+            julia.From_Image_To_File(@"../../../Images/FractaleJulia.bmp");
+            
+            
 
             //MyImage testOH = test4;
             //testOH.DrawMandelbrotA();

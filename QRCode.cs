@@ -156,8 +156,8 @@ public class QRCode : MyImage
         EcritureInfoFormat();
         Dico();
         MessageData("HELLO WORLD");
-        ErrorCorrectionQRCode();
-        MessageQRCode(_bitwords);
+        //ErrorCorrectionQRCode();
+        //MessageQRCode(_bitwords);
 
 
         QRCode.FillImageWithGrey(); //pour voir les modules non remplis
@@ -165,7 +165,6 @@ public class QRCode : MyImage
 
         this.From_Image_To_File($"../../../Images/QRCode_V{_version}_N{_nivcorrection}_M{_mask}.bmp");
     }
-
     #endregion
 
 
@@ -797,12 +796,11 @@ public class QRCode : MyImage
             
         }
         _chainbits = final;
-        /*
-        for (int i = 0; i < _chainbits.Count; i++)
+        for (int i = 0; i < _chainbits.Count; i++) 
         {
             Console.Write(_chainbits[i]);
         }
-        */
+        
 
     }
 
