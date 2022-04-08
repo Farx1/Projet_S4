@@ -132,9 +132,11 @@ public class QRCode : MyImage
     #region Constructeur et écriture du QRCode
 
     //Peut être séparé plus tard
-    public QRCode(int version,int taillemodule, int contours,int nivcorrection,int masque)
+    public QRCode(int version,int taillemodule, int contours,int nivcorrection,int masque,string message)
     {
-        int bordsQR = (8 * 2 + (4 * version + 1)) * taillemodule + 2 * contours;
+        _message = message;
+        MeilleurVersionEtNiveauDeCorrection();
+        int bordsQR = (8 * 2 + (4 * _version + 1)) * taillemodule + 2 * contours;
         Height = bordsQR;
         Width = bordsQR;
         ImageData = new Pixel[Height, Width];
@@ -145,9 +147,10 @@ public class QRCode : MyImage
         Offset = 54;
         Ecriture = 1;
         NumberRgb = 24;
-        _version =version;
+        
+        //_version =version;
         _mask = masque;
-        _nivcorrection = nivcorrection;
+        //_nivcorrection = nivcorrection;
 
         ModulesDeRecherches(0 + _contours, 0 + _contours);
         ModulesDeRecherches(0 + Height - (7 * _taillemodule) - _contours, 0 + _contours);
@@ -162,13 +165,13 @@ public class QRCode : MyImage
         EcritureInfoFormat();
         Dico();
         DataCodeAndErrorDataWords();
-        MessageData("HELLO WORLD");
+        MessageData(_message);
         ErrorCorrectionQRCode();
         MessageQRCode(_bitwords);
         
 
 
-        //QRCode.FillImageWithGrey(); //pour voir les modules non remplis
+        QRCode.FillImageWithGrey(); //pour voir les modules non remplis
 
 
         this.From_Image_To_File($"../../../Images/QRCode_V{_version}_N{_nivcorrection}_M{_mask}.bmp");

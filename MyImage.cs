@@ -49,7 +49,7 @@ namespace Projet_S4
             _numberRgb = numberRgb;
             this._offset = offset;
             _imageData = imageData;
-            _ecriture = ecriture ;
+            _ecriture = ecriture =0 ;
         }
 
 
@@ -349,7 +349,7 @@ namespace Projet_S4
 
             if (_ecriture == 1)
             {
-                List<byte> image = new List<byte>(); //Image
+                List<byte> image = new List<byte>(); //QRCODE
                 for (int i =Height-1; i >=0; i--)//Lecture inverse donc de i = height-1; i>=0;i--) changer et tester tt les méthdodes depuis le début
                 {
                     for (int j = 0; j < this.Width; j++)
@@ -370,8 +370,8 @@ namespace Projet_S4
 
             if (_ecriture == 0)
             {
-                List<byte> image = new List<byte>(); //Image
-                for (int i = 0; i < this.Height; i++)//Lecture inverse donc de i = height-1; i>=0;i--) changer et tester tt les méthdodes depuis le début
+                List<byte> image = new List<byte>(); //IMAGE
+                for (int i = 0; i < this.Height; i++)
                 {
                     for (int j = 0; j < this.Width; j++)
                     {
