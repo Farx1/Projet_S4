@@ -110,7 +110,7 @@ namespace Projet_S4
                 {
                     for (int k = 0; k <= 7; k++)
                     {
-                        QRCode qrCode = new QRCode(1,i,0,1,1);
+                        QRCode qrCode = new QRCode(5,i,0,j,k,"OUAIS");
                     }
                 }
             }
@@ -118,7 +118,7 @@ namespace Projet_S4
             
             
             
-            QRCode qrcode = new QRCode(5,1,0,1,1);
+            QRCode qrcode = new QRCode(1,5,0,1,0);
             
             //var julia =MyImage.FractaleJulia(0);//variable a initialiser avant
             //julia.From_Image_To_File(@"../../../Images/FractaleJulia.bmp");
