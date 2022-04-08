@@ -154,10 +154,11 @@ public class QRCode : MyImage
         DarkModule();
         EcritureInfoVersionQRCode();
         EcritureInfoFormat();
+        DataCodeAndErrorDataWords();
         Dico();
         MessageData("HELLO WORLD");
-        //ErrorCorrectionQRCode();
-        //MessageQRCode(_bitwords);
+        ErrorCorrectionQRCode();
+        MessageQRCode(_bitwords);
 
 
         QRCode.FillImageWithGrey(); //pour voir les modules non remplis
@@ -651,46 +652,47 @@ public class QRCode : MyImage
 
 
     #endregion
+    
 
-    #region Encodage et Ecriture Texte
+    #region Identification de la meilleur version et du meilleur masque pour le QRCode
+    
+    //A faire
+    
+    #endregion
+    
+    
+    #region Récupération de la taille de la chaine de cractère dans CharacterCapacitiesQRCode
 
-/*
-    public void DertermineVersionEtModeCorrection()
+    public void DataCodeAndErrorDataWords()
     {
-        StreamReader? flux = null;
-        string? lines;
-        int i = 0;
-        try
-        _taillemessage = 
-        {
-            flux = new StreamReader(@"../../../CharacterCapacitiesQRCode.txt");
-            while ((lines = flux.ReadLine()) != null)
+        var ligne = CatchFile($"../../../CharacterCapacitiesQRCode.txt").ToArray();
+        //vérifier si ce n'est pas la valeur entiere correspondant plutôt
+        var i = _nivcorrection
+            switch
             {
-                if (i == _taillemessage - 1)
-                {
-                    string[] ligne = lines.Split(";");
-                    _version = (int) ligne[0][0] - 48;
-                    _nivcorrection = (int) ligne[1][0] - 48;
-                }
+                1 => 0,
+                2 => 3,
+                3 => 2,
+                4 => 1,
+                _ => 0,
+            };
 
-                i++;
-            }
-
-
-
-
-        }
-        catch
+        var readligne = ligne[(_version - 1) * 4 + i];
+        var finalinfo =readligne.Split(";");
+        var final = new int[finalinfo.Length -2];
+        for (int n =1; n < finalinfo.Length -1; n++)
         {
-            Console.WriteLine("Le fichier spécifié " + "CharacterCapacitiesQRCode.txt" +
-                              " est introuvable, veuillez réessayer.");
+            final[n-1] = Convert.ToInt32(finalinfo[n]);
         }
-        finally
-        {
-            if (flux != null) flux.Close();
-        }
+        _datacode = final[0];
+        _errordata = final[1];
+
     }
-    */
+    
+    #endregion
+    
+    
+    #region Calcul des Datas et Initialisation du Dictionary
     public int TotalData()
     {
         return _datacode + _errordata;
@@ -698,24 +700,27 @@ public class QRCode : MyImage
 
     public List<int> DataByteEncoding()
     {
-        return MyImage.BitToByte(_chainbits.ToArray()).ToList();
+        return BitToByte(_chainbits.ToArray()).ToList();
     }
     public static void Dico()
     {
         
-        var Dico = MyImage.CatchFile("../../../AlphanumQRCode.txt");
+        var Dico = CatchFile("../../../AlphanumQRCode.txt");
         foreach (var n in Dico)
         {
-            var args = n.Split(' ');
+            var args = n.Split('=');
             _alphanum.Add(Convert.ToChar(args[0]), Convert.ToInt32(args[1]));
         }
     }
     
+    #endregion
     
+    
+    #region Encodage du message
     public void MessageData(string message)
     {
         message = message.ToUpper();
-        _modecorrection = new int[] {0, 0, 1, 0};//déterminer le mode de correction optimal pour chaque QRCode
+        _modecorrection = new int[] {0, 0, 1, 0};//reste a déterminer le mode de correction optimal pour chaque QRCode
         List<int> final = new List<int>(_modecorrection);
         var messagelength =message.Length;
         var bin = Convert.ToString(messagelength, 2);
@@ -725,7 +730,7 @@ public class QRCode : MyImage
             term[i] = bin[i] - 48;
         }
 
-        var modif = MyImage.UnShift(term, _version < 10 ? 9 : _version < 27 ? 11 : 13);
+        var modif = UnShift(term, _version < 10 ? 9 : _version < 27 ? 11 : 13);
         final.AddRange(modif);
 
         for (int k = 0; k < message.Length - 1; k += 2)
@@ -742,36 +747,35 @@ public class QRCode : MyImage
                     term1[i] = bin1[i] - 48;
                 }
                 
-                var modif1 = MyImage.UnShift(term1, 11);
+                var modif1 = UnShift(term1, 11);
                 final.AddRange(modif1);
                 
             }
             
-            if(k!= message.Length - 1 || k % 2 != 0)
+            if(k!= messagelength - 1 || messagelength % 2 != 1) continue;
+            _alphanum.TryGetValue(message[k], out var index);
+            var bin2 = Convert.ToString(index, 2);
+            var term2 = new int[bin2.Length];
+            for (int i = 0; i < bin2.Length; i++)
             {
-                _alphanum.TryGetValue(message[k], out var value1);
-                var bin2 = Convert.ToString(value1, 2);
-                var term2 = new int[bin2.Length];
-                for (int i = 0; i < bin2.Length; i++)
-                {
-                    term2[i] = bin2[i] - 48;
-                }
-                
-                var modif2 = MyImage.UnShift(term2, 6);
-                final.AddRange(modif2);
-            } 
+                term2[i] = bin2[i] - 48;
+            }
+            
+            var modif2 = UnShift(term2, 6);
+            final.AddRange(modif2);
+            
             
         }
 
         var n = 0;
-        while(final.Count<=_taillemessage*8 && n<=4)
+        while(final.Count<=_datacode*8 && n<=4)
         {
             final.Add(0);
             n++;
         }
 
-        final = final.Count % 8 == 0 ? MyImage.Pad(final.ToArray(), final.Count + (8 - final.Count % 8)).ToList() : final;
-        if(final.Count<_taillemessage*8)
+        final = final.Count % 8 != 0 ? Pad(final.ToArray(), final.Count + (8 - final.Count % 8)).ToList() : final;
+        if(final.Count<_datacode*8)
         {
             var add1 = Convert.ToString(236 ,2);
             var add2 = Convert.ToString(17 ,2);
@@ -780,49 +784,332 @@ public class QRCode : MyImage
             {
                 term3[i] = add1[i] - 48;
             }
-            var modif3 = MyImage.UnShift(term3, 8);
+            var modif3 = UnShift(term3, 8);
             
             var term4 = new int[add2.Length];
             for (int i = 0; i < add2.Length; i++)
             {
                 term4[i] = add2[i] - 48;
             }
-            var modif4 = MyImage.UnShift(term4, 8);
+            var modif4 = UnShift(term4, 8);
+
+            var val = final.Count;
             
-            for(int j = 0; j<_taillemessage*8-final.Count; j++)
+            for(int j = 0; j<(_datacode*8)-val; j++)//a revoir
             {
                 final.AddRange(j%2 ==0 ? modif3 : modif4);
+                
             }
-            
+
+
         }
         _chainbits = final;
-        for (int i = 0; i < _chainbits.Count; i++) 
-        {
-            Console.Write(_chainbits[i]);
-        }
+        
         
 
     }
 
+    #endregion
+    
+    
+    #region ErrorCorrection
+    //A finir
     public void ErrorCorrectionQRCode()
     {
-        var champ = new GenericGF(285, 256, 0);
-        var reed = new ReedSolomonEncoder(champ);
-        //Max byte value = 255 (OxFF)
+        var ggf = new GenericGF(285, 256, 0);
+        var reed = new ReedSolomonEncoder(ggf);
+        var data = _chainbits.ToArray();
 
         var errorFields = _errordata;
             
         var array1 = Enumerable.Repeat(0, errorFields);
         var bytes = DataByteEncoding().Concat(array1).ToArray();
         reed.Encode(bytes, errorFields);
-        _bitwords = MyImage.ByteToBit(bytes);
-    }
-    public void MessageQRCode(int[] tab)//bof
-    {
-        
+        _bitwords = ByteToBit(bytes);
     }
     
     #endregion
+    
+    
+    #region Ecriture du message
+    public void MessageQRCode(int[] tab)
+    {
+        for (int i = 0; i < _bitwords.Length; i++) 
+        {
+            Console.Write(_bitwords[i]);
+        }
+        Console.WriteLine("");
+        var haut = true;
+        var spec = true;
+        var compteur = 0;
+            
+        for (var i = Width - _taillemodule-_contours; i >_contours; i-=2*_taillemodule)
+        {
+            if (i <= ((7 * _taillemodule) + _contours) && spec==true)
+            {
+                i= i-_taillemodule;
+                spec=false;
+            }
+            if (compteur >= tab.Length) break;
+            if (haut)
+            {
+                if (compteur >= tab.Length) break;
+                for (var j = Height - _taillemodule-_contours; j >=_contours; j-=_taillemodule)
+                {
+                
+                    if (compteur >= tab.Length) break;
+                    if (ImageData[j, i] == null)
+                    {
+                        if (tab[compteur] == 0)
+                        {
+                            for (int l = 0; l < _taillemodule; l++)
+                            {
+                                for (int c = 0; c < _taillemodule; c++)
+                                {
+                                    ImageData[j+l, i+c] = new Pixel(255, 255, 255); 
+                                }
+                            }
+
+                            Console.Write("0");
+
+                        }
+                        else if (tab[compteur] == 1)
+                        {
+                            for (int l = 0; l < _taillemodule; l++)
+                            {
+                                for (int c = 0; c < _taillemodule; c++)
+                                {
+                                    ImageData[j+l, i+c] = new Pixel(0, 0, 0); 
+                                }
+                            } 
+                            Console.Write("1");
+
+                        }
+                        
+                        compteur++;
+                    }
+
+
+                    if (ImageData[j, i - 1] == null)
+                    {
+                        if (tab[compteur] == 0)
+                        {
+                            for (int l = 0; l < _taillemodule; l++)
+                            {
+                                for (int c = 0; c < _taillemodule; c++)
+                                {
+                                    ImageData[j+l, i+c-_taillemodule] = new Pixel(255, 255, 255); 
+                                }
+                            }
+                            Console.Write("0");
+
+                        }
+                        else if (tab[compteur] == 1)
+                        {
+                            for (int l = 0; l < _taillemodule; l++)
+                            {
+                                for (int c = 0; c < _taillemodule; c++)
+                                {
+                                    ImageData[j+l, i+c-_taillemodule] = new Pixel(0, 0, 0); 
+                                }
+                            }
+                            Console.Write("1");
+                        }
+
+                        compteur++;
+                    }
+                    
+
+
+                }
+                
+                
+            }
+            
+            else
+            {
+                
+                if (compteur >= tab.Length) break;
+                for (var j = _contours; j <Height-_contours; j+=_taillemodule)
+                {
+                    if (compteur >= tab.Length) break;
+
+                    if (ImageData[j,i] == null)
+                    {
+                        if (tab[compteur] == 0)
+                        {
+                            for (int l = 0; l < _taillemodule; l++)
+                            {
+                                for (int c = 0; c < _taillemodule; c++)
+                                {
+                                    ImageData[j+l, i+c] = new Pixel(255, 255, 255); 
+                                }
+                            }
+                            Console.Write("0");
+
+                        }
+                        else if (tab[compteur] == 1)
+                        {
+                            for (int l = 0; l < _taillemodule; l++)
+                            {
+                                for (int c = 0; c < _taillemodule; c++)
+                                {
+                                    ImageData[j+l,i+c] = new Pixel(0, 0, 0);
+
+                                }
+                            }
+                            Console.Write("1");                      
+                        }
+                        compteur++;
+                    }
+                    
+
+                    
+                    if (ImageData[j,i-1] == null)
+                    {
+                        if (tab[compteur] == 0)
+                        {
+                            for (int l = 0; l < _taillemodule; l++)
+                            {
+                                for (int c = 0; c < _taillemodule; c++)
+                                {
+                                    ImageData[j+l, i+c-_taillemodule] = new Pixel(255, 255, 255); 
+                                }
+                            }
+                            Console.Write("0");
+                        }
+
+                        else if (tab[compteur] == 1) 
+                        {
+                            for (int l = 0; l < _taillemodule; l++)
+                            {
+                                for (int c = 0; c < _taillemodule; c++)
+                                {
+                                    ImageData[j+l,i+c-_taillemodule] = new Pixel(0, 0, 0);
+
+                                }
+                            }
+                            Console.Write("1");
+                        }
+                        compteur++;
+                    }
+
+                    
+                }
+            
+                
+            }
+            haut = !haut;
+
+        }
+    }
+    #endregion
+    
+    
+    #region Autres méthodes
+    public static IEnumerable<T[]> Combinaisons<T>(IEnumerable<T> source)
+    {
+        if (null == source)
+            throw new ArgumentNullException(nameof(source));
+
+        var data = source.ToArray();
+
+        return Enumerable
+            .Range(0, 1 << (data.Length))
+            .Select(index => data
+                .Where((v, i) => (index & (1 << i)) != 0)
+                .ToArray());
+    }
+    
+    public static int[] TrimAndPad(int[] array, int desiredLength)
+      {
+          while (array[0] == 0) array = array.Skip(1).ToArray();
+          var zerosArray = Enumerable.Repeat(0, desiredLength - array.Length);
+          return array.Concat(zerosArray).ToArray();
+      }
+        
+      public static int[] Pad(int[] array, int desiredLength)
+      {
+          var zerosArray = Enumerable.Repeat(0, desiredLength - array.Length);
+          return array.Concat(zerosArray).ToArray();
+      }
+        
+      public static int[] UnShift(int[] array, int desiredLength)
+      {
+          var zerosArray = Enumerable.Repeat(0, desiredLength - array.Length);
+          return zerosArray.Concat(array).ToArray();
+      }
+        
+      public static int[] Trim(int[] array)
+      {
+          while (array[0] == 0) array = array.Skip(1).ToArray();
+          return array;
+      }
+      
+      public static int[] XOR(int[] x, int[] y)
+      {
+          var result = new int[x.Length];
+          for (int i = 0; i < result.Length; i++)
+          {
+              result[i] = x[i] == 1 && y[i] == 1 ? 0 : x[i] != y[i] ? 1 : 0; 
+          }
+          return result;
+      }
+      
+      public static IEnumerable<string> CatchFile(string path)
+      {
+          var lignes = new Stack<string>();
+          try
+          {
+              using var sr = new StreamReader(path);
+              string line;
+              while ((line = sr.ReadLine()) != null)
+              {
+                  lignes.Push(line);
+              }
+          }
+          catch (Exception e)
+          {
+              Console.WriteLine("Le fichier n'as pas pu être lu, veuillez réessayer");
+              Console.WriteLine(e.Message);
+              throw new IOException();
+                
+          }
+
+          return lignes.ToArray().Reverse();
+      }
+      
+      public static int[] BitToByte(int[] data)
+      {
+          var final = new int[data.Length / 8];
+          var bytes = 0;
+          for (int i = 0; i < data.Length; i++)
+          {
+
+              bytes += (int) (Math.Pow(2, Math.Abs(i % 8 - 7)) * data[i]);
+              if (i != 0 && (i + 1) % 8 == 0)
+              {
+                  final[i / 8] = bytes;
+                  bytes = 0;
+              }
+          }
+          return final;
+      }
+      
+      public static int[] ByteToBit(int[] data)
+      {
+          var result = new int[data.Length * 8];
+          for (int i = 0; i < result.Length; i++)
+          {
+              var division =  (int) (data[i / 8] / Math.Pow(2, Math.Abs(i % 8 - 7)));
+              result[i] = division;
+              data[i / 8] -= (int) (Math.Pow(2, Math.Abs(i % 8 - 7)) * division);
+          }
+          return result;
+      }
+    
+    #endregion
+    
 }
 
 

@@ -1,11 +1,11 @@
 // ReSharper disable All
-
-
 using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace Projet_S4
 {
+    
+    #region Projet PSI S4
     public class MyImage  
     {
 
@@ -777,7 +777,7 @@ namespace Projet_S4
         #region Dessiner une fractale (3 versions de Mandelbrot/ Fractale de Julia)
         
         #region Fractale Mandelbrot (A,B,C)
-       public void DrawMandelbrotA()
+         public void DrawMandelbrotA()
        {
             //MyImage fract = new MyImage("../../../Images/Fractale.bmp");
             //il faut créer une nouvelle image puis partir de celle ci
@@ -844,7 +844,7 @@ namespace Projet_S4
             }
         }
 
-       public void DrawMandelbrotB() //on peut s'amuser un peu avec les valeurs des Pixels rouge et bleus pour dessiner d'autre sorte de forme
+         public void DrawMandelbrotB() //on peut s'amuser un peu avec les valeurs des Pixels rouge et bleus pour dessiner d'autre sorte de forme
         {
 
             int lines = _imageData.GetLength(0);
@@ -910,7 +910,7 @@ namespace Projet_S4
 
         }
        
-       public void DrawMandelbrotC() //on peut s'amuser un peu avec les valeurs des Pixels rouge et bleus pour dessiner d'autre sorte de forme
+        public void DrawMandelbrotC() //on peut s'amuser un peu avec les valeurs des Pixels rouge et bleus pour dessiner d'autre sorte de forme
         {
 
             int lines = _imageData.GetLength(0);
@@ -980,8 +980,8 @@ namespace Projet_S4
         }
        
        
-       //Il faut encore corriger quelques trucs sur cette méthdode
-       /*
+         //Il faut encore corriger quelques trucs sur cette méthdode
+          /*
               public void DrawMandelbrotC() //on peut s'amuser un peu avec les valeurs des Pixels rouge et bleus pour dessiner d'autre sorte de forme
               {
                     int column = 1000;
@@ -1051,7 +1051,7 @@ namespace Projet_S4
                     fractale.From_Image_To_File("../../../Images/Fractale");
               } 
         */
-       #endregion
+         #endregion
        
         #region Fractale de Julia
 
@@ -1411,118 +1411,9 @@ namespace Projet_S4
         
         #endregion
         
-        //TD8
-        
-        #region Méthodes QRCode
-        public static IEnumerable<T[]> Combinaisons<T>(IEnumerable<T> source)
-        {
-            if (null == source)
-                throw new ArgumentNullException(nameof(source));
 
-            var data = source.ToArray();
-
-            return Enumerable
-                .Range(0, 1 << (data.Length))
-                .Select(index => data
-                    .Where((v, i) => (index & (1 << i)) != 0)
-                    .ToArray());
-        }
-        
-        
-      public static int[] TrimAndPad(int[] array, int desiredLength)
-      {
-          while (array[0] == 0) array = array.Skip(1).ToArray();
-          var zerosArray = Enumerable.Repeat(0, desiredLength - array.Length);
-          return array.Concat(zerosArray).ToArray();
-      }
-        
-      public static int[] Pad(int[] array, int desiredLength)
-      {
-          var zerosArray = Enumerable.Repeat(0, desiredLength - array.Length);
-          return array.Concat(zerosArray).ToArray();
-      }
-        
-      public static int[] UnShift(int[] array, int desiredLength)
-      {
-          var zerosArray = Enumerable.Repeat(0, desiredLength - array.Length);
-          return zerosArray.Concat(array).ToArray();
-      }
-        
-      public static int[] Trim(int[] array)
-      {
-          while (array[0] == 0) array = array.Skip(1).ToArray();
-          return array;
-      }
-      
-      public static int[] XOR(int[] x, int[] y)
-      {
-          var result = new int[x.Length];
-          for (int i = 0; i < result.Length; i++)
-          {
-              result[i] = x[i] == 1 && y[i] == 1 ? 0 : x[i] != y[i] ? 1 : 0; 
-          }
-          return result;
-      }
-      
-      public static IEnumerable<string> CatchFile(string path)
-      {
-          var lignes = new Stack<string>();
-          try
-          {
-              using var sr = new StreamReader(path);
-              string line;
-              while ((line = sr.ReadLine()) != null)
-              {
-                  lignes.Push(line);
-              }
-          }
-          catch (Exception e)
-          {
-              Console.WriteLine("Le fichier n'as pas pu être lu, veuillez réessayer");
-              Console.WriteLine(e.Message);
-              throw new IOException();
-                
-          }
-
-          return lignes.ToArray().Reverse();
-      }
-      
-      public static int[] BitToByte(int[] data)
-      {
-          var final = new int[data.Length / 8];
-          var bytes = 0;
-          for (int i = 0; i < data.Length; i++)
-          {
-
-              bytes += (int) (Math.Pow(2, Math.Abs(i % 8 - 7)) * data[i]);
-              if (i != 0 && (i + 1) % 8 == 0)
-              {
-                  final[i / 8] = bytes;
-                  bytes = 0;
-              }
-          }
-          return final;
-      }
-      
-      public static int[] ByteToBit(int[] data)
-      {
-          var result = new int[data.Length * 8];
-          for (int i = 0; i < result.Length; i++)
-          {
-              var division =  (int) (data[i / 8] / Math.Pow(2, Math.Abs(i % 8 - 7)));
-              result[i] = division;
-              data[i / 8] -= (int) (Math.Pow(2, Math.Abs(i % 8 - 7)) * division);
-          }
-          return result;
-      }
-      
-      
-      #endregion
-      
-      
-      
     }
-    
+    #endregion
     
 }
 

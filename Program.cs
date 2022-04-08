@@ -110,15 +110,18 @@ namespace Projet_S4
                 {
                     for (int k = 0; k <= 7; k++)
                     {
-                        QRCode qrCode = new QRCode(5,i,5,j,k);
+                        QRCode qrCode = new QRCode(1,i,0,1,1);
                     }
                 }
             }
             */
             
-            //QRCode qrcode = new QRCode(10,7,5,2,7);
-            var julia =MyImage.FractaleJulia(0);//variable a initialiser avant
-            julia.From_Image_To_File(@"../../../Images/FractaleJulia.bmp");
+            
+            
+            QRCode qrcode = new QRCode(5,1,0,1,1);
+            
+            //var julia =MyImage.FractaleJulia(0);//variable a initialiser avant
+            //julia.From_Image_To_File(@"../../../Images/FractaleJulia.bmp");
             
             
 
