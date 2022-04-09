@@ -135,8 +135,8 @@ public class QRCode : MyImage
     public QRCode(int version,int taillemodule, int contours,int nivcorrection,int masque,string message)
     {
         _message = message;
-        MeilleurVersionEtNiveauDeCorrection();
-        int bordsQR = (8 * 2 + (4 * _version + 1)) * taillemodule + 2 * contours;
+        //MeilleurVersionEtNiveauDeCorrection();
+        int bordsQR = (8 * 2 + (4 * version + 1)) * taillemodule + 2 * contours;
         Height = bordsQR;
         Width = bordsQR;
         ImageData = new Pixel[Height, Width];
@@ -148,9 +148,9 @@ public class QRCode : MyImage
         Ecriture = 1;
         NumberRgb = 24;
         
-        //_version =version;
+        _version =version;
         _mask = masque;
-        //_nivcorrection = nivcorrection;
+        _nivcorrection = nivcorrection;
 
         ModulesDeRecherches(0 + _contours, 0 + _contours);
         ModulesDeRecherches(0 + Height - (7 * _taillemodule) - _contours, 0 + _contours);
@@ -165,7 +165,7 @@ public class QRCode : MyImage
         EcritureInfoFormat();
         Dico();
         DataCodeAndErrorDataWords();
-        MessageData(_message);
+        MessageData("HELLO WORLD");
         ErrorCorrectionQRCode();
         MessageQRCode(_bitwords);
         
@@ -643,7 +643,7 @@ public class QRCode : MyImage
             {
                 for (int c = 0; c < _taillemodule; c++)
                 {
-                    ImageData[ligne + l, ImageData.GetLength(0) - 8 * _taillemodule - _contours + c] =
+                    ImageData[ligne + l, ImageData.GetLength(0) - 8 * _taillemodule - _contours + c] = 
                         ImageData[ligne + l, ImageData.GetLength(0) - 7 * _taillemodule - _contours + c];
                 }
             }
@@ -732,7 +732,7 @@ public class QRCode : MyImage
             final[n-1] = Convert.ToInt32(finalinfo[n]);
         }
         _datacode = final[0];
-        _errordata = final[1];
+        _errordata = final[1]* final[2] + final[1]*final[4];
 
     }
     
@@ -842,7 +842,7 @@ public class QRCode : MyImage
 
             var val = final.Count;
             
-            for(int j = 0; j<(_datacode*8)-val; j++)//a revoir
+            for(int j = 0; j<=(_datacode*8-val); j++)//a revoir
             {
                 final.AddRange(j%2 ==0 ? modif3 : modif4);
                 
@@ -881,14 +881,14 @@ public class QRCode : MyImage
     #region Ecriture du message
     public void MessageQRCode(int[] tab)
     {
-        
+        /*
         for (int i = 0; i < _bitwords.Length; i++) 
         {
             Console.Write(_bitwords[i]);
         }
         
         Console.WriteLine("");
-        
+        */
         var haut = true;
         var spec = true;
         var compteur = 0;
@@ -920,7 +920,7 @@ public class QRCode : MyImage
                                 }
                             }
 
-                            //Console.Write("0");
+                            Console.Write("0");
 
                         }
                         else if (tab[compteur] == 1)
@@ -932,7 +932,7 @@ public class QRCode : MyImage
                                     ImageData[j+l, i+c] = new Pixel(0, 0, 0); 
                                 }
                             } 
-                            //Console.Write("1");
+                            Console.Write("1");
 
                         }
                         
@@ -951,7 +951,7 @@ public class QRCode : MyImage
                                     ImageData[j+l, i+c-_taillemodule] = new Pixel(255, 255, 255); 
                                 }
                             }
-                            //Console.Write("0");
+                            Console.Write("0");
 
                         }
                         else if (tab[compteur] == 1)
@@ -963,7 +963,7 @@ public class QRCode : MyImage
                                     ImageData[j+l, i+c-_taillemodule] = new Pixel(0, 0, 0); 
                                 }
                             }
-                            //Console.Write("1");
+                            Console.Write("1");
                         }
 
                         compteur++;
@@ -972,8 +972,8 @@ public class QRCode : MyImage
 
 
                 }
-                
-                
+                Console.Write(" ");
+
             }
             
             else
@@ -995,7 +995,7 @@ public class QRCode : MyImage
                                     ImageData[j+l, i+c] = new Pixel(255, 255, 255); 
                                 }
                             }
-                            //Console.Write("0");
+                            Console.Write("0");
 
                         }
                         else if (tab[compteur] == 1)
@@ -1008,7 +1008,7 @@ public class QRCode : MyImage
 
                                 }
                             }
-                            //Console.Write("1");                      
+                            Console.Write("1");                      
                         }
                         compteur++;
                     }
@@ -1026,7 +1026,7 @@ public class QRCode : MyImage
                                     ImageData[j+l, i+c-_taillemodule] = new Pixel(255, 255, 255); 
                                 }
                             }
-                            //Console.Write("0");
+                            Console.Write("0");
                         }
 
                         else if (tab[compteur] == 1) 
@@ -1039,15 +1039,16 @@ public class QRCode : MyImage
 
                                 }
                             }
-                            //Console.Write("1");
+                            Console.Write("1");
                         }
                         compteur++;
                     }
 
-                    
+
                 }
-            
-                
+                Console.Write(" ");
+
+
             }
             haut = !haut;
 
