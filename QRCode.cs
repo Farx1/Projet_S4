@@ -780,9 +780,9 @@ public class QRCode : MyImage
         var modif = UnShift(term, _version < 10 ? 9 : _version < 27 ? 11 : 13);
         final.AddRange(modif);
 
-        for (int k = 0; k < message.Length - 1; k += 2)
+        for (int k = 0; k <= message.Length - 1; k ++)
         {
-            if (k % 2 == 0)
+            if (k % 2 == 0 && k != message.Length - 1)
             {
                 _alphanum.TryGetValue(message[k], out var value1);
                 _alphanum.TryGetValue(message[k + 1], out var value2);
@@ -798,24 +798,29 @@ public class QRCode : MyImage
                 final.AddRange(modif1);
                 
             }
-            
-            if(k!= messagelength - 1 || messagelength % 2 != 1) continue;
-            _alphanum.TryGetValue(message[k], out var index);
-            var bin2 = Convert.ToString(index, 2);
-            var term2 = new int[bin2.Length];
-            for (int i = 0; i < bin2.Length; i++)
+            if(k==message.Length-1)
             {
-                term2[i] = bin2[i] - 48;
-            }
+                _alphanum.TryGetValue(message[k], out var index);
+                var bin2 = Convert.ToString(index, 2);
+                var term2 = new int[bin2.Length];
+                for (int i = 0; i < bin2.Length; i++)
+                {
+                    term2[i] = bin2[i] - 48;
+                }
             
-            var modif2 = UnShift(term2, 6);
-            final.AddRange(modif2);
+                var modif2 = UnShift(term2, 6);
+                final.AddRange(modif2);  
+            }
+            if(k != messagelength - 1 || messagelength % 2 != 1) continue;
+            
+            
             
             
         }
 
         var n = 0;
-        while(final.Count<=_datacode*8 && n<=4)
+        
+        while(final.Count<_datacode*8 && n<=4)
         {
             final.Add(0);
             n++;
@@ -840,9 +845,9 @@ public class QRCode : MyImage
             }
             var modif4 = UnShift(term4, 8);
 
-            var val = final.Count;
+            var val = _datacode*8-final.Count;
             
-            for(int j = 0; j<=(_datacode*8-val); j++)//a revoir
+            for(int j = 0; j<val/8; j++)//a revoir
             {
                 final.AddRange(j%2 ==0 ? modif3 : modif4);
                 
@@ -860,7 +865,6 @@ public class QRCode : MyImage
     
     
     #region ErrorCorrection
-    //A finir
     public void ErrorCorrectionQRCode()
     {
         var ggf = new GenericGF(285, 256, 0);
@@ -873,6 +877,19 @@ public class QRCode : MyImage
         var bytes = DataByteEncoding().Concat(array1).ToArray();
         reed.Encode(bytes, errorFields);
         _bitwords = ByteToBit(bytes);
+        /*
+        for (int i = 0; i < data.Length; i++)
+        {
+            Console.Write(data[i]);
+        }
+        Console.Write("\n");
+        for (int i = 0; i < _bitwords.Length; i++)
+        {
+            Console.Write(_bitwords[i]);
+        }
+        Console.WriteLine("\n");
+        Console.WriteLine("\n");
+        */
     }
     
     #endregion
@@ -881,14 +898,14 @@ public class QRCode : MyImage
     #region Ecriture du message
     public void MessageQRCode(int[] tab)
     {
-        /*
+        
         for (int i = 0; i < _bitwords.Length; i++) 
         {
             Console.Write(_bitwords[i]);
         }
         
         Console.WriteLine("");
-        */
+        
         var haut = true;
         var spec = true;
         var compteur = 0;
@@ -972,7 +989,7 @@ public class QRCode : MyImage
 
 
                 }
-                Console.Write(" ");
+                //Console.Write(" ");
 
             }
             
@@ -1046,7 +1063,7 @@ public class QRCode : MyImage
 
 
                 }
-                Console.Write(" ");
+                //Console.Write(" ");
 
 
             }
@@ -1054,6 +1071,7 @@ public class QRCode : MyImage
 
         }
     }
+    
     #endregion
     
     
