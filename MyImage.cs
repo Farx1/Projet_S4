@@ -1055,7 +1055,7 @@ namespace Projet_S4
        
         #region Fractale de Julia
 
-        public static MyImage FractaleJulia(int numero)
+        public static MyImage DrawJulia(int numero)
         {
             
                 int height = 4320;

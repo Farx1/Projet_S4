@@ -147,7 +147,6 @@ public class QRCode : MyImage
         Offset = 54;
         Ecriture = 1;
         NumberRgb = 24;
-        
         _version =version;
         _mask = masque;
         _nivcorrection = nivcorrection;
@@ -165,7 +164,7 @@ public class QRCode : MyImage
         EcritureInfoFormat();
         Dico();
         DataCodeAndErrorDataWords();
-        MessageData("HELLO WORLD");
+        MessageData(message);
         ErrorCorrectionQRCode();
         MessageQRCode(_bitwords);
         
@@ -826,8 +825,9 @@ public class QRCode : MyImage
             n++;
         }
 
-        final = final.Count % 8 != 0 ? Pad(final.ToArray(), final.Count + (8 - final.Count % 8)).ToList() : final;
-        if(final.Count<_datacode*8)
+        var val1 = final.Count;
+        final = val1 % 8 != 0 ? Pad(final.ToArray(), val1 + (8 - (val1 % 8))).ToList() : final;
+        if (final.Count < _datacode * 8)
         {
             var add1 = Convert.ToString(236 ,2);
             var add2 = Convert.ToString(17 ,2);
@@ -845,11 +845,11 @@ public class QRCode : MyImage
             }
             var modif4 = UnShift(term4, 8);
 
-            var val = _datacode*8-final.Count;
+            var val2 = _datacode*8-final.Count;
             
-            for(int j = 0; j<val/8; j++)//a revoir
+            for(int j = 0; j<val2/8; j++)//a revoir
             {
-                final.AddRange(j%2 ==0 ? modif3 : modif4);
+                final.AddRange(j%2 ==0 ? modif4 : modif3);
                 
             }
 
@@ -909,7 +909,8 @@ public class QRCode : MyImage
         var haut = true;
         var spec = true;
         var compteur = 0;
-            
+        
+
         for (var i = Width - _taillemodule-_contours; i >_contours; i-=2*_taillemodule)
         {
             if (i <= ((7 * _taillemodule) + _contours) && spec==true)
@@ -923,33 +924,94 @@ public class QRCode : MyImage
                 if (compteur >= tab.Length) break;
                 for (var j = Height - _taillemodule-_contours; j >=_contours; j-=_taillemodule)
                 {
-                
+                    
+                    
+                    
                     if (compteur >= tab.Length) break;
                     if (ImageData[j, i] == null)
                     {
-                        if (tab[compteur] == 0)
+                        
+                        if (tab[compteur] == 0)//blanc
                         {
-                            for (int l = 0; l < _taillemodule; l++)
-                            {
-                                for (int c = 0; c < _taillemodule; c++)
+                            bool boole= _mask 
+                                switch
                                 {
-                                    ImageData[j+l, i+c] = new Pixel(255, 255, 255); 
+                                    0 => (j + i) % 2 == 0,
+                                    1 => (j) % 2 == 0,
+                                    2 => (i) % 3 == 0,
+                                    3 => (j + i) % 3 == 0,
+                                    4 => ((i / 2) + (j / 2)) % 2 == 0,
+                                    5 => (((i * j) % 2) + ((i * j) % 3)) == 0,
+                                    6 => (((i * j) % 2) + ((i * j) % 3)) % 2 == 0,
+                                    7 => (((i + j) % 2) + ((i * j) % 3)) % 2 == 0,
+                                };
+                            var testbool = boole;
+                            
+                            if (testbool== true)
+                            {
+                                for (int l = 0; l < _taillemodule; l++)
+                                {
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l, i+c] = new Pixel(0, 0, 0);//switch en noir
+                                    }
                                 }
+
+                                Console.Write("1");
                             }
-
-                            Console.Write("0");
-
-                        }
-                        else if (tab[compteur] == 1)
-                        {
-                            for (int l = 0; l < _taillemodule; l++)
+                            else
                             {
-                                for (int c = 0; c < _taillemodule; c++)
+                                for (int l = 0; l < _taillemodule; l++)
                                 {
-                                    ImageData[j+l, i+c] = new Pixel(0, 0, 0); 
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l, i+c] = new Pixel(255, 255, 255);//reste blanc
+                                    }
                                 }
-                            } 
-                            Console.Write("1");
+                                Console.Write("0");
+                            }
+                            
+
+                        }   
+                        else if (tab[compteur] == 1)//noir
+                        {
+                            var boole= _mask 
+                                switch
+                                {
+                                    0 => (j + i) % 2 == 0,
+                                    1 => (j) % 2 == 0,
+                                    2 => (i) % 3 == 0,
+                                    3 => (j + i) % 3 == 0,
+                                    4 => ((i / 2) + (j / 2)) % 2 == 0,
+                                    5 => (((i * j) % 2) + ((i * j) % 3)) == 0,
+                                    6 => (((i * j) % 2) + ((i * j) % 3)) % 2 == 0,
+                                    7 => (((i + j) % 2) + ((i * j) % 3)) % 2 == 0,
+                                };
+                            var testbool = boole;
+                            
+                            if (testbool == true)
+                            {
+                                for (int l = 0; l < _taillemodule; l++)
+                                {
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l, i+c] = new Pixel(255, 255, 255);//witch en blanc
+                                    }
+                                }
+                                Console.Write("0");
+                            }
+                            else
+                            {
+                                for (int l = 0; l < _taillemodule; l++)
+                                {
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l, i+c] = new Pixel(0, 0, 0);//reste noir 
+                                    }
+                                } 
+                                Console.Write("1");
+                            }
+                            
 
                         }
                         
@@ -957,30 +1019,87 @@ public class QRCode : MyImage
                     }
 
 
-                    if (ImageData[j, i - 1] == null)
+                    if (ImageData[j, i - _taillemodule] == null)
                     {
-                        if (tab[compteur] == 0)
+                        if (tab[compteur] == 0)//blanc
                         {
-                            for (int l = 0; l < _taillemodule; l++)
-                            {
-                                for (int c = 0; c < _taillemodule; c++)
+                            bool boole= _mask 
+                                switch
                                 {
-                                    ImageData[j+l, i+c-_taillemodule] = new Pixel(255, 255, 255); 
+                                    0 => (j + i-_taillemodule) % 2 == 0,
+                                    1 => (j) % 2 == 0,
+                                    2 => (i-_taillemodule) % 3 == 0,
+                                    3 => (j + i-_taillemodule) % 3 == 0,
+                                    4 => (((i-_taillemodule) / 2) + (j / 2)) % 2 == 0,
+                                    5 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) == 0,
+                                    6 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
+                                    7 => ((((i-_taillemodule) + j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
+                                };
+                            var testbool = boole;
+                            if (testbool == true)
+                            {
+                                for (int l = 0; l < _taillemodule; l++)
+                                {
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l, i+c-_taillemodule] = new Pixel(0, 0, 0);//switch en noir
+                                    }
                                 }
+                                Console.Write("1");
                             }
-                            Console.Write("0");
+                            else
+                            {
+                                for (int l = 0; l < _taillemodule; l++)
+                                {
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l, i+c-_taillemodule] = new Pixel(255, 255, 255);//reste blanc
+                                    }
+                                }
+                                Console.Write("0");
+                            }
+                            
 
                         }
-                        else if (tab[compteur] == 1)
+                        else if (tab[compteur] == 1)//noir
                         {
-                            for (int l = 0; l < _taillemodule; l++)
-                            {
-                                for (int c = 0; c < _taillemodule; c++)
+                            bool boole= _mask 
+                                switch
                                 {
-                                    ImageData[j+l, i+c-_taillemodule] = new Pixel(0, 0, 0); 
+                                    0 => (j + i-_taillemodule) % 2 == 0,
+                                    1 => (j) % 2 == 0,
+                                    2 => (i-_taillemodule) % 3 == 0,
+                                    3 => (j + i-_taillemodule) % 3 == 0,
+                                    4 => (((i-_taillemodule) / 2) + (j / 2)) % 2 == 0,
+                                    5 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) == 0,
+                                    6 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
+                                    7 => ((((i-_taillemodule) + j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
+                                };
+                            var testbool = boole;
+                            
+                            if (testbool == true)
+                            {
+                                for (int l = 0; l < _taillemodule; l++)
+                                {
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l, i+c-_taillemodule] = new Pixel(255, 255, 255);//switch en blanc
+                                    }
                                 }
+                                Console.Write("0");
                             }
-                            Console.Write("1");
+                            else
+                            {
+                                for (int l = 0; l < _taillemodule; l++)
+                                {
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l, i+c-_taillemodule] = new Pixel(0, 0, 0);//reste noir
+                                    }
+                                } 
+                                Console.Write("1");
+                            }
+                            
                         }
 
                         compteur++;
@@ -999,65 +1118,177 @@ public class QRCode : MyImage
                 if (compteur >= tab.Length) break;
                 for (var j = _contours; j <Height-_contours; j+=_taillemodule)
                 {
+                    
                     if (compteur >= tab.Length) break;
 
                     if (ImageData[j,i] == null)
                     {
                         if (tab[compteur] == 0)
                         {
-                            for (int l = 0; l < _taillemodule; l++)
-                            {
-                                for (int c = 0; c < _taillemodule; c++)
+                            var boole= _mask 
+                                switch
                                 {
-                                    ImageData[j+l, i+c] = new Pixel(255, 255, 255); 
+                                    0 => (j + i) % 2 == 0,
+                                    1 => (j) % 2 == 0,
+                                    2 => (i) % 3 == 0,
+                                    3 => (j + i) % 3 == 0,
+                                    4 => ((i / 2) + (j / 2)) % 2 == 0,
+                                    5 => (((i * j) % 2) + ((i * j) % 3)) == 0,
+                                    6 => (((i * j) % 2) + ((i * j) % 3)) % 2 == 0,
+                                    7 => (((i + j) % 2) + ((i * j) % 3)) % 2 == 0,
+                                };
+                            var testbool = boole;
+                            if (testbool == true)//blanc
+                            {
+                                for (int l = 0; l < _taillemodule; l++)
+                                {
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l, i+c] = new Pixel(0, 0, 0);//switch en noir
+                                    }
                                 }
+                                Console.Write("1");
+                                
                             }
-                            Console.Write("0");
+                            else
+                            {
+                                for (int l = 0; l < _taillemodule; l++)
+                                {
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l, i+c] = new Pixel(255, 255, 255);//reste blanc
+                                    }
+                                }
+                                Console.Write("0");
+                            }
+                            
 
-                        }
-                        else if (tab[compteur] == 1)
+                        }   
+                        else if (tab[compteur] == 1)//noir
                         {
-                            for (int l = 0; l < _taillemodule; l++)
-                            {
-                                for (int c = 0; c < _taillemodule; c++)
+                            var boole= _mask 
+                                switch
                                 {
-                                    ImageData[j+l,i+c] = new Pixel(0, 0, 0);
-
+                                    0 => (j + i) % 2 == 0,
+                                    1 => (j) % 2 == 0,
+                                    2 => (i) % 3 == 0,
+                                    3 => (j + i) % 3 == 0,
+                                    4 => ((i / 2) + (j / 2)) % 2 == 0,
+                                    5 => (((i * j) % 2) + ((i * j) % 3)) == 0,
+                                    6 => (((i * j) % 2) + ((i * j) % 3)) % 2 == 0,
+                                    7 => (((i + j) % 2) + ((i * j) % 3)) % 2 == 0,
+                                };
+                            var testbool = boole;
+                            if (testbool == true)
+                            {
+                                for (int l = 0; l < _taillemodule; l++)
+                                {
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l, i+c] = new Pixel(255, 255, 255);//switch en blanc
+                                    }
                                 }
+                                Console.Write("0");
                             }
-                            Console.Write("1");                      
+                            else
+                            {
+                                for (int l = 0; l < _taillemodule; l++)
+                                {
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l,i+c] = new Pixel(0, 0, 0);//reste noir
+
+                                    }
+                                }
+                                Console.Write("1"); 
+                            }
+                                                 
                         }
                         compteur++;
                     }
-                    
+                    if (compteur >= tab.Length) break;
 
-                    
-                    if (ImageData[j,i-1] == null)
+                    if (ImageData[j,i-_taillemodule] == null)
                     {
-                        if (tab[compteur] == 0)
+                        if (tab[compteur] == 0)//blanc
                         {
-                            for (int l = 0; l < _taillemodule; l++)
-                            {
-                                for (int c = 0; c < _taillemodule; c++)
+                            var boole= _mask 
+                                switch
                                 {
-                                    ImageData[j+l, i+c-_taillemodule] = new Pixel(255, 255, 255); 
+                                    0 => (j + i-_taillemodule) % 2 == 0,
+                                    1 => (j) % 2 == 0,
+                                    2 => (i-_taillemodule) % 3 == 0,
+                                    3 => (j + i-_taillemodule) % 3 == 0,
+                                    4 => (((i-_taillemodule) / 2) + (j / 2)) % 2 == 0,
+                                    5 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) == 0,
+                                    6 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
+                                    7 => ((((i-_taillemodule) + j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
+                                };
+                            var testbool = boole;
+                            if (testbool == true)
+                            {
+                                for (int l = 0; l < _taillemodule; l++)
+                                {
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l, i+c-_taillemodule] = new Pixel(0, 0, 0);//switch en noir
+                                    }
                                 }
+                                Console.Write("1");
                             }
-                            Console.Write("0");
+                            else
+                            {
+                                for (int l = 0; l < _taillemodule; l++)
+                                {
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l, i+c-_taillemodule] = new Pixel(255, 255, 255);//reste blanc
+                                    }
+                                }
+                                Console.Write("0");
+                            }
+                            
                         }
-
-                        else if (tab[compteur] == 1) 
+                        else if (tab[compteur] == 1)//noir
                         {
-                            for (int l = 0; l < _taillemodule; l++)
-                            {
-                                for (int c = 0; c < _taillemodule; c++)
+                            var boole= _mask 
+                                switch
                                 {
-                                    ImageData[j+l,i+c-_taillemodule] = new Pixel(0, 0, 0);
-
+                                    0 => (j + i-_taillemodule) % 2 == 0,
+                                    1 => (j) % 2 == 0,
+                                    2 => (i-_taillemodule) % 3 == 0,
+                                    3 => (j + i-_taillemodule) % 3 == 0,
+                                    4 => (((i-_taillemodule) / 2) + (j / 2)) % 2 == 0,
+                                    5 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) == 0,
+                                    6 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
+                                    7 => ((((i-_taillemodule) + j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
+                                };
+                            var testbool = boole;
+                            if (testbool == true)
+                            {
+                                for (int l = 0; l < _taillemodule; l++)
+                                {
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l, i+c-_taillemodule] = new Pixel(255, 255, 255);//switch en blanc
+                                    }
                                 }
+                                Console.Write("0");
                             }
-                            Console.Write("1");
+                            else
+                            {
+                                for (int l = 0; l < _taillemodule; l++)
+                                {
+                                    for (int c = 0; c < _taillemodule; c++)
+                                    {
+                                        ImageData[j+l, i+c-_taillemodule] = new Pixel(0, 0, 0);//reste noir
+                                    }
+                                }
+                                Console.Write("1");
+                            }
+                            
                         }
+                        
                         compteur++;
                     }
 

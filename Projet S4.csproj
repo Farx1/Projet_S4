@@ -15,6 +15,7 @@
     <ItemGroup>
       <None Remove="Images\Test4.bmp" />
       <None Remove="Images\QRCode_V7_N1_M4.bmp" />
+      <None Remove="Images\QRCode_V22_N1_M0.bmp" />
     </ItemGroup>
 
 </Project>
