@@ -1176,7 +1176,7 @@ namespace Projet_S4
         
         #endregion
         
-        
+        //A refaire
         #region Histogramme des couleurs d'une photo
        public void DrawHistogram() //histogramme des couleurs d'une photo
         {

@@ -10,7 +10,7 @@ public class QRCode : MyImage
     #region Constructeur et Attributs
 
     private int _version;
-    private int[] _modecorrection;
+    private int[] _modeindicator;
     private int _contours;
     private static Dictionary<char,int> _alphanum = new();
     private int _taillemessage;
@@ -30,10 +30,10 @@ public class QRCode : MyImage
         set => _version = value;
     }
 
-    public int[] Mode
+    public int[] ModeIndicator
     {
-        get => _modecorrection;
-        set => _modecorrection = value ?? throw new ArgumentNullException(nameof(value));
+        get => _modeindicator;
+        set => _modeindicator = value ?? throw new ArgumentNullException(nameof(value));
     }
 
     public int Contours
@@ -104,8 +104,10 @@ public class QRCode : MyImage
         set => _message = value;
     }
     
+        
+    
     public QRCode(int version, int contours, List<int> chainbits, int mask, int taillemodule, int nivcorrection,
-        Pixel[,] imageData, string paires, int[] modecorrection, int height, int width, string typeImage, int numberRgb,
+        Pixel[,] imageData, string paires, int[] modeindicator, int height, int width, string typeImage, int numberRgb,
         int offset)
     {
         _version = version;
@@ -115,7 +117,7 @@ public class QRCode : MyImage
         _taillemodule = taillemodule;
         _nivcorrection = nivcorrection;
         ImageData = imageData;
-        _modecorrection = modecorrection;
+        _modeindicator = modeindicator;
         Height = height;
         Width = width;
         TypeImage = typeImage;
@@ -151,12 +153,12 @@ public class QRCode : MyImage
         _mask = masque;
         _nivcorrection = nivcorrection;
 
-        ModulesDeRecherches(0 + _contours, 0 + _contours);
-        ModulesDeRecherches(0 + Height - (7 * _taillemodule) - _contours, 0 + _contours);
-        ModulesDeRecherches(0 + _contours, 0 + Width - (7 * _taillemodule) - _contours);
-        Separateurs(0 + _contours, 0 + _contours);
-        Separateurs(0 + Height - 8 * _taillemodule - _contours, 0 + _contours);
-        Separateurs(0 + _contours, 0 + Width - 8 * _taillemodule - _contours);
+        ModulesDeRecherches(0 + _contours, 0 +_contours);
+        ModulesDeRecherches(0 + Height - (7 * _taillemodule) -_contours, 0+_contours);
+        ModulesDeRecherches(0 +_contours, 0 + Width - (7 * _taillemodule)-_contours);
+        Separateurs(0+_contours, 0+_contours);
+        Separateurs(0 + Height - 8 * _taillemodule-_contours, 0+_contours);
+        Separateurs(0+_contours, 0 + Width - 8 * _taillemodule-_contours);
         EcritureMotifsAlignement();
         MotifsDeSynchro();
         DarkModule();
@@ -164,12 +166,11 @@ public class QRCode : MyImage
         EcritureInfoFormat();
         Dico();
         DataCodeAndErrorDataWords();
-        MessageData(message);
+        MessageData(_message);
         ErrorCorrectionQRCode();
+        //_bitwords = new int[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
         MessageQRCode(_bitwords);
         
-
-
         QRCode.FillImageWithGrey(); //pour voir les modules non remplis
 
 
@@ -610,7 +611,7 @@ public class QRCode : MyImage
         int colonne = 8 * _taillemodule + _contours;
         int ligne = 8 * _taillemodule + _contours;
 
-        int i = Height - _contours - _taillemodule;
+        int i = Height - _contours - _taillemodule ;
         int j = 0 + _contours;
         foreach (int n in infoformat)
         {
@@ -676,28 +677,31 @@ public class QRCode : MyImage
             var readligne1 = taille[i].Split(",");
             var readligne =taille[i+1].Split(",");
             var readligne2 = taille[i+2].Split(",");
-            i++;
+            
             var taillebas = Convert.ToInt32(readligne1[0]);
             var taillehaut = Convert.ToInt32(readligne2[0]);
-            if (taillebas <= taillemessage  && taillemessage < taillehaut)
+            if (taillebas < taillemessage  && taillemessage < taillehaut)
             {
                 _version = Convert.ToInt32(readligne[1]);
                 _nivcorrection = Convert.ToInt32(readligne[2]);
                 break;
             }
-            else if (taillemessage < taillebas)
+            else if (taillemessage == taillebas)
             {
                 _version = Convert.ToInt32(readligne1[1]);
                 _nivcorrection = Convert.ToInt32(readligne1[2]);
+                break;
             }
             else if (taillemessage == taillehaut)
             {
                 _version = Convert.ToInt32(readligne2[1]);
                 _nivcorrection = Convert.ToInt32(readligne2[2]);
+                break;
             }
-            else continue;
 
-            
+            i++;
+
+
         }
         
         
@@ -762,12 +766,36 @@ public class QRCode : MyImage
     #endregion
     
     
+    #region Masques EncodageQRCode
+
+    public bool MasqueQRCode(int j,int i)
+    {
+        bool boole= _mask 
+            switch
+            {
+                0 => (j + i) % 2 == 0,
+                1 => (j) % 2 == 0,
+                2 => (i) % 3 == 0,
+                3 => (j + i) % 3 == 0,
+                4 => ((j / 2) + (i / 3)) % 2 == 0,
+                5 => ((j * i) % 2) + ((j * i) % 3) == 0,
+                6 => (((j * i) % 2) + ((j * i) % 3)) % 2 == 0,
+                7 => (((j + i) % 2) + ((j * i) % 3)) % 2 == 0,
+                _ => (j) % 2 == 0,
+            };
+        return boole;
+        
+    }
+    
+    #endregion
+    
+    
     #region Encodage du message
     public void MessageData(string message)
     {
         message = message.ToUpper();
-        _modecorrection = new int[] {0, 0, 1, 0};//reste a déterminer le mode de correction optimal pour chaque QRCode
-        List<int> final = new List<int>(_modecorrection);
+        _modeindicator = new int[] {0, 0, 1, 0};
+        List<int> final = new List<int>(_modeindicator);
         var messagelength =message.Length;
         var bin = Convert.ToString(messagelength, 2);
         var term = new int[bin.Length];
@@ -779,7 +807,7 @@ public class QRCode : MyImage
         var modif = UnShift(term, _version < 10 ? 9 : _version < 27 ? 11 : 13);
         final.AddRange(modif);
 
-        for (int k = 0; k <= message.Length - 1; k ++)
+        for (int k = 0; k <= message.Length - 1; k +=2)
         {
             if (k % 2 == 0 && k != message.Length - 1)
             {
@@ -797,7 +825,7 @@ public class QRCode : MyImage
                 final.AddRange(modif1);
                 
             }
-            if(k==message.Length-1)
+            if(k==message.Length-1 && message.Length%2 ==1)
             {
                 _alphanum.TryGetValue(message[k], out var index);
                 var bin2 = Convert.ToString(index, 2);
@@ -810,23 +838,21 @@ public class QRCode : MyImage
                 var modif2 = UnShift(term2, 6);
                 final.AddRange(modif2);  
             }
-            if(k != messagelength - 1 || messagelength % 2 != 1) continue;
-            
-            
-            
-            
+
+
+
+
         }
 
-        var n = 0;
+        var n = 1;
         
         while(final.Count<_datacode*8 && n<=4)
         {
             final.Add(0);
             n++;
         }
-
-        var val1 = final.Count;
-        final = val1 % 8 != 0 ? Pad(final.ToArray(), val1 + (8 - (val1 % 8))).ToList() : final;
+        
+        final = final.Count % 8 != 0 ? Pad(final.ToArray(), final.Count + (8 - final.Count % 8)).ToList() : final;
         if (final.Count < _datacode * 8)
         {
             var add1 = Convert.ToString(236 ,2);
@@ -845,12 +871,11 @@ public class QRCode : MyImage
             }
             var modif4 = UnShift(term4, 8);
 
-            var val2 = _datacode*8-final.Count;
+            var val2 = (_datacode*8 -final.Count);
             
             for(int j = 0; j<val2/8; j++)//a revoir
             {
-                final.AddRange(j%2 ==0 ? modif4 : modif3);
-                
+                final.AddRange(j%2 ==0 ? modif3 : modif4);
             }
 
 
@@ -871,11 +896,11 @@ public class QRCode : MyImage
         var reed = new ReedSolomonEncoder(ggf);
         var data = _chainbits.ToArray();
 
-        var errorFields = _errordata;
-            
-        var array1 = Enumerable.Repeat(0, errorFields);
+        var errordata = _errordata;
+        
+        var array1 = Enumerable.Repeat(0, errordata);
         var bytes = DataByteEncoding().Concat(array1).ToArray();
-        reed.Encode(bytes, errorFields);
+        reed.Encode(bytes, errordata);
         _bitwords = ByteToBit(bytes);
         /*
         for (int i = 0; i < data.Length; i++)
@@ -906,12 +931,12 @@ public class QRCode : MyImage
         
         Console.WriteLine("");
         
-        var haut = true;
+        var bas = true;
         var spec = true;
         var compteur = 0;
         
 
-        for (var i = Width - _taillemodule-_contours; i >_contours; i-=2*_taillemodule)
+        for (var i = Width - _taillemodule - _contours; i >_contours; i-=2*_taillemodule)
         {
             if (i <= ((7 * _taillemodule) + _contours) && spec==true)
             {
@@ -919,13 +944,11 @@ public class QRCode : MyImage
                 spec=false;
             }
             if (compteur >= tab.Length) break;
-            if (haut)
+            if (bas)
             {
                 if (compteur >= tab.Length) break;
-                for (var j = Height - _taillemodule-_contours; j >=_contours; j-=_taillemodule)
+                for (var j = Height - _taillemodule - _contours; j > _contours; j-=_taillemodule)
                 {
-                    
-                    
                     
                     if (compteur >= tab.Length) break;
                     if (ImageData[j, i] == null)
@@ -933,19 +956,8 @@ public class QRCode : MyImage
                         
                         if (tab[compteur] == 0)//blanc
                         {
-                            bool boole= _mask 
-                                switch
-                                {
-                                    0 => (j + i) % 2 == 0,
-                                    1 => (j) % 2 == 0,
-                                    2 => (i) % 3 == 0,
-                                    3 => (j + i) % 3 == 0,
-                                    4 => ((i / 2) + (j / 2)) % 2 == 0,
-                                    5 => (((i * j) % 2) + ((i * j) % 3)) == 0,
-                                    6 => (((i * j) % 2) + ((i * j) % 3)) % 2 == 0,
-                                    7 => (((i + j) % 2) + ((i * j) % 3)) % 2 == 0,
-                                };
-                            var testbool = boole;
+                            
+                            var testbool = MasqueQRCode(j - _contours,i - _contours);
                             
                             if (testbool== true)
                             {
@@ -975,19 +987,8 @@ public class QRCode : MyImage
                         }   
                         else if (tab[compteur] == 1)//noir
                         {
-                            var boole= _mask 
-                                switch
-                                {
-                                    0 => (j + i) % 2 == 0,
-                                    1 => (j) % 2 == 0,
-                                    2 => (i) % 3 == 0,
-                                    3 => (j + i) % 3 == 0,
-                                    4 => ((i / 2) + (j / 2)) % 2 == 0,
-                                    5 => (((i * j) % 2) + ((i * j) % 3)) == 0,
-                                    6 => (((i * j) % 2) + ((i * j) % 3)) % 2 == 0,
-                                    7 => (((i + j) % 2) + ((i * j) % 3)) % 2 == 0,
-                                };
-                            var testbool = boole;
+                            
+                            var testbool = MasqueQRCode(j - _contours,i - _contours);
                             
                             if (testbool == true)
                             {
@@ -1022,20 +1023,10 @@ public class QRCode : MyImage
                     if (ImageData[j, i - _taillemodule] == null)
                     {
                         if (tab[compteur] == 0)//blanc
-                        {
-                            bool boole= _mask 
-                                switch
-                                {
-                                    0 => (j + i-_taillemodule) % 2 == 0,
-                                    1 => (j) % 2 == 0,
-                                    2 => (i-_taillemodule) % 3 == 0,
-                                    3 => (j + i-_taillemodule) % 3 == 0,
-                                    4 => (((i-_taillemodule) / 2) + (j / 2)) % 2 == 0,
-                                    5 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) == 0,
-                                    6 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
-                                    7 => ((((i-_taillemodule) + j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
-                                };
-                            var testbool = boole;
+                        { 
+                            var testbool = MasqueQRCode(j - _contours,i-_taillemodule - _contours);
+                            
+                            
                             if (testbool == true)
                             {
                                 for (int l = 0; l < _taillemodule; l++)
@@ -1062,20 +1053,8 @@ public class QRCode : MyImage
 
                         }
                         else if (tab[compteur] == 1)//noir
-                        {
-                            bool boole= _mask 
-                                switch
-                                {
-                                    0 => (j + i-_taillemodule) % 2 == 0,
-                                    1 => (j) % 2 == 0,
-                                    2 => (i-_taillemodule) % 3 == 0,
-                                    3 => (j + i-_taillemodule) % 3 == 0,
-                                    4 => (((i-_taillemodule) / 2) + (j / 2)) % 2 == 0,
-                                    5 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) == 0,
-                                    6 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
-                                    7 => ((((i-_taillemodule) + j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
-                                };
-                            var testbool = boole;
+                        { 
+                            var testbool = MasqueQRCode(j - _contours,i-_taillemodule - _contours);
                             
                             if (testbool == true)
                             {
@@ -1112,6 +1091,9 @@ public class QRCode : MyImage
 
             }
             
+            if (compteur >= tab.Length) break;
+
+            
             else
             {
                 
@@ -1125,19 +1107,9 @@ public class QRCode : MyImage
                     {
                         if (tab[compteur] == 0)
                         {
-                            var boole= _mask 
-                                switch
-                                {
-                                    0 => (j + i) % 2 == 0,
-                                    1 => (j) % 2 == 0,
-                                    2 => (i) % 3 == 0,
-                                    3 => (j + i) % 3 == 0,
-                                    4 => ((i / 2) + (j / 2)) % 2 == 0,
-                                    5 => (((i * j) % 2) + ((i * j) % 3)) == 0,
-                                    6 => (((i * j) % 2) + ((i * j) % 3)) % 2 == 0,
-                                    7 => (((i + j) % 2) + ((i * j) % 3)) % 2 == 0,
-                                };
-                            var testbool = boole;
+                            
+                            var testbool = MasqueQRCode(j - _contours,i - _contours);
+                            
                             if (testbool == true)//blanc
                             {
                                 for (int l = 0; l < _taillemodule; l++)
@@ -1166,19 +1138,9 @@ public class QRCode : MyImage
                         }   
                         else if (tab[compteur] == 1)//noir
                         {
-                            var boole= _mask 
-                                switch
-                                {
-                                    0 => (j + i) % 2 == 0,
-                                    1 => (j) % 2 == 0,
-                                    2 => (i) % 3 == 0,
-                                    3 => (j + i) % 3 == 0,
-                                    4 => ((i / 2) + (j / 2)) % 2 == 0,
-                                    5 => (((i * j) % 2) + ((i * j) % 3)) == 0,
-                                    6 => (((i * j) % 2) + ((i * j) % 3)) % 2 == 0,
-                                    7 => (((i + j) % 2) + ((i * j) % 3)) % 2 == 0,
-                                };
-                            var testbool = boole;
+                            
+                            var testbool = MasqueQRCode(j - _contours,i - _contours);
+                            
                             if (testbool == true)
                             {
                                 for (int l = 0; l < _taillemodule; l++)
@@ -1206,25 +1168,15 @@ public class QRCode : MyImage
                         }
                         compteur++;
                     }
+                    
                     if (compteur >= tab.Length) break;
 
                     if (ImageData[j,i-_taillemodule] == null)
                     {
                         if (tab[compteur] == 0)//blanc
                         {
-                            var boole= _mask 
-                                switch
-                                {
-                                    0 => (j + i-_taillemodule) % 2 == 0,
-                                    1 => (j) % 2 == 0,
-                                    2 => (i-_taillemodule) % 3 == 0,
-                                    3 => (j + i-_taillemodule) % 3 == 0,
-                                    4 => (((i-_taillemodule) / 2) + (j / 2)) % 2 == 0,
-                                    5 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) == 0,
-                                    6 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
-                                    7 => ((((i-_taillemodule) + j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
-                                };
-                            var testbool = boole;
+                            var testbool = MasqueQRCode(j - _contours,i-_taillemodule - _contours);
+                            
                             if (testbool == true)
                             {
                                 for (int l = 0; l < _taillemodule; l++)
@@ -1251,19 +1203,9 @@ public class QRCode : MyImage
                         }
                         else if (tab[compteur] == 1)//noir
                         {
-                            var boole= _mask 
-                                switch
-                                {
-                                    0 => (j + i-_taillemodule) % 2 == 0,
-                                    1 => (j) % 2 == 0,
-                                    2 => (i-_taillemodule) % 3 == 0,
-                                    3 => (j + i-_taillemodule) % 3 == 0,
-                                    4 => (((i-_taillemodule) / 2) + (j / 2)) % 2 == 0,
-                                    5 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) == 0,
-                                    6 => ((((i-_taillemodule) * j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
-                                    7 => ((((i-_taillemodule) + j) % 2) + (((i-_taillemodule) * j) % 3)) % 2 == 0,
-                                };
-                            var testbool = boole;
+                            
+                            var testbool = MasqueQRCode(j - _contours,i-_taillemodule - _contours);
+                            
                             if (testbool == true)
                             {
                                 for (int l = 0; l < _taillemodule; l++)
@@ -1298,9 +1240,10 @@ public class QRCode : MyImage
 
 
             }
-            haut = !haut;
+            bas = !bas;
 
         }
+        Console.Write("\n");
     }
     
     #endregion
@@ -1409,6 +1352,9 @@ public class QRCode : MyImage
       }
     
     #endregion
+    
+    
+    
     
 }
 

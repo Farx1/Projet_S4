@@ -118,7 +118,7 @@ namespace Projet_S4
             
             
             
-            QRCode qrcode = new QRCode(2,5,20,1,0,"HELLO WORLD");//marche jusqu'a V22
+            QRCode qrcode = new QRCode(5,1,5,1,7,"BONJOUR");//marche jusqu'a V22
             //Console.WriteLine("\n"+"00100000010110110000101101111000110100010111001011011100010011010100001101000000111011000001000111101100");
             //var julia =MyImage.FractaleJulia(0);//variable a initialiser avant
             //julia.From_Image_To_File(@"../../../Images/FractaleJulia.bmp");
