@@ -938,7 +938,7 @@ public class QRCode : MyImage
 
         for (var i = Width - _taillemodule - _contours; i >_contours; i-=2*_taillemodule)
         {
-            if (i <= ((7 * _taillemodule) + _contours) && spec==true)
+            if (i <= (7 * _taillemodule) && spec==true)
             {
                 i= i-_taillemodule;
                 spec=false;
@@ -957,7 +957,7 @@ public class QRCode : MyImage
                         if (tab[compteur] == 0)//blanc
                         {
                             
-                            var testbool = MasqueQRCode(j - _contours,i - _contours);
+                            var testbool = MasqueQRCode(j-_contours,i-_contours);
                             
                             if (testbool== true)
                             {
@@ -988,7 +988,8 @@ public class QRCode : MyImage
                         else if (tab[compteur] == 1)//noir
                         {
                             
-                            var testbool = MasqueQRCode(j - _contours,i - _contours);
+                            var testbool = MasqueQRCode(j-_contours,i-_contours);
+                            
                             
                             if (testbool == true)
                             {
@@ -1024,7 +1025,7 @@ public class QRCode : MyImage
                     {
                         if (tab[compteur] == 0)//blanc
                         { 
-                            var testbool = MasqueQRCode(j - _contours,i-_taillemodule - _contours);
+                            var testbool = MasqueQRCode(j-_contours,i-_taillemodule-_contours);
                             
                             
                             if (testbool == true)
@@ -1054,7 +1055,7 @@ public class QRCode : MyImage
                         }
                         else if (tab[compteur] == 1)//noir
                         { 
-                            var testbool = MasqueQRCode(j - _contours,i-_taillemodule - _contours);
+                            var testbool = MasqueQRCode(j-_contours,i-_taillemodule-_contours);
                             
                             if (testbool == true)
                             {
@@ -1098,7 +1099,7 @@ public class QRCode : MyImage
             {
                 
                 if (compteur >= tab.Length) break;
-                for (var j = _contours; j <Height-_contours; j+=_taillemodule)
+                for (var j = _contours; j <Height - _contours; j+=_taillemodule)
                 {
                     
                     if (compteur >= tab.Length) break;
@@ -1108,7 +1109,8 @@ public class QRCode : MyImage
                         if (tab[compteur] == 0)
                         {
                             
-                            var testbool = MasqueQRCode(j - _contours,i - _contours);
+                            var testbool = MasqueQRCode(j-_contours,i-_contours);
+                            
                             
                             if (testbool == true)//blanc
                             {
@@ -1139,7 +1141,8 @@ public class QRCode : MyImage
                         else if (tab[compteur] == 1)//noir
                         {
                             
-                            var testbool = MasqueQRCode(j - _contours,i - _contours);
+                            var testbool = MasqueQRCode(j-_contours,i-_contours);
+                            
                             
                             if (testbool == true)
                             {
@@ -1175,7 +1178,7 @@ public class QRCode : MyImage
                     {
                         if (tab[compteur] == 0)//blanc
                         {
-                            var testbool = MasqueQRCode(j - _contours,i-_taillemodule - _contours);
+                            var testbool = MasqueQRCode(j-_contours,i-_taillemodule-_contours);
                             
                             if (testbool == true)
                             {
@@ -1204,7 +1207,8 @@ public class QRCode : MyImage
                         else if (tab[compteur] == 1)//noir
                         {
                             
-                            var testbool = MasqueQRCode(j - _contours,i-_taillemodule - _contours);
+                            var testbool = MasqueQRCode(j-_contours,i-_taillemodule-_contours);
+                            
                             
                             if (testbool == true)
                             {
