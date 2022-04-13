@@ -11,14 +11,14 @@ namespace Projet_S4
 
         //TD2
         #region Attributs
-
+        
         private string _typeImage="BMP";
         private int _height;
         private int _width;
         private int _sizeFile;
         private int _numberRgb;
         private int _offset;
-        private Pixel[,] _imageData;
+        private Pixel[,] _imageData = null!;
         private int _ecriture;
 
         #endregion
@@ -36,7 +36,7 @@ namespace Projet_S4
         /// <param name="numberRgb"> nombre de bits par couleur </param>
         /// <param name="offset"> taille du header + headerinfo </param>
         /// <param name="imageData"> matrice RGB de l'image elle-même </param>
-        /// <param name="ecriture"></param>
+        /// <param name="ecriture"> type d'écriture (haut en bas) (bas en haut)</param>
 
         #region Premier constructeur
 
@@ -213,6 +213,11 @@ namespace Projet_S4
 
         #region Méthodes de conversion
 
+        /// <summary>
+        /// Méthode permettant de convertir un tableau de bytes en int
+        /// </summary>
+        /// <param name="tab"></param>Tableau de bytes à convertir
+        /// <returns></returns>
         #region Endian --> Entier
 
         public static int Convertir_Endian_To_Int(byte[] tab)
@@ -230,7 +235,12 @@ namespace Projet_S4
         #endregion
 
         #region Entier --> Endian
-
+        /// <summary>
+        /// Méthode permettant de convertir un entier en tableau de bytes
+        /// </summary>
+        /// <param name="val"></param>Valeur à convertir
+        /// <param name="size"></param>Taille du tableau de bytes à créer
+        /// <returns></returns>
         public static byte[] Convertir_Int_To_Endian(int val, int size)
         {
             byte[] newone = new byte[size];
@@ -250,7 +260,9 @@ namespace Projet_S4
 
 
         #region Méthode pour afficher les caractéristiques d'une image
-
+        /// <summary>
+        /// Méthode permettant d'afficher les caractéristiques d'une image
+        /// </summary>
         public void toString()
         {
             string s = "Type de l'image : " + TypeImage + "\n" + "Hauteur de l'image : " + Height + "\n" +
@@ -279,7 +291,10 @@ namespace Projet_S4
 
  
         #region Méthode qui tranforme une image en fichier binaire
-        //Méthode ok après check Debug
+        /// <summary>
+        /// Méthode qui tranforme une image en fichier binaire
+        /// </summary>
+        /// <param name="path"></param>Nom du fichier à convertir
         public void From_Image_To_File(string path)
         {
             // creation de 3 lists, une pour chaque catégorie, où on y ajoute les données une à une 
@@ -399,6 +414,9 @@ namespace Projet_S4
         
         //TD3
         #region Méthode Couleur --> Noir&Blanc/Inversion
+        /// <summary>
+        /// Méthode qui permet de convertir une image en nuances de gris
+        /// </summary>
         public void NuancesGris()
         {
             Pixel [,] nuancgris = new Pixel[this._height, this._width];
@@ -414,7 +432,11 @@ namespace Projet_S4
 
             _imageData = nuancgris;
         }
+        
 
+        /// <summary>
+        ///Méthode qui permet de convertir une image en noir et blanc
+        /// </summary>
         public void NoirEtBlanc()
         {
             Pixel [,] neb = new Pixel[this._height, this._width];
@@ -439,6 +461,10 @@ namespace Projet_S4
             _imageData = neb;
         }
         
+        
+        /// <summary>
+        /// Méthode qui permet d'inverser les couleurs d'une image
+        /// </summary>
         public void Negatif()
         {
             Pixel [,] neg = new Pixel[this._height, this._width];
@@ -503,6 +529,12 @@ namespace Projet_S4
             _imageData = petit;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="direction"></param>Direction du décalage
+        /// <param name="defilement1"></param>Valeur du décalage vertical
+        /// <param name="defilement2"></param>Valeur du décalage horizontal
         public void Decaler(string direction, int defilement1, int defilement2)
         {
 
@@ -557,7 +589,10 @@ namespace Projet_S4
 
         
         #region Méthodes mirroir(Horizontal/Vertical)
-        public void MirroirAxeVertical()
+        /// <summary>
+        /// Méthode permettant de faire un mirroir horizontal
+        /// </summary>
+        public void MirroirHorizontal()
         {
             Pixel[,] mirh = new Pixel [_height, _width];
             for (int i = 0; i < this._imageData.GetLength(0); i++)
@@ -570,7 +605,10 @@ namespace Projet_S4
 
             _imageData = mirh;
         }
-        public void MirroirAxeHorizontal()
+        /// <summary>
+        /// Métode permettant de faire un mirroir vertical
+        /// </summary>
+        public void MirroirVertical()
         {
             Pixel[,] mirv = new Pixel [_height, _width];
             for (int i = 0; i < this._imageData.GetLength(0); i++)
@@ -587,8 +625,14 @@ namespace Projet_S4
 
         
         #region Méthodes pour la rotation d'une Image
-       public void Rotatesupp(int deg)
-       {
+        
+        #region Méthode complémentaire rotation
+        /// <summary>
+        /// Méthode permettant de compléter la rotation d'image pour plus d'efficacité
+        /// </summary>
+        /// <param name="deg"></param>Degré de rotation supplémentaire après les rotations de 90°
+        public void Rotatesupp(int deg)
+        {
            //première méthode faite avec les méthodes miroirs pour plus d'efficacité dans la méthode Rotate()
             
            while (deg < 0) deg += 360;
@@ -615,8 +659,8 @@ namespace Projet_S4
                else
                {
                    this.Rotatesupp(90);
-                   this.MirroirAxeVertical();
-                   this.MirroirAxeHorizontal();
+                   this.MirroirHorizontal();
+                   this.MirroirVertical();
                }
            }
            else
@@ -640,9 +684,13 @@ namespace Projet_S4
                    _imageData = rot;
                }
            }
-       }
+        }
+        #endregion
        
         #region Méthode Rotate90 basique
+        /// <summary>
+        /// Méthode permettant de faire une rotation de 90°
+        /// </summary>
        public void Rotate90()
        {
            Pixel[,] rot = new Pixel[this._width, this._height];
@@ -661,6 +709,12 @@ namespace Projet_S4
        
        #endregion
        
+        #region Méthode de Rotation pour tous les degrés
+        /// <summary>
+        /// Méthode permettant de faire des rotations de tous les angles (degrés
+        /// </summary>
+        /// <param name="deg"></param> Dégré de rotation
+        /// <returns></returns>
        public MyImage Rotate(int deg)
         {
             MyImage imagerot = new MyImage(this);
@@ -730,9 +784,14 @@ namespace Projet_S4
             imagerot.FillImageWithWhite();
             return imagerot;
         }
-
-       public void FillImageWithWhite()
-       {
+        #endregion
+        
+        #region Méthodes de remplissage de l'image
+        /// <summary>
+        /// Méthode permettant de remplir l'image avec des pixels blancs
+        /// </summary>
+        public void FillImageWithWhite()
+        {
            for (int i = 0; i < this._imageData.GetLength(0); i++)
            {
                for (int j = 0; j < this._imageData.GetLength(1); j++)
@@ -740,17 +799,21 @@ namespace Projet_S4
                    _imageData[i, j] ??= new Pixel(255, 255, 255);
                }
            }
-       }
-       public void FillImageWithGrey()
-       {
+        }
+        /// <summary>
+        /// Méthode permettant de remplir l'image avec des pixels gris
+        /// </summary>
+        public void FillImageWithGrey()
+        {
            for (int i = 0; i < this._imageData.GetLength(0); i++)
            {
                for (int j = 0; j < this._imageData.GetLength(1); j++)
                {
                    _imageData[i, j] ??= new Pixel(177, 177, 177);
-               }
-           }
-       }
+                 }
+            }
+        }
+        #endregion
        
        
         #endregion
@@ -758,7 +821,13 @@ namespace Projet_S4
         //TD4
         #region Matrice de Convolution  
         
-        
+        /// <summary>
+        /// Méthode permettant d'effectuer une convolution sur l'image
+        /// </summary>
+        /// <param name="matrice1"></param> Matrice de convolution 1
+        /// <param name="matrice2"></param> Matrice de convolution 2
+        /// <param name="factor"></param> Facteur de multiplication
+        /// <exception cref="ArgumentException"></exception> Si les matrices ne sont pas de même taille
        public void Convolution(int[,] matrice1, int[,] matrice2 ,double factor=1.0)
        {
            Pixel[,] pix = new Pixel[_height, _width];
@@ -826,6 +895,9 @@ namespace Projet_S4
         //TD5
         #region Dessiner une fractale (3 versions de Mandelbrot/ Fractale de Julia)
         
+        /// <summary>
+        /// Méthodes permettant de dessiner une fractale de Mandelbrot(Type A,B,C)
+        /// </summary>
         #region Fractale Mandelbrot (A,B,C)
          public void DrawMandelbrotA()
        {
@@ -1103,8 +1175,14 @@ namespace Projet_S4
         */
          #endregion
        
+         
         #region Fractale de Julia
 
+        /// <summary>
+        /// Méthode qui dessine la fractale de Julia
+        /// </summary>
+        /// <param name="numero"></param> Numéro de la fractale(0 à 7)
+        /// <returns></returns>
         public static MyImage DrawJulia(int numero)
         {
             
@@ -1134,9 +1212,7 @@ namespace Projet_S4
                 #endregion
                 
                 RectangleF rectF = new RectangleF(-2.0f, -2.0f, 4.0f, 4.0f);
-                double radius = 2;
-                int x;
-                for (x = 0; x < height; x++)
+                for (int x = 0; x < height; x++)
                 {
 
                     for (int y = 0; y < width; y++)
@@ -1228,6 +1304,9 @@ namespace Projet_S4
         
         //A refaire
         #region Histogramme des couleurs d'une photo
+        /// <summary>
+        /// Methode qui permet de calculer l'histogramme d'une image
+        /// </summary>
        public void DrawHistogram() //histogramme des couleurs d'une photo
         {
             Pixel[,] pix = new Pixel[_height,_width];
@@ -1335,6 +1414,10 @@ namespace Projet_S4
         //réflexion faite, on pourrait juste travailler en Hexadécimal, faire un F0 (=11110000) & la valeur en octet de l'image pour Red, Green, Blue et c'est tt
         
         #region Cacher l'image
+        /// <summary>
+        /// Methode qui permet de cacher une image dans une autre
+        /// </summary>
+        /// <param name="imagecach"></param>
         public void CacherImage(MyImage imagecach)
         {
 
@@ -1425,7 +1508,10 @@ namespace Projet_S4
         
         
         #region Decoder l'image 
-        
+        /// <summary>
+        /// Méthode qui décode l'image en fonction de la taille de l'image à cacher
+        /// </summary>
+        /// <returns></returns>
         public MyImage DecoderImage()
         {
             

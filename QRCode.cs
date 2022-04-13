@@ -132,7 +132,15 @@ public class QRCode : MyImage
 
 
     #region Constructeur et écriture du QRCode
-
+    /// <summary>
+    /// Constructeur du QRCode
+    /// </summary>
+    /// <param name="version"></param> version du QRCode
+    /// <param name="taillemodule"></param> taille du module
+    /// <param name="contours"></param> taille des contours
+    /// <param name="nivcorrection"></param> niveau de correction
+    /// <param name="masque"></param> masque
+    /// <param name="message"></param> message à coder (string)
     //Peut être séparé plus tard
     public QRCode(int version,int taillemodule, int contours,int nivcorrection,int masque,string message)
     {
@@ -180,7 +188,11 @@ public class QRCode : MyImage
 
 
     #region Modules de Recherches
-
+    /// <summary>
+    /// Méthode qui permet d'écrire les modules de recherches dans le QRCode
+    /// </summary>
+    /// <param name="ligne"></param> Ligne où écrire les modules de recherches
+    /// <param name="colonne"></param> Colonne où écrire les modules de recherches
     public void ModulesDeRecherches(int ligne, int colonne)
     {
         for (int i = ligne; i < _taillemodule * 7 + ligne; i++)
@@ -213,7 +225,11 @@ public class QRCode : MyImage
 
 
     #region Séparateurs
-
+    /// <summary>
+    /// Méthode qui permet d'écrire les séparateurs dans le QRCode
+    /// </summary>
+    /// <param name="ligne"></param> Ligne où écrire les séparateurs
+    /// <param name="colonne"></param> Colonne où écrire les séparateurs
     public void Separateurs(int ligne, int colonne)
     {
         for (int i = ligne; i < 8 * _taillemodule + ligne; i++)
@@ -229,7 +245,9 @@ public class QRCode : MyImage
 
 
     #region Motifs de Synchronisation
-
+    /// <summary>
+    /// Méthode qui permet d'écrire les motifs de synchronisation dans le QRCode
+    /// </summary>
     public void MotifsDeSynchro()
     {
         for (int i = 7 * _taillemodule + _contours; i <= Height - 7 * _taillemodule - _contours; i++)
@@ -278,7 +296,9 @@ public class QRCode : MyImage
 
 
     #region Dark Module
-
+    /// <summary>
+    /// Méthode qui permet d'écrire le module noir dans le QRCode
+    /// </summary>
     public void DarkModule()
     {
         for (int j = 8 * _taillemodule + _contours; j < _taillemodule * 9 + _contours; j++)
@@ -296,7 +316,12 @@ public class QRCode : MyImage
 
 
     #region Motifs d'Alignements
-
+    
+    #region Ecriture des motifs d'alignements
+    
+    /// <summary>
+    /// Méthode qui permet d'écrire les motifs d'alignements dans le QRCode
+    /// </summary>
     public void EcritureMotifsAlignement()
     {
 
@@ -318,7 +343,14 @@ public class QRCode : MyImage
 
 
     }
-
+    #endregion
+    
+    #region Méthode qui permet d'écrire les motifs d'alignements en fonction des coordonées
+    /// <summary>
+    /// Méthode qui permet d'écrire les motifs d'alignements en fonction des coordonées
+    /// </summary>
+    /// <param name="ligne"></param> Ligne où écrire les motifs d'alignements
+    /// <param name="colonne"></param> Colonne où écrire les motifs d'alignements
     public void MotifsAlignement(int ligne, int colonne)
     {
         if (ImageData[ligne, colonne] != null) return;
@@ -352,8 +384,16 @@ public class QRCode : MyImage
         }
 
     }
-
-
+    
+    #endregion
+    
+    #region Méthode qui permet de récupérer les coordonées des motifs d'alignements
+    /// <summary>
+    /// Méthode qui permet de récupérer les coordonées des motifs d'alignements
+    /// </summary>
+    /// <param name="nomfichier"></param> nom du fichier
+    /// <param name="version"></param> version du QRCode
+    /// <returns></returns> Liste des coordonées des motifs d'alignements
     public int[][] Coordonees(string nomfichier, int version) // lecture du fichier pour determiner les coordonnées
     {
         StreamReader? flux = null;
@@ -397,12 +437,18 @@ public class QRCode : MyImage
 
         return donees.Where(x => x.Length == 2).ToArray();
     }
+    #endregion
 
     #endregion
 
 
     #region Version du QRCode et Ecriture Version
-
+    
+    #region Méthode qui permet de récupérer la version du QRCode
+    /// <summary>
+    /// Méthode qui permet de récupérer la version du QRCode
+    /// </summary> 
+    /// <returns></returns> version du QRCode
     public int[] InfoVersionQRCode()
     {
 
@@ -452,7 +498,13 @@ public class QRCode : MyImage
 
         return final;
     }
-
+    
+    #endregion
+    
+    #region Méthode qui permet d'écrire la version du QRCode dans le QRCode
+    /// <summary>
+    /// Méthode qui permet d'écrire la version du QRCode dans le QRCode
+    /// </summary>
     public void EcritureInfoVersionQRCode()
     {
         if (_version < 7)
@@ -478,6 +530,8 @@ public class QRCode : MyImage
             }
         }
     }
+    
+    #endregion
 
     #endregion
 
@@ -486,7 +540,10 @@ public class QRCode : MyImage
 
 
     #region Récupération des informations du format du QRCode sous un int[]
-
+    /// <summary>
+    /// Méthode qui permet de récupérer les informations du format du QRCode sous un int[]
+    /// </summary>
+    /// <returns></returns> informations du format du QRCode sous un int[]
     public int[] InfoFormatQRcode()
     {
 
@@ -604,7 +661,9 @@ public class QRCode : MyImage
 
 
     #region Ecriture du Format sur le QRCode
-
+    /// <summary>
+    /// Méthode qui permet d'écrire le format du QRCode dans le QRCode
+    /// </summary>
     public void EcritureInfoFormat()
     {
         int[] infoformat = InfoFormatQRcode();
@@ -665,7 +724,9 @@ public class QRCode : MyImage
     
 
     #region Identification de la meilleur version et du meilleur masque pour le QRCode
-
+    /// <summary>
+    /// Méthode qui permet de trouver la meilleure version du QRCode et le meilleur niveau de correction pour le QRCode
+    /// </summary>
     public void MeilleurVersionEtNiveauDeCorrection()
     {
         int taillemessage = _message.Length;
@@ -712,7 +773,9 @@ public class QRCode : MyImage
     
     
     #region Récupération de la taille de la chaine de cractère dans CharacterCapacitiesQRCode
-
+    /// <summary>
+    /// Méthode qui permet de récupérer la taille de la chaine de caractère dans CharacterCapacitiesQRCode
+    /// </summary>
     public void DataCodeAndErrorDataWords()
     {
         var ligne = CatchFile($"../../../CharacterCapacitiesQRCode.txt").ToArray();
@@ -743,15 +806,34 @@ public class QRCode : MyImage
     
     
     #region Calcul des Datas et Initialisation du Dictionary
+    
+    #region Calcul des Datas Totales
+    /// <summary>
+    /// Méthode qui permet de calculer les datas totales
+    /// </summary>
+    /// <returns></returns> nombre de bits total (int)
     public int TotalData()
     {
         return _datacode + _errordata;
     }
-
+    #endregion
+    
+    #region Passage des datas en array
+    /// <summary>
+    /// Méthode qui permet de passer les datas en array
+    /// </summary>
+    /// <returns></returns> array des datas
     public List<int> DataByteEncoding()
     {
         return BitToByte(_chainbits.ToArray()).ToList();
     }
+    
+    #endregion
+    
+    #region Initialisation du Dictionary
+    /// <summary>
+    /// Méthode qui permet d'initialiser le Dictionary
+    /// </summary>
     public static void Dico()
     {
         
@@ -765,9 +847,16 @@ public class QRCode : MyImage
     
     #endregion
     
+    #endregion
+    
     
     #region Masques EncodageQRCode
-
+    /// <summary>
+    /// Méthode qui permet de calculer les masques pour chaque bit
+    /// </summary>
+    /// <param name="j"></param> hauteur
+    /// <param name="i"></param> largeur
+    /// <returns></returns> test du masque (bool) (true or false)
     public bool MasqueQRCode(int j,int i)
     {
         bool boole= _mask 
@@ -791,6 +880,10 @@ public class QRCode : MyImage
     
     
     #region Encodage du message
+    /// <summary>
+    /// Méthode qui permet d'encoder le message sous forme de bits
+    /// </summary>
+    /// <param name="message"></param> message à encoder
     public void MessageData(string message)
     {
         message = message.ToUpper();
@@ -890,6 +983,10 @@ public class QRCode : MyImage
     
     
     #region ErrorCorrection
+    //A terminer
+    /// <summary>
+    /// Méthode qui permet de calculer le nombre de bits d'erreur à ajouter
+    /// </summary>
     public void ErrorCorrectionQRCode()
     {
         var ggf = new GenericGF(285, 256, 0);
@@ -921,6 +1018,10 @@ public class QRCode : MyImage
     
     
     #region Ecriture du message
+    /// <summary>
+    /// Methode qui ecrit le message convertis en bit dans le QRCode
+    /// </summary>
+    /// <param name="tab"></param> le tableau de bit
     public void MessageQRCode(int[] tab)
     {
         
@@ -1254,6 +1355,13 @@ public class QRCode : MyImage
     
     
     #region Autres méthodes
+    /// <summary>
+    /// Métode qui permet d'effectuer des combinaisons de int
+    /// </summary>
+    /// <param name="source"></param> Array de int à combiner
+    /// <typeparam name="T"></typeparam> Type de l'array
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception> Si l'array est null
     public static IEnumerable<T[]> Combinaisons<T>(IEnumerable<T> source)
     {
         if (null == source)
@@ -1267,93 +1375,129 @@ public class QRCode : MyImage
                 .Where((v, i) => (index & (1 << i)) != 0)
                 .ToArray());
     }
-    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="array"></param> 
+    /// <param name="desiredLength"></param> Taille du tableau voulu
+    /// <returns></returns>
     public static int[] TrimAndPad(int[] array, int desiredLength)
-      {
+    {
           while (array[0] == 0) array = array.Skip(1).ToArray();
           var zerosArray = Enumerable.Repeat(0, desiredLength - array.Length);
           return array.Concat(zerosArray).ToArray();
-      }
-        
-      public static int[] Pad(int[] array, int desiredLength)
-      {
-          var zerosArray = Enumerable.Repeat(0, desiredLength - array.Length);
-          return array.Concat(zerosArray).ToArray();
-      }
-        
-      public static int[] UnShift(int[] array, int desiredLength)
-      {
-          var zerosArray = Enumerable.Repeat(0, desiredLength - array.Length);
-          return zerosArray.Concat(array).ToArray();
-      }
-        
-      public static int[] Trim(int[] array)
-      {
-          while (array[0] == 0) array = array.Skip(1).ToArray();
-          return array;
-      }
-      
-      public static int[] XOR(int[] x, int[] y)
-      {
-          var result = new int[x.Length];
-          for (int i = 0; i < result.Length; i++)
-          {
-              result[i] = x[i] == 1 && y[i] == 1 ? 0 : x[i] != y[i] ? 1 : 0; 
-          }
-          return result;
-      }
-      
-      public static IEnumerable<string> CatchFile(string path)
-      {
-          var lignes = new Stack<string>();
-          try
-          {
-              using var sr = new StreamReader(path);
-              string line;
-              while ((line = sr.ReadLine()) != null)
-              {
-                  lignes.Push(line);
-              }
-          }
-          catch (Exception e)
-          {
-              Console.WriteLine("Le fichier n'as pas pu être lu, veuillez réessayer");
-              Console.WriteLine(e.Message);
-              throw new IOException();
+    }
+    /// <summary>
+    /// Méthode qui permet d'ajouter des 0 à gauche d'un tableau d'int
+    /// </summary>
+    /// <param name="array"></param> Tableau d'int à modifier
+    /// <param name="desiredLength"></param> Taille finale du tableau
+    /// <returns></returns>
+    public static int[] Pad(int[] array, int desiredLength)
+    {
+        var zerosArray = Enumerable.Repeat(0, desiredLength - array.Length);
+        return array.Concat(zerosArray).ToArray();
+    }
+    /// <summary>
+    /// Méthode qui permet d'ajouter des 0 à droite d'un tableau d'int
+    /// </summary>
+    /// <param name="array"></param> Tableau d'int à modifier
+    /// <param name="desiredLength"></param> Taille finale du tableau
+    /// <returns></returns>
+    public static int[] UnShift(int[] array, int desiredLength)
+    {
+        var zerosArray = Enumerable.Repeat(0, desiredLength - array.Length);
+        return zerosArray.Concat(array).ToArray();
+    }
+    /// <summary>
+    /// Méthode qui saute les 0 d'un tableau d'int
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
+    public static int[] Trim(int[] array)
+    { 
+        while (array[0] == 0) array = array.Skip(1).ToArray();
+        return array;
+    }
+    /// <summary>
+    /// Méthode ou exclusif
+    /// </summary>
+    /// <param name="x"></param> Tableau à tester
+    /// <param name="y"></param> Tableau à tester
+    /// <returns></returns>
+    public static int[] XOR(int[] x, int[] y)
+    {
+        var result = new int[x.Length];
+        for (int i = 0; i < result.Length; i++) 
+        { 
+            result[i] = x[i] == 1 && y[i] == 1 ? 0 : x[i] != y[i] ? 1 : 0; 
+        }
+        return result;
+    }
+    /// <summary>
+    /// Méthode qui transforme la data d'un fichier pour la lire
+    /// </summary>
+    /// <param name="path"></param> Chemin du fichier
+    /// <returns></returns>
+    /// <exception cref="IOException"></exception> Si le fichier n'existe pas
+    public static IEnumerable<string> CatchFile(string path)
+    {
+        var lignes = new Stack<string>();
+        try
+        {
+            using var sr = new StreamReader(path);
+            string line;
+            while ((line = sr.ReadLine()!) != null)
+            { 
+                lignes.Push(line);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Le fichier n'as pas pu être lu, veuillez réessayer");
+            Console.WriteLine(e.Message);
+            throw new IOException();
                 
-          }
+        }
 
-          return lignes.ToArray().Reverse();
+        return lignes.ToArray().Reverse();
+    }
+    /// <summary>
+    /// Méthode qui transforme un tableau d'int(bit) en int(Byte)
+    /// </summary>
+    /// <param name="data"></param> Tableau d'int(bit)
+    /// <returns></returns>
+    public static int[] BitToByte(int[] data)
+    {
+        var final = new int[data.Length / 8];
+        var bytes = 0;
+        for (int i = 0; i < data.Length; i++)
+        {
+            bytes += (int) (Math.Pow(2, Math.Abs(i % 8 - 7)) * data[i]);
+            if (i != 0 && (i + 1) % 8 == 0)
+            {
+                final[i / 8] = bytes;
+                bytes = 0;
+            }
+        }
+        return final;
       }
-      
-      public static int[] BitToByte(int[] data)
-      {
-          var final = new int[data.Length / 8];
-          var bytes = 0;
-          for (int i = 0; i < data.Length; i++)
-          {
-
-              bytes += (int) (Math.Pow(2, Math.Abs(i % 8 - 7)) * data[i]);
-              if (i != 0 && (i + 1) % 8 == 0)
-              {
-                  final[i / 8] = bytes;
-                  bytes = 0;
-              }
-          }
-          return final;
-      }
-      
-      public static int[] ByteToBit(int[] data)
-      {
-          var result = new int[data.Length * 8];
-          for (int i = 0; i < result.Length; i++)
-          {
-              var division =  (int) (data[i / 8] / Math.Pow(2, Math.Abs(i % 8 - 7)));
-              result[i] = division;
-              data[i / 8] -= (int) (Math.Pow(2, Math.Abs(i % 8 - 7)) * division);
-          }
-          return result;
-      }
+      /// <summary>
+      /// Méthode qui transforme un tableau d'int(Byte) en int(bit)
+      /// </summary>
+      /// <param name="data"></param> Tableau d'int(Byte)
+      /// <returns></returns>
+    public static int[] ByteToBit(int[] data)
+    {
+        var result = new int[data.Length * 8];
+        for (int i = 0; i < result.Length; i++)
+        {
+            var division =  (int) (data[i / 8] / Math.Pow(2, Math.Abs(i % 8 - 7)));
+            result[i] = division;
+            data[i / 8] -= (int) (Math.Pow(2, Math.Abs(i % 8 - 7)) * division);
+        }
+        return result;
+    }
     
     #endregion
     
