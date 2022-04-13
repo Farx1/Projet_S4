@@ -171,7 +171,7 @@ public class QRCode : MyImage
         //_bitwords = new int[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
         MessageQRCode(_bitwords);
         
-        QRCode.FillImageWithGrey(); //pour voir les modules non remplis
+        QRCode.FillImageWithWhite(); //pour voir les modules non remplis
 
 
         this.From_Image_To_File($"../../../Images/QRCode_V{_version}_N{_nivcorrection}_M{_mask}.bmp");
@@ -940,7 +940,7 @@ public class QRCode : MyImage
         {
             if (i <= (7 * _taillemodule) && spec==true)
             {
-                i= i-_taillemodule;
+                i= i-_taillemodule ;
                 spec=false;
             }
             if (compteur >= tab.Length) break;

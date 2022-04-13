@@ -458,7 +458,7 @@ namespace Projet_S4
         #endregion
 
         
-        #region Méthodes pour agrandir et retrecir
+        #region Méthodes pour agrandir et retrecir et décalage
         /// <summary>
         /// Cette méthode permet d'agrandir l'image voulue
         /// </summary>
@@ -502,6 +502,56 @@ namespace Projet_S4
 
             _imageData = petit;
         }
+
+        public void Decaler(string direction, int defilement1, int defilement2)
+        {
+
+            if (direction == "gauche")
+            {
+                var defilement = defilement1;
+                Pixel[,] decalage = new Pixel[this._height, this._width];
+                for (int i = 0; i < _height; i++)
+                {
+                    for (int j = 0; j < _width; j++)
+                    {
+                        decalage[i, j] = new Pixel(this._imageData[i, (j + defilement) % _width]);
+                    }
+                }
+                _imageData = decalage;
+            }
+            
+            else if (direction == "haut")
+            {
+                var defilement = defilement2;
+                Pixel[,] decalage = new Pixel[this._height, this._width];
+                for (int i = 0; i < _height; i++)
+                {
+                    for (int j = 0; j < _width; j++)
+                    {
+                        decalage[i, j] = new Pixel(this._imageData[(i + defilement) % _height, j]);
+                    }
+                }
+                _imageData = decalage;
+            }
+            
+            else if (direction == "diagonal")
+            {
+                Pixel[,] decalage = new Pixel[this._height, this._width];
+                for (int i = 0; i < _height; i++)
+                {
+                    for (int j = 0; j < _width; j++)
+                    {
+                        decalage[i, j] = new Pixel(this._imageData[(i + defilement2) % _height, (j + defilement1) % _width]);
+                    }
+                }
+                _imageData = decalage;
+            }
+            
+
+        }   
+
+        
+        
 
         #endregion
 

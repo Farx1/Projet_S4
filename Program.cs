@@ -104,7 +104,7 @@ namespace Projet_S4
 
             //tt les qrcodes
             /*
-            for(int i =1;i<=40;i++)
+            for(int i =1;i<=5;i++)
             {
                 for (int j = 1; j <= 4; j++)
                 {
@@ -118,16 +118,16 @@ namespace Projet_S4
             
             
             
-            QRCode qrcode = new QRCode(5,5,4,1,7,"BONJOUR");//marche jusqu'a V22 et contours = 0 pour l'instant
+            // QRCode qrcode = new QRCode(5,5,5,1,7,"Ceux qui ont beaucoup a esperer et rien a perdre seront toujours dangereux");//marche jusqu'a V22 et contours = 0 pour l'instant
             //Console.WriteLine("\n"+"00100000010110110000101101111000110100010111001011011100010011010100001101000000111011000001000111101100");
             //var julia =MyImage.FractaleJulia(0);//variable a initialiser avant
             //julia.From_Image_To_File(@"../../../Images/FractaleJulia.bmp");
             
             
 
-            //MyImage julia = test4;
-            //julia = MyImage.DrawJulia(7);
-            //julia.From_Image_To_File(@"../../../Images/Julia7.bmp");
+            //MyImage decal = test3;
+            //decal.Decaler("haut",400,300);
+            //decal.From_Image_To_File(@"../../../Images/TEST7.bmp");
 
             //Finir QRCode, Finir corriger méthodes MyImage , Voir si on fait un affichage
 
