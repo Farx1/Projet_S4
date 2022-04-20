@@ -1307,11 +1307,15 @@ namespace Projet_S4
         /// <summary>
         /// Methode qui permet de calculer l'histogramme d'une image
         /// </summary>
-       public void DrawHistogram() //histogramme des couleurs d'une photo
+        
+        //fait une méthode qui cacule les valeurs de l'histogramme d'une image et qui le renvoie dans _imageData
+        public void DrawHistogram() //histogramme des couleurs d'une photo
         {
+            //Initialisation des variables
             Pixel[,] pix = new Pixel[_height,_width];
             //il faudrait trouver comment calculer les facteurs automatiquement
             
+            //On parcourt l'image
             double coeflargeur = 1.245;   //coco 1.245      lac 3
             double coefhauteur = 0.086;//coco 0.086      lac 0.09
             for (int i = 0; i < _height; i++)

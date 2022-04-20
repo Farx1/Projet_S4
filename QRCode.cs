@@ -123,9 +123,6 @@ public class QRCode : MyImage
         TypeImage = typeImage;
         NumberRgb = numberRgb;
         Offset = offset;
-
-
-
     }
 
     #endregion
@@ -145,8 +142,9 @@ public class QRCode : MyImage
     public QRCode(int version,int taillemodule, int contours,int nivcorrection,int masque,string message)
     {
         _message = message;
-        //MeilleurVersionEtNiveauDeCorrection();
-        int bordsQR = (8 * 2 + (4 * version + 1)) * taillemodule + 2 * contours;
+        MeilleurVersionEtNiveauDeCorrection();
+        
+        int bordsQR = (8 * 2 + (4 * _version + 1)) * taillemodule + 2 * contours;
         Height = bordsQR;
         Width = bordsQR;
         ImageData = new Pixel[Height, Width];
@@ -157,10 +155,9 @@ public class QRCode : MyImage
         Offset = 54;
         Ecriture = 1;
         NumberRgb = 24;
-        _version =version;
+        //_version =version;
         _mask = masque;
-        _nivcorrection = nivcorrection;
-
+        //_nivcorrection = nivcorrection;
         ModulesDeRecherches(0 + _contours, 0 +_contours);
         ModulesDeRecherches(0 + Height - (7 * _taillemodule) -_contours, 0+_contours);
         ModulesDeRecherches(0 +_contours, 0 + Width - (7 * _taillemodule)-_contours);
@@ -170,20 +167,25 @@ public class QRCode : MyImage
         EcritureMotifsAlignement();
         MotifsDeSynchro();
         DarkModule();
+        Dico();
         EcritureInfoVersionQRCode();
         EcritureInfoFormat();
-        Dico();
         DataCodeAndErrorDataWords();
         MessageData(_message);
         ErrorCorrectionQRCode();
-        //_bitwords = new int[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
         MessageQRCode(_bitwords);
         
+        //DeterminerMasqueFinal();
+        
+        //DeterminerMasqueFinal();
         QRCode.FillImageWithWhite(); //pour voir les modules non remplis
 
 
         this.From_Image_To_File($"../../../Images/QRCode_V{_version}_N{_nivcorrection}_M{_mask}.bmp");
+        Console.WriteLine($"V:"+_version+" N:"+_nivcorrection+" M:"+_mask);
+        
     }
+    
     #endregion
 
 
@@ -735,31 +737,15 @@ public class QRCode : MyImage
         //find the best version for the message length in Char CharacterCapacitiesQRCodeOrdered.txt
         foreach (var n in taille)
         {
-            var readligne1 = taille[i].Split(",");
-            var readligne =taille[i+1].Split(",");
-            var readligne2 = taille[i+2].Split(",");
+            var readligne = taille[i].Split(",");
             
-            var taillebas = Convert.ToInt32(readligne1[0]);
-            var taillehaut = Convert.ToInt32(readligne2[0]);
-            if (taillebas < taillemessage  && taillemessage < taillehaut)
+            var tailletest = Convert.ToInt32(readligne[0]);
+            if (tailletest >= taillemessage)
             {
                 _version = Convert.ToInt32(readligne[1]);
                 _nivcorrection = Convert.ToInt32(readligne[2]);
                 break;
             }
-            else if (taillemessage == taillebas)
-            {
-                _version = Convert.ToInt32(readligne1[1]);
-                _nivcorrection = Convert.ToInt32(readligne1[2]);
-                break;
-            }
-            else if (taillemessage == taillehaut)
-            {
-                _version = Convert.ToInt32(readligne2[1]);
-                _nivcorrection = Convert.ToInt32(readligne2[2]);
-                break;
-            }
-
             i++;
 
 
@@ -780,17 +766,9 @@ public class QRCode : MyImage
     {
         var ligne = CatchFile($"../../../CharacterCapacitiesQRCode.txt").ToArray();
         //vérifier si ce n'est pas la valeur entiere correspondant plutôt
-        var i = _nivcorrection
-            switch
-            {
-                1 => 0,
-                2 => 3,
-                3 => 2,
-                4 => 1,
-                _ => 0,
-            };
+        var i = _nivcorrection;
 
-        var readligne = ligne[(_version - 1) * 4 + i];
+        var readligne = ligne[(_version - 1) * 4 + i-1];
         var finalinfo =readligne.Split(";");
         var final = new int[finalinfo.Length -2];
         for (int n =1; n < finalinfo.Length -1; n++)
@@ -1498,6 +1476,213 @@ public class QRCode : MyImage
         }
         return result;
     }
+    
+    #endregion
+    
+    
+    #region Méthode pour déterminer le meilleur masque
+
+    public int DeterminerMasqueFinal()
+    {
+        
+        /*
+        var total = 0;
+        var totfinal = Math.Pow(10, 1000);
+        var masquefinal = 0;
+        for (int i = 0; i < 8; i++)
+        {
+            _mask = i;
+            QRCode test = new QRCode(_version,_taillemodule, _contours,_nivcorrection,_mask,_message);
+            test.MethodesQRCode();
+            total = test.Regle1() + test.Regle2() + test.Regle3() + test.Regle4();
+            if (totfinal > total)
+            {
+                masquefinal = i;
+                totfinal = total;
+            }
+        }
+
+        _mask = masquefinal;
+        return true;
+        */
+        return this.Regle1() + this.Regle2()  + this.Regle4();
+
+    }
+    
+    #region Regle1
+    public int Regle1()//marche en théorie
+    {
+        int countNC = 0;
+        int countBC = 0; 
+        int countNL = 0;
+        int countBL = 0;
+        var total = 0;
+        
+        for (int i = _contours; i < Width-_contours; i++)
+        {
+            for (int j = _contours; j < Height - _contours; j++)
+            {
+                if(new Pixel(0,0,0) == ImageData[i,j])
+                {
+                    countNC++;
+                }
+                if (new Pixel(255, 255, 255) == ImageData[i, j])
+                {
+                    countBC++;
+                }
+                if(new Pixel(0,0,0) == ImageData[j, i])
+                {
+                    countNL++;
+                }
+                if (new Pixel(255, 255, 255) == ImageData[j, i])
+                {
+                    countBL++;
+                }
+
+                for (int k = 5; k < Height-_contours; k++)
+                {
+                    if (countNC + k == countBC || countBC + k == countNC)
+                    {
+                        total += k-2;
+                    }
+                    if(countNL + k == countBL || countBL + k == countNL)
+                    {
+                        total += k-2;
+                    }
+                }
+                
+            }
+            
+        }
+
+        return total;
+    }
+    
+    #endregion
+    
+    #region Regle2
+    
+    public int Regle2()
+    {
+        int total = 0;
+        for (int i = _contours; i < Height - _contours - _taillemodule; i++)
+        {
+            for (int j = _contours; j < Width - _contours - _taillemodule; j++)
+            {
+                int countN = 0;
+                int countB = 0;
+                for(int k = i; k < i+2; k++)
+                {
+                    for(int l = j; l < j+2; l++)
+                    {
+                        if(ImageData[k, l] == new Pixel(0,0,0))
+                        {
+                            countN++;
+                        }
+                        if(ImageData[k, l] == new Pixel(255, 255, 255))
+                        {
+                            countB++;
+                        }
+                    }
+                }
+                if (countN == 4)
+                {
+                    total += 3;
+                }
+                if(countB==4)
+                {
+                    total += 3;
+                }
+                
+
+                
+            }
+        }
+
+        return total;
+    }
+    
+    #endregion
+    
+    #region Regle3
+    
+    public int Regle3()
+    {
+        
+        int total = 0;
+
+        
+        var pattern = new Pixel[] { new Pixel(0, 0, 0), new Pixel(255, 255, 255), new Pixel(0,0,0), new Pixel(0,0,0), new Pixel(0,0,0), new Pixel(255, 255, 255), new Pixel(0,0,0), new Pixel(255,255,255), new Pixel(255,255,255), new Pixel(255,255,255), new Pixel(255, 255, 255) };
+        var reversepattern = new Pixel[] {new Pixel(255,255,255), new Pixel(255,255,255), new Pixel(255,255,255), new Pixel(255,255,255), new Pixel(0,0,0), new Pixel(255,255,255), new Pixel(0,0,0), new Pixel(0,0,0), new Pixel(0,0,0), new Pixel(255,255,255), new Pixel(0,0,0) };
+        var row = new Pixel[Height-_contours,0];
+        var column = new Pixel[0,Width-_contours];
+        int patterns = 0;
+        for (int index = _contours; index < Height-_taillemodule-_contours; index++) 
+        {
+            for (int i = _contours; i < Height -_taillemodule-_contours; i++)
+            {
+                row[i,0] = ImageData[i, index];
+            }
+
+            for (int j = _contours; j < Width-_taillemodule-_contours; j++)
+            {
+                column[0,j]= ImageData[index, j];
+            }
+            
+            for (int columnIndex = _contours; columnIndex < Width-_contours - 11*_taillemodule; columnIndex++) 
+            {
+                if(column[0,columnIndex] == pattern[columnIndex] || column[0,columnIndex] == reversepattern[columnIndex])
+                {
+                    patterns++;
+                }
+
+            }
+            
+            for (int rowIndex = _contours; rowIndex < Height-_contours - 11; rowIndex++) 
+            {
+                if(row[rowIndex,0] == pattern[rowIndex] || row[rowIndex,0] == reversepattern[rowIndex])
+                {
+                    patterns++;
+                }
+            }
+        }
+        total += patterns * 40;
+        return total;
+    }
+    
+    #endregion
+    
+    #region Regle4
+
+    public int Regle4()
+    {
+        var totB = 0;
+        var totalmod = (Height - 2*_contours)/_taillemodule;
+        for (int i = _contours; i < Height - _contours; i++)
+        {
+            for (int j = _contours; j < Width - _contours; j++)
+            {
+                if(new Pixel(0,0,0) == ImageData[i, j])
+                {
+                    totB++;
+                }
+            }
+        }
+
+        var percent = (int) (totB / totalmod) * 100;
+        var step1 = percent % 5;
+        var val1 = percent - step1;
+        var val2 = val1 + 5;
+        var abs1 = Math.Abs(val1 - 50);
+        var abs2 = Math.Abs(val2 - 50);
+        var final1 = abs1/5;
+        var final2 = abs2/5;
+        var total = final1 <= final2 ? abs1 : abs2;
+        return total;
+
+
+    }
+    #endregion
     
     #endregion
     
