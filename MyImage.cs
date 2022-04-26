@@ -49,7 +49,7 @@ namespace Projet_S4
             _numberRgb = numberRgb;
             this._offset = offset;
             _imageData = imageData;
-            _ecriture = ecriture =0 ;
+            _ecriture = ecriture =0;
         }
 
 
@@ -157,7 +157,7 @@ namespace Projet_S4
         
         #endregion
         
-
+        
         #region Propriétés
 
         public string TypeImage
@@ -209,8 +209,8 @@ namespace Projet_S4
         }
 
         #endregion
-
-
+        
+        
         #region Méthodes de conversion
 
         /// <summary>
@@ -258,7 +258,7 @@ namespace Projet_S4
 
         #endregion 
 
-
+        
         #region Méthode pour afficher les caractéristiques d'une image
         /// <summary>
         /// Méthode permettant d'afficher les caractéristiques d'une image
@@ -289,7 +289,7 @@ namespace Projet_S4
 
         #endregion
 
- 
+        
         #region Méthode qui tranforme une image en fichier binaire
         /// <summary>
         /// Méthode qui tranforme une image en fichier binaire
@@ -813,11 +813,24 @@ namespace Projet_S4
                  }
             }
         }
+        /// <summary>
+        /// Méthode permettant de remplir l'image avec des pixels noirs
+        /// </summary>
+        public void FillImageWithBlack()
+        {
+            for (int i = 0; i < this._imageData.GetLength(0); i++)
+            {
+                for (int j = 0; j < this._imageData.GetLength(1); j++)
+                {
+                    _imageData[i, j] ??= new Pixel(0, 0, 0);
+                }
+            }
+        }
         #endregion
        
        
         #endregion
-
+        
         //TD4
         #region Matrice de Convolution  
         
@@ -1302,7 +1315,7 @@ namespace Projet_S4
         
         #endregion
         
-        //A refaire
+        //A refaire ou a finir
         #region Histogramme des couleurs d'une photo
         /// <summary>
         /// Methode qui permet de calculer l'histogramme d'une image
@@ -1314,10 +1327,11 @@ namespace Projet_S4
             //Initialisation des variables
             Pixel[,] pix = new Pixel[_height,_width];
             //il faudrait trouver comment calculer les facteurs automatiquement
-            
             //On parcourt l'image
-            double coeflargeur = 1.245;   //coco 1.245      lac 3
-            double coefhauteur = 0.086;//coco 0.086      lac 0.09
+            //int valcoefhauteur = (int) Math.Floor((double) _height * 100 / 257);
+            //int valcoeflargeur = (int) Math.Floor((double) _width * 100/ 257);
+            double coeflargeur = 1.245;//coco 1.245      lac 3
+            double coefhauteur = 0.086; //coco 0.086      lac 0.09valcoefhauteur
             for (int i = 0; i < _height; i++)
             {
                 for (int j = 0; j < _width; j++)
@@ -1371,7 +1385,7 @@ namespace Projet_S4
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        pix[i,Convert.ToInt32((int)(g * coeflargeur))+k].Blue = 255;
+                        pix[i,Convert.ToInt32((int)(g * coeflargeur))+k].Green = 255;
                     }
                     
 
@@ -1400,7 +1414,7 @@ namespace Projet_S4
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        pix[i,Convert.ToInt32((int)(b * coeflargeur))+k].Green = 255;
+                        pix[i,Convert.ToInt32((int)(b * coeflargeur))+k].Blue = 255;
                     }
                     
 
@@ -1409,9 +1423,10 @@ namespace Projet_S4
             _imageData = pix;
 
         }
-
+        
+        
        
-       #endregion
+        #endregion
        
        
         #region Cacher/Décoder une image dans une image

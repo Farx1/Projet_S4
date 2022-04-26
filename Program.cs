@@ -63,11 +63,11 @@ namespace Projet_S4
             
 
             //var lol = test;
-            //MyImage mirr= test;
-            //mirr.Rotate90();
-            //var lol = test.Negatif();//marche pour 47 -75 mais pas pour d'autres valeurs
-            //mirr.DetectionSobel(Matrice.Sobel1,Matrice.Sobel2);//Flou(facteur= 0.11111)--Contour--Renforcement--Repoussage
-            //mirr.From_Image_To_File(@"../../../Images/Test5.bmp");
+            MyImage nb= test2;
+            
+            nb.DrawHistogram();//marche pour 47 -75 mais pas pour d'autres valeurs
+            //nb.Convolution(Matrice.Renforcement,Matrice.Null);//Flou(facteur= 0.11111)--Contour--Renforcement--Repoussage
+            nb.From_Image_To_File(@"../../../Images/Test5.bmp");
             //MyImage mand = test4;
             //MyImage rot =mand.Rotate(67);
             //rot.From_Image_To_File(@"../../../Images/Test4.bmp");
@@ -115,19 +115,20 @@ namespace Projet_S4
                 }
             }
             */
-            
-            
-            
-            QRCode qrcode = new QRCode(1,5,5,1,1,"AAAAAAAAAAAAAAAAAAAAAAAA");//marche jusqu'a V22 et contours = 0 pour l'instant
+
+
+
+            QRCode qrcode = new QRCode("JULES SAYAD BARTH ET LINA SAYERH PROJET PSI 2022 C EST TERMINE TIBERIO T ES VRAIMENT TROP BEAU", 3);
+            //QRCode qrcode = new QRCode(40,1,0,4,"JULES SAYAD BARTH ET LINA SAYERH PROJET PSI 2022");//marche jusqu'a V22 et contours = 0 pour l'instant
             //Console.WriteLine("\n"+"00100000010110110000101101111000110100010111001011011100010011010100001101000000111011000001000111101100");
             //var julia =MyImage.FractaleJulia(0);//variable a initialiser avant
             //julia.From_Image_To_File(@"../../../Images/FractaleJulia.bmp");
-            
-            
 
-            MyImage decal = test3;
-            decal.DrawHistogram();
-            decal.From_Image_To_File(@"../../../Images/TEST7.bmp");
+
+
+            //MyImage decal = test3;
+            //decal.DrawHistogram();
+            //decal.From_Image_To_File(@"../../../Images/TEST7.bmp");
 
             //Finir QRCode, Finir corriger méthodes MyImage , Voir si on fait un affichage
 
